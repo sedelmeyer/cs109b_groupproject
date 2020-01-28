@@ -7,7 +7,7 @@ CS109b Group Project
 
 # Action Items
 ## Open
-- [] Action Item 1
+- [ ] Action Item 1
 
 ## Closed
 - [x] Action Item 2
