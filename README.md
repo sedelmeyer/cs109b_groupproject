@@ -1,28 +1,28 @@
 # cs109b_groupproject
 CS109b Group Project
 
-# Team Members
+## Team Members
 
-# Project Description and Scope
+## Project Description and Scope
 
-# Timeline
+## Timeline
 |Date    |Description                                     |
 |--------|------------------------------------------------|
 |02/01/20|Milestone 1                                     |
 
-# Action Items
-## Open
+## Action Items
+### Open
 - [ ] Action Item 1
 
-## Closed
+### Closed
 - [x] Action Item 2
 
 
-# Data
+## Data
 
-# Model
+## Model
 
-# Web Page / Documentation
+## Web Page / Documentation
 
 
 
