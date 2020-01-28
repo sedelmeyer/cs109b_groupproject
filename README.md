@@ -5,6 +5,11 @@ CS109b Group Project
 
 # Project Description and Scope
 
+# Timeline
+|Date    |Description                                     |
+|--------|------------------------------------------------|
+|02/01/20|Milestone 1                                     |
+
 # Action Items
 ## Open
 - [ ] Action Item 1
@@ -17,7 +22,7 @@ CS109b Group Project
 
 # Model
 
-# Web Page
+# Web Page / Documentation
 
 
 
