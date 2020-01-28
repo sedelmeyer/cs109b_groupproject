@@ -39,6 +39,6 @@ https://github.com/mcdomx/cs109b_groupproject/issues
 
 ## Web Page / Documentation
 
-Use the git Wiki feature to document specific areas.  Keep your areas up-to-date.
+GIT Wiki for process documentation (https://github.com/mcdomx/cs109b_groupproject/wiki)
 
 
