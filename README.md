@@ -6,6 +6,18 @@ CS109b Group Project
 # Project Description and Scope
 
 # Action Items
-item 1#[checkbox:unchecked]
-item 2 #[checkbox:unchecked]
+## Open
+- [] Action Item 1
+
+## Closed
+- [x] Action Item 2
+
+
+# Data
+
+# Model
+
+# Web Page
+
+
 
