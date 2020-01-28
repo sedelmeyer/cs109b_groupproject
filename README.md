@@ -11,6 +11,9 @@ CS109b Group Project
 |02/01/20|Milestone 1                                     |
 
 ## Action Items
+See Issues:
+https://github.com/mcdomx/cs109b_groupproject/issues
+
 ### Open
 - [ ] Action Item 1
 
