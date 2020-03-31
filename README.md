@@ -10,6 +10,7 @@ https://github.com/mcdomx/cs109b_groupproject/wiki/Project-Management
 |---------------|------------------------------|-----------------------
 |Mark McDonald  |mcdomx@me.com                 |
 |An Hoang       |hoangthienan95@gmail.com      |
+|Mike Seledmeyer|sedelmeyer@gmail.com          |
 
 ## Timeline
 |Date    |Description                                     |
