@@ -1,5 +1,5 @@
-# Ignore datafiles to prevent extremely large
-# git history, but .gitkeep data directory for common data guidance
+# Ignore datafiles to prevent bloated git history
+# but .gitkeep data directory for common data guidance
 data/**
 !data/**/
 !data/**/.gitkeep
@@ -9,6 +9,12 @@ data/**
 references/**
 !references/**/
 !references/**/.gitkeep
+
+# Ignore saved models as a default to prevent excessively large
+# git history, but .gitkeep models directory for common guidance
+models/**
+!models/**/
+!models/**/.gitkeep
 
 .idea/
 .ipynb_checkpoints/
