@@ -1,3 +1,15 @@
+# Ignore datafiles to prevent extremely large
+# git history, but .gitkeep data directory for common data guidance
+data/**
+!data/**/
+!data/**/.gitkeep
+
+# Ignore reference documents to prevent commiting copyrighted materials
+# to github repo, but .gitkeep directory as common reference storage location
+references/**
+!references/**/
+!references/**/.gitkeep
+
 .idea/
 .ipynb_checkpoints/
 
