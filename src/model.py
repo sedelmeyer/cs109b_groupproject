@@ -30,6 +30,29 @@ def generate_model_dict(model, model_descr, X_train, X_test, y_train, y_test,
     sklearn, keras, and statsmodels models. PyGam models typically also
     work by specifying the 'sklearn' model_api. For statsmodels models, only those
     that depend on the statsmodels.formula.api work.
+
+    The returned output dictionary follows this structure:
+
+        {
+            'description': model_descr_string
+            'model': fitted model object
+            'y_variables': [y1_varname_string, y2_varname_string]
+            'formulas': [y1_formula_string, y2_formula_string] 
+                        empty list if statsmodel api is not used
+            'y_values': {
+                'train': y_train array,
+                'test': y_test array,
+            }
+            'predictions': {
+                'train': train_predictions array,
+                'test': test_predictions array,
+            }
+            'score': {
+                'train': training r2_score array,
+                'test': test r2_score array
+            }
+
+        }
     
     :param model: the uninitialized sklearn, pygam, or statsmodels regression
                   model object, or a previously compiled keras model
