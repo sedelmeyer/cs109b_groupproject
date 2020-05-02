@@ -38,9 +38,10 @@ def plot_true_pred(model_dict=None, dataset='train', y_true=None, y_pred=None,
                        generate_model_dict func is used, function defaults to
                        data from that dict for plot, if None plot expects y_true,
                        y_pred, model_descr, and y1/y2 label inputs for plotting
-    :param test: boolean, indicates whether to plot training or test results
-                 if using model_dict as data source, and labels plots accordingly
-                 if y_pred and y_true inputs are used
+    :param dataset: string, 'train' or 'test', indicates whether to plot training or
+                    test results if using model_dict as data source, and labels
+                    plots accordingly if y_pred and y_true inputs are used (default
+                    is 'train')
     :param y_true, y_pred: None or pd.DataFrame and np.array shape=(n,2) data sources
                            accepted and used for plotting if model_dict=None
                            (default for both is None)
