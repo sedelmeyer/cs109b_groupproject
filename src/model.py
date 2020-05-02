@@ -22,7 +22,7 @@ from sklearn.metrics import r2_score
 
 def generate_model_dict(model, model_descr, X_train, X_test, y_train, y_test,
                         multioutput=True, verbose=False, predictions=True,
-                        scores=True, model_api='sklearn', sm_formula=None,
+                        scores=True, model_api='sklearn', sm_formulas=None,
                         y_stored=True, **kwargs):
     """Fits the specified model type and generates a dictionary of results
     
@@ -47,9 +47,9 @@ def generate_model_dict(model, model_descr, X_train, X_test, y_train, y_test,
                    resulting dict for both the train and test predictions
     :param model_api: specifies the api-type required for the input model, options
                       include 'sklearn', 'keras', or 'statsmodels' (default='sklearn')
-    :param sm_formula: statsmodels formula defining model (include only endogenous
-                       variables, such as 'x1 + x2 + x3' instead of 'y ~ x1 + x2 + 
-                       x3'), default is None
+    :param sm_formulas: list of statsmodels formulas defining model for each output y
+                       (include only endogenous variables, such as 'x1 + x2 + x3'
+                       instead of 'y ~ x1 + x2 + x3'), default is None
     :param y_stored: boolean, determines whether the true y values are stored in the
                      resulting dictionary. It is convenient to keep these stored
                      alongside the predictions for easier evaluation later (default
@@ -103,7 +103,7 @@ def generate_model_dict(model, model_descr, X_train, X_test, y_train, y_test,
     # resulting formulas for use while fitting and in final dict
     if model_api=='statsmodels':
         for i, y in enumerate(y_variables):
-            formulas.append(y + ' ~ {}'.format(sm_formula))
+            formulas.append(y + ' ~ {}'.format(sm_formulas[i]))
             FitModel.append(
                 model(
                     formula=formulas[i],
