@@ -25,7 +25,6 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import r2_score
 
 
-
 def plot_true_pred(model_dict=None, dataset='train', y_true=None, y_pred=None,
                    model_descr=None, y1_label=None, y2_label=None):
     """Plots model prediction results directly from model_dict or input arrays
@@ -241,7 +240,7 @@ def plot_bdgt_sched_scaled(X, X_scaled, scale_descr, X_test=None, X_test_scaled=
         if i==0:
             ax[i].set_ylabel('Duration (days)', fontsize=12)
 
-        if type(X_test)!='NoneType':
+        if np.all(X_test)!=None:
             ax[i].scatter(
                 *data_test.values.T,
                 color='tab:orange',
