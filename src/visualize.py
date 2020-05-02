@@ -1,3 +1,18 @@
+"""
+This module contains functions for visualizing data and model results
+
+FUNCTIONS
+
+    plot_true_pred()
+        Plots model prediction results directly from model_dict or input arrays.
+        Generates 5 subplots, (1) true values with predicted values overlay, 
+        each y variable on its own axis, (2) output variable 1 true vs. predicted
+        on each axis,(3) output variable 2 true vs. predicted on each axis
+        (4) output variable 1 true vs. residuals, (5) output variable 2 true
+        vs. residuals
+
+"""
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
