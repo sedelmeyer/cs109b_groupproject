@@ -16,6 +16,11 @@ FUNCTIONS
         plotted on the x and y axes, (2) the scaled versions of the budget vs
         schedule data plotted on the x and y values
 
+    plot_change_trend()
+        Plots 4 subplots showing project budget and duration forecast change trend
+        over a specified time interval, or optionally for all available change
+        records in cleansed master dataset
+
 """
 
 import pandas as pd
@@ -254,5 +259,139 @@ def plot_bdgt_sched_scaled(X, X_scaled, scale_descr, X_test=None, X_test_scaled=
         ax[i].grid(':', alpha=0.4)
         
     ax[0].legend(fontsize=12, edgecolor='k', loc=4)        
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_change_trend(trend_data, pid_data, pid, interval=None):
+    """Plots 4 subplots showing project budget and duration forecast change trend
+    
+    :param trend_data: pd.DataFrame, the cleaned dataset of all project change
+                       records (i.e. 'Capital_Projects_clean.csv' dataframe)
+    :param pid_data: pd.DataFrame, the prediction_interval dataframe produced
+                     using this project's data generator function
+                     (i.e. 'NYC_Capital_Projects_3yr.csv' dataframe)
+    :param pid: integer, the PID for the project you wish to plot
+    :param interval: integer or None, indicating the max Change_Year you wish
+                     to plot, if None all change records are plotted for the
+                     specified pid (default, interval=None)
+                     
+    :return: generates image of 4 subplots, no objects are returned
+    """
+    # sets default for converting datetimes in matplotlib
+    from pandas.plotting import register_matplotlib_converters
+    from matplotlib.dates import YearLocator, DateFormatter
+    register_matplotlib_converters()
+    
+    years = YearLocator()
+    years_fmt = DateFormatter('%Y')
+     
+    def set_date_axis(ax, years, years_fmt):
+        ax.xaxis.set_major_locator(years)
+        ax.xaxis.set_major_formatter(years_fmt)
+    
+    # set sup_title reference fontsize
+    fs=16
+
+    # subset project record data (results from data generator)
+    pid_record = pid_data.copy().loc[pid_data['PID']==pid]
+    
+    # subset project changes data (clean original dataset)
+    changes_loc = (trend_data['PID']==pid) & (trend_data['Change_Year']<=interval) \
+                  if interval else trend_data['PID']==pid
+    pid_changes = trend_data.copy().loc[changes_loc]
+    
+    # convert datetime field to correct data type
+    pid_changes['Date_Reported_As_Of'] = pd.to_datetime(pid_changes['Date_Reported_As_Of'])
+
+    # calculate project duration array
+    project_duration = pid_record['Duration_Start'].values[0] + \
+                       np.cumsum(pid_changes['Latest_Schedule_Changes'].values)
+
+    perc_bdgt_change = (
+        pid_changes['Budget_Forecast'].values[-1] - pid_record['Budget_Start'].values[0]
+    ) / pid_record['Budget_Start'].values[0]
+    
+    perc_sched_change = (
+        project_duration[-1] - pid_record['Duration_Start'].values[0]
+    ) / pid_record['Duration_Start'].values[0]
+    
+        # generate subplots
+    fig, ax = plt.subplots(2,2, sharex=True, figsize=(12,6))
+    
+    plt.suptitle(
+        'PID {}\n{}\nCategory: {}\nBorough: {}\nOriginal Budget: \${:.2f} million\n'\
+        'Original Duration: {:,.0f} days'.format(
+            pid,
+            pid_record['Project_Name'].values[0][:88],
+            pid_record['Category'].values[0],
+            pid_record['Borough'].values[0],
+            pid_record['Budget_Start'].values[0]/1e7,
+            pid_record['Duration_Start'].values[0]
+        ), fontsize=fs, y=1.25
+    )
+
+    # plot budget forecast
+    ax[0,0].plot(
+        pid_changes['Date_Reported_As_Of'], pid_changes['Budget_Forecast']/1e7, 'ko-'
+    )
+    ax[0,0].axhline(
+        pid_record['Budget_Start'].values[0]/1e7, color='k', linestyle=':',
+        label='Original forecasted'
+    )
+    ax[0,0].set_title(
+        'Total budget forecast\n({:.2%} total change)'.format(perc_bdgt_change),
+        fontsize=fs-2
+    )
+    ax[0,0].set_ylabel('USD (millions)', fontsize=fs-4)
+    ax[0,0].legend(edgecolor='k', fontsize=fs-6)
+
+    # plot budget forecast percent change
+    ax[1,0].plot(
+        pid_changes['Date_Reported_As_Of'],
+        ((pid_changes['Latest_Budget_Changes'])/
+        (
+            pid_changes['Budget_Forecast']-pid_changes['Latest_Budget_Changes']
+        ).replace(0,1))*100,
+        'ko-'
+    )
+    ax[1,0].axhline(0, color='gray', linestyle='-', alpha=0.4)
+    ax[1,0].set_title('Percentage budget change', fontsize=fs-2)
+    ax[1,0].set_ylabel('percent change', fontsize=fs-4)
+
+    ax[1,0].set_xlabel('project change date', fontsize=fs-4)
+
+    # plot duration forecast
+    ax[0,1].plot(
+        pid_changes['Date_Reported_As_Of'], project_duration/1e3, 'ko-'
+    )
+    ax[0,1].axhline(
+        pid_record['Duration_Start'].values[0]/1e3, color='k', linestyle=':',
+    )
+    ax[0,1].set_title(
+        'Total forecasted project duration\n({:.2%} total change)'.format(perc_sched_change),
+        fontsize=fs-2
+    )
+    ax[0,1].set_ylabel('days (thousands)', fontsize=fs-4)
+
+    # plot duration change
+    ax[1,1].plot(
+        pid_changes['Date_Reported_As_Of'],
+        (pid_changes['Latest_Schedule_Changes'] /
+        (
+            project_duration - pid_changes['Latest_Schedule_Changes']
+        ).replace(0,1))*100,
+        'ko-'
+    )
+    ax[1,1].axhline(0, color='gray', linestyle='-', alpha=0.4)
+    ax[1,1].set_title('Percentage duration change', fontsize=fs-2)
+    ax[1,1].set_ylabel('percent change', fontsize=fs-4)
+    
+    ax[1,1].set_xlabel('project change date', fontsize=fs-4)
+    
+    for a in ax.flat:
+        a.grid(':', alpha=0.4)
+        set_date_axis(a, years, years_fmt)
+    
     plt.tight_layout()
     plt.show()
