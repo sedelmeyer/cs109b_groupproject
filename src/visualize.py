@@ -11,6 +11,11 @@ FUNCTIONS
         (4) output variable 1 true vs. residuals, (5) output variable 2 true
         vs. residuals
 
+    plot_bdgt_sched_scaled()
+        Plots 2 subplots for comparison, (1) the original budget vs schedule data
+        plotted on the x and y axes, (2) the scaled versions of the budget vs
+        schedule data plotted on the x and y values
+
 """
 
 import pandas as pd
@@ -181,5 +186,74 @@ def plot_true_pred(model_dict=None, dataset='train', y_true=None, y_pred=None,
             ax.set_ylabel('Prediction error', fontsize=12)
         ax.grid(':', alpha=0.4)
 
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_bdgt_sched_scaled(X, X_scaled, scale_descr, X_test=None, X_test_scaled=None):
+    """Plots original vs scaled versions of budget and schedule input data
+    
+    :param X: Dataframe or 2D array with original budget and schedule train data
+    :param X_scaled: Dataframe or 2D array with scaled budget and schedule train data
+    :param scale_descr: Short string description of scaling transformation used
+                        to title scaled data plot (e.g. 'Sigmoid Standardized')
+    :param X_test: Optional, Dataframe or 2D array with original test data, which
+                   will plot test data as overlay with training data (default is
+                   X_test=None, which does not plot any overlay)
+    :param X_test_scaled: Optional, Dataframe or 2D array with original test data,
+                          which plots overlay similar to X_test (default is
+                          X_test_scaled=None)
+                          
+    :return: Generates 1x2 subplotted scatterplots, no objects returned
+    """
+    corr = np.corrcoef(X.T)[0, 1]
+    corr_scaled = np.corrcoef(X_scaled.T)[0, 1]
+
+    fig, ax = plt.subplots(1,2, figsize=(12,6))
+    
+    plt.suptitle(
+        'Original budget and duration values vs. {} scaled values'.format(
+            scale_descr
+            ),
+        y=1.05,
+        fontsize=18
+    )
+    
+    for i, (data, data_test) in enumerate(
+        zip([X, X_scaled], [X_test, X_test_scaled])
+        ):
+        ax[i].scatter(
+            *data.values.T,
+            color='k',
+            alpha=0.5,
+            edgecolor='w',
+            s=80,
+            label='training obs'
+        )
+        ax[i].set_title(
+            'Original data\n({:.2f} pearson coefficient)'.format(corr) if i==0
+            else '{} scaled\n({:.2f} pearson coefficient)'.format(
+                scale_descr, corr_scaled
+                ),
+            fontsize=14
+        )
+        ax[i].set_xlabel('Budget', fontsize=12)
+        if i==0:
+            ax[i].set_ylabel('Duration (days)', fontsize=12)
+
+        if type(X_test)!='NoneType':
+            ax[i].scatter(
+                *data_test.values.T,
+                color='tab:orange',
+                alpha=1,
+                edgecolor='w',
+                marker='s',
+                s=80,
+                label='test obs'
+            )
+        
+        ax[i].grid(':', alpha=0.4)
+        
+    ax[0].legend(fontsize=12, edgecolor='k', loc=4)        
     plt.tight_layout()
     plt.show()
