@@ -152,3 +152,6 @@ dmypy.json
 
 # other IDE temp files
 .vscode
+
+# ignore open office temp files
+**/.~lock.*
