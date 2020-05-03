@@ -12,6 +12,7 @@ FUNCTIONS
 
 """
 
+import os
 import pandas as pd
 import numpy as np
 
@@ -294,8 +295,27 @@ def add_change_features(df):
 
 
 def generate_interval_data(data, change_year_interval=None, 
-                           inclusive_stop=True, save_path=None):
+                           inclusive_stop=True,
+                           to_csv=False,
+                           save_dir='../data/interim/',
+                           custom_filename=None,
+                           verbose=1, return_df=True):
     """Generates a project analysis dataset for the specified interval
+
+    NOTE:
+
+        If you specify to_csv=True, the default bahavior will be to
+        save the resulting dataframe as:
+
+        ../data/interim/NYC_capital_projects_{predict_interval}yr.csv
+
+        or if change_year_interval=None:
+        
+        ../data/interim/NYC_capital_projects_all.csv
+
+        The save_dir and custom_filename arguments allow you to change
+        this to_csv behavior, however using them is not recommended
+        for the sake of file naming consistency in this project. 
 
     :param data: pd.DataFrame of the cleaned capital projects change
                  records data
@@ -310,10 +330,21 @@ def generate_interval_data(data, change_year_interval=None,
                            equal-to-or-older-than the change_year_interval year
                            If True, >= is used for subsetting, if False > is
                            used (default inclusive_stop=True)
+    :param to_csv: boolean, indicating whether or not the resulting dataframe
+                   should be saved to disk (default to_csv=False)
     :param save_path: string or None, indicating the path to which the
                       resulting dataframe should be saved to .csv, if None
                       the dataframe is not saved, just returned (default 
                       save_path=None)
+    :param custom_filename: string or None, indicating whether to name the
+                            resulting .csv file something other than the
+                            name 'NYC_capital_projects_{interval}yr.csv'
+                            (default custom_filename=None)
+    :param verbose: integer, default verbose=1 prints the number of project
+                    remaining in the resulting dataframe, otherwise that
+                    information is not printed
+    :param return_df: boolean, determines whether the resulting pd.DataFrame
+                      object is returned (default return_df=True)
 
     :return: pd.DataFrame containing the summary change data for each unique
              project matching the specified change_year_interval
@@ -331,11 +362,35 @@ def generate_interval_data(data, change_year_interval=None,
 
     df_features = add_change_features(df_merged)
 
-    if save_path:
-        df_features.to_csv(save_path, index=False)
+    if verbose==1:
+        # print numbeer of projects in the resulting dataframe
         print(
-            'The resulting interval features dataframe was saved to .csv at:'\
-            '\n\n\t{}'.format(save_path)
+            'The number of unique projects in the resulting dataframe: {}\n'\
+            ''.format(df_features['PID'].nunique())
         )
 
-    return df_features
+    if to_csv:
+        if custom_filename:
+            save_path = os.path.join(save_dir, custom_filename)
+        else:
+            filename_base = 'NYC_capital_projects_'
+            if change_year_interval:
+                save_path = os.path.join(
+                    save_dir, '{}{}yr.csv'.format(
+                        filename_base, change_year_interval
+                    )
+                )
+            else:
+                save_path = os.path.join(
+                    save_dir, '{}all.csv'.format(filename_base)
+                )
+        
+        df_features.to_csv(save_path, index=False)
+
+        print(
+            'The resulting interval features dataframe was saved to .csv at:'\
+            '\n\n\t{}\n'.format(save_path)
+        )
+
+    if return_df:
+        return df_features
