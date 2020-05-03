@@ -1,19 +1,28 @@
 """
-This module contains functions for scaling features of an X features design matrix
+This module contains functions for scaling features of an X features design
+matrix and for encoding categorical variables
 
 FUNCTIONS
 
+    encode_categories()
+        Encodes categorical variable column and appends values to dataframe. 
+        This function offers the option to either one-hot-encode (0,1) or
+        'LabelEncode'(as consecutive integers (0, n)) categorical values
+        by setting the one_hot argument to either True or False.
+
     scale_features()
-        Scales a dataframe's features based on the values of a training dataframe
-        and returns the resulting scaled dataframe. Accepts various sklearn scalers
-        and allows you to specify features you do not want affected by scaling by
-        using the exclude_scale_cols parameter.
+        Scales a dataframe's features based on the values of a training
+        dataframe and returns the resulting scaled dataframe. Accepts various
+        sklearn scalers and allows you to specify features you do not want
+        affected by scaling by using the exclude_scale_cols parameter.
 
     sigmoid()
-        Efficient numpy-based sigmoid transformation of a dataframe, array, or matrix
+        Efficient numpy-based sigmoid transformation of a dataframe, array,
+        or matrix
 
     log_plus_one()
-        Adds 1 to the input data and then applies Log transformation to those values
+        Adds 1 to the input data and then applies Log transformation to those
+        values
 
 """
 
@@ -22,38 +31,43 @@ import numpy as np
 from sklearn.preprocessing import RobustScaler
 
 
-def scale_features(train_df, val_df, exclude_scale_cols=[], scaler=RobustScaler,
+def scale_features(train_df, val_df, exclude_scale_cols=[],
+                   scaler=RobustScaler,
                    scale_before_func=None, scale_after_func=None,
                    reapply_scaler=False, **kwargs):
     """Scales val_df features based on train_df and returns scaled dataframe
     
-    Accepts various sklearn scalers and allows you to specify features you do not
-    want affected by scaling by using the exclude_scale_cols parameter.
+    Accepts various sklearn scalers and allows you to specify features you do
+    not want affected by scaling by using the exclude_scale_cols parameter.
     
     :param train_df: The training data
     :param val_df: Your test/validation data
     :param exclude_scale_cols: Optional list containing names of columns we
                                do not wish to scale, default=[]
-    :param scaler: The sklearn scaler method used to fit the data (i.e. StandardScaler,
-                    MinMaxScaler, RobustScaler, etc.), default=RobustScaler
-    :param scale_before_func: Optional function (i.e. np.log, np.sigmoid, or custom
-                              function) to be applied to train and val dfs prior to the
-                              scaler fitting and scaling val_df, default=None
-    :param scale_after_func: Optional function (i.e. np.log, np.sigmoid, or custom
-                             function) to be applied to val_df after the scaler has
-                             scaled the datafrme
-    :param reapply_scaler: Boolean, if set to True, the scaler is fitted a second time
-                           after the scale_after_func is applied (useful if using
-                           MinMaxScaler and you wish to maintain a 0 to 1 scale after
-                           applying a secondary transformation to the data), default
-                           is reapply_scaler=False
-    :param kwargs: Any additional arguments are passed as parameters to the selected
-                   scaler (for instance feature_range=(-1,1) would be an appropriate
-                   argument if scaler is set to MinMaxScaler)
-    :return: a feature-scaled version of the val_df dataframe, and a list of fitted
-             sklearn scaler objects that were used to scale values (for later use in
-             case original values need to be restored), list will either be of length
-             1 or 2 depending on whether reapply_scaler was set to True
+    :param scaler: The sklearn scaler method used to fit the data (i.e.
+                   StandardScaler, MinMaxScaler, RobustScaler, etc.),
+                   default=RobustScaler
+    :param scale_before_func: Optional function (i.e. np.log, np.sigmoid, or
+                              custom function) to be applied to train and val
+                              dfs prior to the scaler fitting and scaling
+                              val_df, default=None
+    :param scale_after_func: Optional function (i.e. np.log, np.sigmoid, or
+                             custom function) to be applied to val_df after the
+                             scaler has scaled the datafrme
+    :param reapply_scaler: Boolean, if set to True, the scaler is fitted a
+                           second time after the scale_after_func is applied
+                           (useful if using MinMaxScaler and you wish to
+                           maintain a 0 to 1 scale after applying a secondary
+                           transformation to the data), default is
+                           reapply_scaler=False
+    :param kwargs: Any additional arguments are passed as parameters to the
+                   selected scaler (for instance feature_range=(-1,1) would be
+                   an appropriate argument if scaler is set to MinMaxScaler)
+    :return: a feature-scaled version of the val_df dataframe, and a list of
+             fitted sklearn scaler objects that were used to scale values (for
+             later use in case original values need to be restored), list will
+             either be of length 1 or 2 depending on whether reapply_scaler was
+             set to True
     """
     # create list of columns to ensure proper ordering of columns for output df
     col_list = list(train_df)
@@ -115,11 +129,11 @@ def scale_features(train_df, val_df, exclude_scale_cols=[], scaler=RobustScaler,
 
 
 def sigmoid(x):
-    """Efficient numpy-based sigmoid transformation of a dataframe, array, or matrix
+    """Efficient numpy sigmoid transformation of dataframe, array, or matrix
     
     :param x: data to undergo transformation (datatypes accepted include,
-              pandas DataFrames and Series, numpy matrices and arrays, or single
-              int or float values x)
+              pandas DataFrames and Series, numpy matrices and arrays, or
+              single int or float values x)
     :return: The transformed dataframe, series, array, or value depending on
              the type of original input x object
     """
@@ -127,11 +141,11 @@ def sigmoid(x):
 
 
 def log_plus_one(x):
-    """Adds 1 to the input data and then applies Log transformation to those values
+    """Adds 1 to input data and then applies Log transformation to those values
     
     :param x: data to undergo transformation (datatypes accepted include,
-              pandas DataFrames and Series, numpy matrices and arrays, or single
-              int or float values x)
+              pandas DataFrames and Series, numpy matrices and arrays, or
+              single int or float values x)
     :return: The transformed dataframe, series, array, or value depending on
              the type of original input x object
     """
@@ -142,11 +156,9 @@ def encode_categories(data, colname, one_hot=True, drop_cat=None,
                       cat_list=None, drop_original_col=False):
     """Encodes categorical variable column and appends values to dataframe
 
-    This function offers the option to either one-hot-encode or LabelEncode
-    the values by setting one_hot to either True or False
-
-    A comprehensive list of categories need to be specified for this function
-    to work
+    This function offers the option to either one-hot-encode (0,1) or
+    LabelEncode (as consecutive integers (0, n)) categorical values
+    by setting one_hot to either True or False.
 
     :param data: The pd.dataframe object containing the column you wish to
                  encode
@@ -179,6 +191,7 @@ def encode_categories(data, colname, one_hot=True, drop_cat=None,
 
     if not cat_list:
         cat_list = sorted(list(map(str, set(data_copy[colname]))))
+        cat_list_ordered = cat_list.copy()
 
     if drop_cat:
         # create ordered list with drop_cat at end of list
@@ -187,7 +200,7 @@ def encode_categories(data, colname, one_hot=True, drop_cat=None,
         cat_list_ordered.append(drop_cat)
 
         # removed drop_cat from original cat_list
-        cat_list.remove()
+        cat_list.remove(drop_cat)
 
     if one_hot:
         # one-hot-encode categorical predictors and sort columns with cat_list
