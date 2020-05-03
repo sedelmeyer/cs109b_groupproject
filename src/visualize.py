@@ -194,7 +194,9 @@ def plot_true_pred(model_dict=None, dataset='train', y_true=None, y_pred=None,
     plt.show()
 
 
-def plot_bdgt_sched_scaled(X, X_scaled, scale_descr, X_test=None, X_test_scaled=None):
+def plot_bdgt_sched_scaled(X, X_scaled, scale_descr, 
+                           X_test=None, X_test_scaled=None,
+                           bdgt_col='Budget_Start', sched_col='Duration_Start'):
     """Plots original vs scaled versions of budget and schedule input data
     
     :param X: Dataframe or 2D array with original budget and schedule train data
@@ -207,11 +209,27 @@ def plot_bdgt_sched_scaled(X, X_scaled, scale_descr, X_test=None, X_test_scaled=
     :param X_test_scaled: Optional, Dataframe or 2D array with original test data,
                           which plots overlay similar to X_test (default is
                           X_test_scaled=None)
-                          
+    :param bdgt_col: string name of budget values column for input dataframes
+                     (default bdgt_col='Budget_Start')
+    :param sched_col: string name of budget values column for input dataframes
+                      (default bdgt_col='Duration_Start')
+
     :return: Generates 1x2 subplotted scatterplots, no objects returned
     """
     corr = np.corrcoef(X.T)[0, 1]
     corr_scaled = np.corrcoef(X_scaled.T)[0, 1]
+
+    cols = [bdgt_col, sched_col]
+
+    # if y inputs are pandas dataframes, convert to numpy array
+    if type(X)==pd.core.frame.DataFrame:
+        X = X[cols].copy().values        
+    if type(X_scaled)==pd.core.frame.DataFrame:
+        X_scaled = X_scaled[cols].copy().values
+    if type(X_test)==pd.core.frame.DataFrame:
+        X_test = X_test[cols].copy().values        
+    if type(X_test_scaled)==pd.core.frame.DataFrame:
+        X_test_scaled = X_test_scaled[cols].copy().values
 
     fig, ax = plt.subplots(1,2, figsize=(12,6))
     
@@ -227,7 +245,9 @@ def plot_bdgt_sched_scaled(X, X_scaled, scale_descr, X_test=None, X_test_scaled=
         zip([X, X_scaled], [X_test, X_test_scaled])
         ):
         ax[i].scatter(
-            *data.values.T,
+            *data.T,
+            # data[bdgt_col],
+            # data[sched_col],
             color='k',
             alpha=0.5,
             edgecolor='w',
@@ -247,7 +267,9 @@ def plot_bdgt_sched_scaled(X, X_scaled, scale_descr, X_test=None, X_test_scaled=
 
         if np.all(X_test)!=None:
             ax[i].scatter(
-                *data_test.values.T,
+                *data_test.T,
+                # data_test[bdgt_col],
+                # data_test[sched_col],
                 color='tab:orange',
                 alpha=1,
                 edgecolor='w',
