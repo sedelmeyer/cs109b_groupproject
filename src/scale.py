@@ -75,10 +75,12 @@ def scale_features(train_df, val_df, exclude_scale_cols=[],
     # create list of non-binary column names for scaling
     scaled_columns = train_df.columns.difference(exclude_scale_cols)
     
+    scaled_val_df = val_df.copy()[scaled_columns]
+
     # apply initial scaling if specified
     if scale_before_func:
         train_df = scale_before_func(train_df.copy()[scaled_columns])
-        val_df = scale_before_func(val_df.copy()[scaled_columns])
+        scaled_val_df = scale_before_func(scaled_val_df.copy())
         
     # initialize list for storing fitted scaler objects
     Scaler = []
@@ -95,7 +97,7 @@ def scale_features(train_df, val_df, exclude_scale_cols=[],
     )
 
     scaled_val_df = pd.DataFrame(
-        Scaler[0].transform(val_df[scaled_columns]),
+        Scaler[0].transform(scaled_val_df),
         columns=scaled_columns,
     )
     
@@ -111,7 +113,7 @@ def scale_features(train_df, val_df, exclude_scale_cols=[],
         )
         
         scaled_val_df = pd.DataFrame(
-            Scaler[1].transform(scaled_val_df[scaled_columns]),
+            Scaler[1].transform(scaled_val_df),
             columns=scaled_columns,
         )
     
