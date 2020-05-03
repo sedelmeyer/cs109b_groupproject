@@ -39,7 +39,13 @@ def scale_features(train_df, val_df, exclude_scale_cols=[],
     
     Accepts various sklearn scalers and allows you to specify features you do
     not want affected by scaling by using the exclude_scale_cols parameter.
+
+    NOTE: 
     
+        Be certain to reset the index of your accompanying y_train and y_test
+        dataframes, or you will risk running into potential indexing errors 
+        while working with your scaled X dataframes
+
     :param train_df: The training data
     :param val_df: Your test/validation data
     :param exclude_scale_cols: Optional list containing names of columns we
