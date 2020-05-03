@@ -136,3 +136,77 @@ def log_plus_one(x):
              the type of original input x object
     """
     return np.log(x + 1)
+
+
+def encode_categories(data, colname, one_hot=True, drop_cat=None,
+                      cat_list=None, drop_original_col=False):
+    """Encodes categorical variable column and appends values to dataframe
+
+    This function offers the option to either one-hot-encode or LabelEncode
+    the values by setting one_hot to either True or False
+
+    A comprehensive list of categories need to be specified for this function
+    to work
+
+    :param data: The pd.dataframe object containing the column you wish to
+                 encode
+    :param colname: string indicating name of column you wish to encode
+    :param one_hot: boolean indicating whether you with to one-hot-encode
+                    the categories. If False, the values are simply encoded to
+                    a set of consecutive integers. (default)
+    :param drop_cat: None or category value you wish to drop from your
+                     one-hot-encoded variable columns. If None and
+                     one_hot=True, no variable columns are dropped. If
+                     one_hot=False, any category value passed drop_cat
+                     will ensure that value is sorted to the last place
+                     position in the resulting encoded integer values
+                     (default drop_cat=None)
+    :param cat_list: None or list specifying the full set of category values
+                     contained in your target column. The benefit of
+                     providing your own list is that it allows you to provide
+                     a custom ordering of categories to the encoder. If None,
+                     the categories will default to alphabetical order.
+                     (default cat_list=None)
+    :param drop_original_col: Boolean indicating whether the original
+                              category column specified by colname will be
+                              dropped from the resulting dataframe
+
+    :return: pd.DataFrame of the original input dataframe with the additional
+             encoded category column(s) appended to it.
+    """
+    # copy dataframe to prevent overwrite if not desired
+    data_copy = data.copy()
+
+    if not cat_list:
+        cat_list = sorted(list(map(str, set(data_copy[colname]))))
+
+    if drop_cat:
+        # create ordered list with drop_cat at end of list
+        cat_list_ordered = cat_list.copy()
+        cat_list_ordered.remove(drop_cat)
+        cat_list_ordered.append(drop_cat)
+
+        # removed drop_cat from original cat_list
+        cat_list.remove()
+
+    if one_hot:
+        # one-hot-encode categorical predictors and sort columns with cat_list
+        cat_dummies_df = pd.get_dummies(data_copy['Category'])[cat_list]
+        # append columns to original dataframe
+        data_copy[cat_list] = cat_dummies_df
+
+    else:
+        # create dictionary for encoding categories to numerical values
+        cat_map_dict = {
+            cat: i for i, cat in enumerate(cat_list_ordered)
+        }
+        # generate encoded labels in one single 'coded' column
+        data_copy['{}_Code'.format(colname)] = data_copy[colname].map(
+            cat_map_dict
+        ).fillna(data_copy[colname])
+
+    if drop_original_col:
+        # drop original category column if specified
+        data_copy = data_copy.drop(columns=colname)
+
+    return data_copy
