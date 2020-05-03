@@ -116,7 +116,7 @@ def scale_features(train_df, val_df, exclude_scale_cols=[],
             Scaler[1].transform(scaled_val_df),
             columns=scaled_columns,
         )
-    
+
     # merge scaled columns with unscaled columns
     scaled_df = pd.concat(
         [
@@ -127,7 +127,7 @@ def scale_features(train_df, val_df, exclude_scale_cols=[],
     )[col_list]
     
     # Return full scaled val dataframe and fitted Scaler object list
-    return scaled_val_df, Scaler
+    return scaled_df, Scaler
 
 
 def sigmoid(x):
@@ -223,5 +223,8 @@ def encode_categories(data, colname, one_hot=True, drop_cat=None,
     if drop_original_col:
         # drop original category column if specified
         data_copy = data_copy.drop(columns=colname)
+    
+    # replace spaces in column names with underscores
+    data_copy.columns = [col.replace(' ', '_') for col in data_copy.columns]
 
     return data_copy
