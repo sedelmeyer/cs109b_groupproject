@@ -100,6 +100,13 @@ def generate_model_dict(model, model_descr, X_train, X_test, y_train, y_test,
             "but you have entered: {}".format(model_api)
         )
     
+    # reset indices to prevent joining and index errors, particularly if using
+    # scaled X dataframes
+    X_train = X_train.copy().reset_index(drop=True)
+    X_test = X_test.copy().reset_index(drop=True)
+    y_train = y_train.copy().reset_index(drop=True)
+    y_test = y_test.copy().reset_index(drop=True)
+
     # initialize fit model list
     FitModel = []
     
