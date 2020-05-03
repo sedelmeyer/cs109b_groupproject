@@ -9,6 +9,9 @@ FUNCTIONS
         resulting dataframe contains details for each unique project as well
         as project change metrics specific to each project for the given
         interval. 
+    
+    print_interval_dict()
+        Prints summary of data dictionary for the generate_interval_data output
 
 """
 
@@ -394,3 +397,31 @@ def generate_interval_data(data, change_year_interval=None,
 
     if return_df:
         return df_features
+
+
+def print_interval_dict(datadict_dir='../references/data_dicts/',
+                        datadict_filename='data_dict_interval.csv'):
+    """Prints summary of data dictionary for the generate_interval_data output
+
+    :param datadict_dir: optional string indicating directory location of
+                         target data dictionary (default
+                         '../references/data_dicts/') 
+    :param datadict_filename: optional string indicating filename of target
+                              data dict (default 'data_dict_interval.csv')
+
+    :return: No objects are returned, printed output only
+    """
+    filepath = os.path.join(datadict_dir, datadict_filename)
+
+    data_dict = pd.read_csv(filepath)
+
+    print(
+        'DATA DICTIONARY: GENERATED INTERVAL DATASETS\n'
+    )
+
+    for i, (name, descr, datatype) in enumerate(zip(
+        data_dict['name'].values,
+        data_dict['description'].values,
+        data_dict['dtype'].values
+    )):
+        print('{}: {} ({})\n\n\t{}\n\n'.format(i, name, datatype, descr))
