@@ -212,7 +212,7 @@ def encode_categories(data, colname, one_hot=True, drop_cat=None,
 
     if one_hot:
         # one-hot-encode categorical predictors and sort columns with cat_list
-        cat_dummies_df = pd.get_dummies(data_copy['Category'])[cat_list]
+        cat_dummies_df = pd.get_dummies(data_copy[colname])[cat_list]
         # append columns to original dataframe
         data_copy[cat_list] = cat_dummies_df
 
