@@ -348,17 +348,17 @@ def plot_change_trend(trend_data, pid_data, pid, interval=None):
             pid_record['Project_Name'].values[0][:88],
             pid_record['Category'].values[0],
             pid_record['Borough'].values[0],
-            pid_record['Budget_Start'].values[0]/1e7,
+            pid_record['Budget_Start'].values[0]/1e6,
             pid_record['Duration_Start'].values[0]
         ), fontsize=fs, y=1.25
     )
 
     # plot budget forecast
     ax[0,0].plot(
-        pid_changes['Date_Reported_As_Of'], pid_changes['Budget_Forecast']/1e7, 'ko-'
+        pid_changes['Date_Reported_As_Of'], pid_changes['Budget_Forecast']/1e6, 'ko-'
     )
     ax[0,0].axhline(
-        pid_record['Budget_Start'].values[0]/1e7, color='k', linestyle=':',
+        pid_record['Budget_Start'].values[0]/1e6, color='k', linestyle=':',
         label='Original forecasted'
     )
     ax[0,0].set_title(
