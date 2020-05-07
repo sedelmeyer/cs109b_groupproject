@@ -238,8 +238,6 @@ def encode_categories(data, colname, one_hot=True, drop_cat=None,
 
     if drop_original_col:
         # drop original category column if specified
-        if append_colname:
-            colname = '{}_{}'.format(append_colname, colname)
         data_copy = data_copy.drop(columns=colname)
     
     # replace spaces in column names with underscores
