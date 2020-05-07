@@ -161,7 +161,8 @@ def log_plus_one(x):
 
 
 def encode_categories(data, colname, one_hot=True, drop_cat=None,
-                      cat_list=None, drop_original_col=False):
+                      cat_list=None, drop_original_col=False,
+                      append_colname=None):
     """Encodes categorical variable column and appends values to dataframe
 
     This function offers the option to either one-hot-encode (0,1) or
@@ -190,6 +191,13 @@ def encode_categories(data, colname, one_hot=True, drop_cat=None,
     :param drop_original_col: Boolean indicating whether the original
                               category column specified by colname will be
                               dropped from the resulting dataframe
+    :param append_colname: None or string, indicating what should be appended
+                           to one hot encoded column names. This is useful
+                           in instances where multiple columns have
+                           identical category names within them or, a
+                           category name matches an existing column.
+                           None will result in no string being added. 
+                           (default append_colname=None)
 
     :return: pd.DataFrame of the original input dataframe with the additional
              encoded category column(s) appended to it.
@@ -214,6 +222,8 @@ def encode_categories(data, colname, one_hot=True, drop_cat=None,
         # one-hot-encode categorical predictors and sort columns with cat_list
         cat_dummies_df = pd.get_dummies(data_copy[colname])[cat_list]
         # append columns to original dataframe
+        if append_colname:
+            cat_list = ['{}_{}'.format(append_colname, cat) for cat in cat_list]
         data_copy[cat_list] = cat_dummies_df
 
     else:
@@ -228,6 +238,8 @@ def encode_categories(data, colname, one_hot=True, drop_cat=None,
 
     if drop_original_col:
         # drop original category column if specified
+        if append_colname:
+            colname = '{}_{}'.format(append_colname, colname)
         data_copy = data_copy.drop(columns=colname)
     
     # replace spaces in column names with underscores
