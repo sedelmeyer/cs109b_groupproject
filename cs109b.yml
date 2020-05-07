@@ -47,3 +47,4 @@ dependencies:
     - gym
     - progressbar2
     - pygam
+    - keras-bert
