@@ -631,7 +631,9 @@ def plot_coefficients(model_dict, subplots=(1,2),
         enumerate(axes.flat), y_vars, coef_list, feat_list, ci0_list, ci1_list
     ):
         if i < 9:
-            ax.set_title('{}'.format(y_var.replace('_', ' ')), fontsize=16)
+            ax.set_title(
+                '{} Model'.format(y_var.replace('_', ' ')), fontsize=16
+                )
 
             ax.axvline(0, c='r', linestyle='--', alpha=0.5)
 
