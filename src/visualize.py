@@ -30,6 +30,9 @@ FUNCTIONS
     plot_gam_by_predictor()
         Calculates and plots the partial dependence and 95% CIs for a GAM model
 
+    plot_coefficients()
+        Plots coefficients from statsmodels linear regression model
+
 """
 
 import pandas as pd
@@ -568,5 +571,106 @@ def plot_gam_by_predictor(model_dict, model_index, X_data, y_data,
             axis='y', which='both', right=False, left=False, labelleft=False
         )
 
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_coefficients(model_dict, subplots=(1,2),
+                      fig_height=8, suptitle_spacing=1.10):
+    """Plots coefficients from statsmodels linear regression model
+    
+    model_dict: model dictionary object from generate model dict function,
+                containing fitted Statsmodels linear regression model objects
+                (Note: this function is compatible with statsmodels models
+                only)
+    subplots: tuple, default=(1,2) to plot each of the 2 predicted y
+              variables, provides the dimension of subplots for the figure
+              (NOTE: currently this function is only configured to plot 2
+              columns of subplots, therefore no other value other than two is
+              accepted for the subplots width dimension)
+    fig_height: int or float, default=8, this value is passed directly to the
+                'figsize' parameter of plt.subplots() and determines the
+                overall height of your plot
+    suptitle_spacing: float>1, default=1.10, this value is passed to the 'y'
+                      parameter for plt.suptitle()
+    
+    returns: a plotted series of subplots illustrating estimated coefficients
+             and 95% CIs. No objects are returned
+    """
+    #plot comparison of model coefficients
+    
+    model_list = model_dict['model']
+    y_vars = model_dict['y_variables']
+    descr = model_dict['description']
+
+    # set values required for plotting
+    coef_list = [
+        list(model.params.values)[::-1] for model in model_list
+    ]
+    feat_list = [
+        list(model.params.index)[::-1] for model in model_list
+    ]
+    ci0_list = [
+        list(model.conf_int()[0].values)[::-1] for model in model_list
+    ]  
+    ci1_list = [
+        list(model.conf_int()[1].values)[::-1] for model in model_list
+    ]  
+
+    # make plot
+    fig, axes = plt.subplots(*subplots, sharey=True, figsize=(12, fig_height))
+
+    plt.suptitle(
+        '{}:\nCoefficient values and 95% confidence intervals by outcome '\
+        'variable'.format(descr),
+        fontsize=16,
+        y=suptitle_spacing
+    )
+
+    for (i, ax), y_var, coefs, features, ci0s, ci1s in zip(
+        enumerate(axes.flat), y_vars, coef_list, feat_list, ci0_list, ci1_list
+    ):
+        if i < 9:
+            ax.set_title('{}'.format(y_var.replace('_', ' ')), fontsize=16)
+
+            ax.axvline(0, c='r', linestyle='--', alpha=0.5)
+
+            ax.plot(
+                coefs,
+                features,
+                lw = 0,
+                marker='o',
+                alpha=1,
+                ms=10,
+                color='k',
+            )
+            
+            for ci0, ci1, feature in zip(ci0s, ci1s, features):
+                ax.plot(
+                    [ci0, ci1],
+                    [feature, feature],
+                    'k-',
+                    alpha=1,
+                )
+
+            ax.set_xlabel('coefficient estimate', fontsize=12)
+            ax.grid(':', alpha=0.5)
+            ax.tick_params('both', labelsize=11)
+
+        if i % 2 == 0:
+            ax.set_ylabel('predictor', fontsize=14)
+
+    # hide all markings for axes if there is no corresponding subplot
+    if i < np.product(subplots)-1:
+        for pos in ['right','top','bottom','left']:
+            axes[subplots[0]-1, 1].spines[pos].set_visible(False)
+        axes[subplots[0]-1, 1].tick_params(
+            axis='x', which='both', bottom=False, top=False, labelbottom=False
+        )
+        axes[subplots[0]-1, 1].tick_params(
+            axis='y', which='both', right=False, left=False, labelleft=False
+        )
+
+    plt.xticks(fontsize=12)
     plt.tight_layout()
     plt.show()
