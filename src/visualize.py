@@ -417,3 +417,101 @@ def plot_change_trend(trend_data, pid_data, pid, interval=None):
     
     plt.tight_layout()
     plt.show()
+
+
+def plot_gam_by_predictor(model_dict, model_index, X_data, y_data,
+                                       dataset='train', suptitle_y=1.14):
+    """Calculates and plots the partial dependence and 95% CIs for a GAM model
+
+    :param model_dict: model dictionary containing the fitted PyGAM models
+                       you wish to plot
+    :param model_index: integer indicating the index of the model stored
+                        in yur model_dict that you wish to plot
+    :param X_data: pd.DataFrame containing the matching predictor set you
+                   wish to plot beneath your predictor contribution lines
+    :param y_data: pd.DataFrame containing the matching outcome set you
+                   wish to plot beneath your predictor contribution lines
+    :param dataset: string, 'train' or 'test' indicating the type of
+                    X and y data you have entered for the X_data and
+                    y_data arguments (default='train)
+    :param suptitle: float > 1.00 indicating the spacing required to
+                     prevent your plot from overlapping your title text
+                     (default=1.04)
+
+    :return: plots a set of subplots for each predictor contained in
+             your X data. No objects are returned.
+    """
+    # reset indices to prevent index match errors
+    X_data = X_data.copy().reset_index(drop=True)
+    y_data = y_data.copy().reset_index(drop=True)
+    
+    idx = model_index
+    model = model_dict['model'][idx]
+    X_varnames = X_data.columns
+    y_varname = model_dict['y_variables'][idx].replace('_', ' ')
+    model_desc = model_dict['description']
+    
+    n_X_vars = len(X_varnames)
+    n_rows = np.ceil(3/2).astype(int)
+    
+    # generate deviance residuals
+    res = model.deviance_residuals(X_data, y_data.iloc[:, idx])
+    
+    # plot all predictors against price to visualize relationship
+    fig, axes = plt.subplots(n_rows, 2, sharey=False, figsize=(12, 4*n_rows))
+    
+    plt.suptitle(
+        "{} predictions:\nContribution of each predictor to overall function "\
+        "(partial dependence and 95% CI)\n{}\n"\
+        "Illustrated with {} observations".format(
+            y_varname.upper(),
+            model_desc,
+            'training' if dataset=='train' else 'TEST',
+        ),
+        fontsize=18,
+        y=suptitle_y
+    )
+
+    # helper function for specifying left vs right column plots
+    if_even = lambda a, b, i: a if i % 2 == 0 else b
+
+    for (i, ax), term in zip(enumerate(axes.flat), model.terms):
+        if term.isintercept:
+            continue
+
+        XX = model.generate_X_grid(term=i)
+        pdep, confi = model.partial_dependence(term=i, X=XX, width=0.95)
+        pdep2, _ = model.partial_dependence(
+            term=i, X=X_data, width=0.95
+        )
+
+        ax.scatter(
+            X_data.iloc[:,term.feature],
+            pdep2 + res,
+            color='silver',
+            alpha=1,
+        )
+        ax.plot(XX[:, term.feature], pdep, 'k-')
+        ax.plot(XX[:, term.feature], confi, c='k', ls='--')
+
+        ax.set_title(X_varnames[i], fontsize=14)
+        ax.set_xlabel('observed values', fontsize=12)
+        ax.grid(':', alpha=0.4)
+        
+        if i % 2 == 0:
+            ax.set_ylabel('partial dependence', fontsize=12)
+
+    # hide all markings for final missing axes in odd number predictors
+    n_fewer = 2 - (n_X_vars + 1) % 2 
+    if n_fewer != 0:
+        for pos in ['right','top','bottom','left']:
+            axes[n_rows-1, -1].spines[pos].set_visible(False)
+        axes[n_rows-1, -1].tick_params(
+            axis='x', which='both', bottom=False, top=False, labelbottom=False
+        )
+        axes[n_rows-1, -1].tick_params(
+            axis='y', which='both', right=False, left=False, labelleft=False
+        )
+
+    plt.tight_layout()
+    plt.show()
