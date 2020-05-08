@@ -3,6 +3,12 @@ This module contains functions for visualizing data and model results
 
 FUNCTIONS
 
+    plot_value_counts()
+        Generates barplot from pandas value_counts series
+
+    plot_line()
+        Generates line plot given input x, y values
+
     plot_true_pred()
         Plots model prediction results directly from model_dict or input arrays.
         Generates 5 subplots, (1) true values with predicted values overlay, 
@@ -21,6 +27,9 @@ FUNCTIONS
         over a specified time interval, or optionally for all available change
         records in cleansed master dataset
 
+    plot_gam_by_predictor()
+        Calculates and plots the partial dependence and 95% CIs for a GAM model
+
 """
 
 import pandas as pd
@@ -28,6 +37,52 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from sklearn.metrics import r2_score
+
+
+def plot_value_counts(value_counts, var_name):
+    """Generates barplot from pandas value_counts series
+    """
+    fig, ax = plt.subplots(figsize=(9, 4))
+
+    max_y = max(value_counts.values)
+    n_cats = len(value_counts)
+
+    ax.bar(range(n_cats), value_counts.values, alpha=0.5)
+
+    [
+        ax.text(
+            x, y+max_y*.02,
+            '{:,}'.format(y),
+            color='k',
+            fontsize=14,
+            horizontalalignment='center'
+        ) 
+        for x, y 
+        in enumerate(value_counts)
+    ]
+
+
+def plot_line(x_vals, y_vals, title, x_label, y_label):
+    """Generates line plot given input x, y values 
+    """
+    fig, ax = plt.subplots(figsize=(12,7))
+
+    plt.title(title, fontsize=19)
+
+    plt.plot(
+        x_vals, y_vals,
+        'ko-',
+        markersize=10,
+        linewidth=2
+    )
+
+    plt.xlabel(x_label, fontsize=16)
+    plt.xticks(fontsize=14)
+    plt.ylabel(y_label, fontsize=16)
+    plt.yticks(fontsize=14)
+    plt.grid(':', alpha=0.4)
+    plt.tight_layout()
+    plt.show()
 
 
 def plot_true_pred(model_dict=None, dataset='train', y_true=None, y_pred=None,
