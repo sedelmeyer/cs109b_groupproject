@@ -644,7 +644,7 @@ def plot_change_trend(trend_data, pid_data, pid, interval=None):
 
 
 def plot_gam_by_predictor(model_dict, model_index, X_data, y_data,
-                                       dataset='train', suptitle_y=1.14):
+                          dataset='train', suptitle_y=1.14):
     """Calculates and plots the partial dependence and 95% CIs for a GAM model
 
     :param model_dict: model dictionary containing the fitted PyGAM models
@@ -676,7 +676,7 @@ def plot_gam_by_predictor(model_dict, model_index, X_data, y_data,
     model_desc = model_dict['description']
     
     n_X_vars = len(X_varnames)
-    n_rows = np.ceil(3/2).astype(int)
+    n_rows = np.ceil(n_X_vars/2).astype(int)
     
     # generate deviance residuals
     res = model.deviance_residuals(X_data, y_data.iloc[:, idx])
@@ -726,14 +726,14 @@ def plot_gam_by_predictor(model_dict, model_index, X_data, y_data,
             ax.set_ylabel('partial dependence', fontsize=12)
 
     # hide all markings for final missing axes in odd number predictors
-    n_fewer = 2 - (n_X_vars + 1) % 2 
+    n_fewer = n_X_vars % 2 
     if n_fewer != 0:
         for pos in ['right','top','bottom','left']:
-            axes[n_rows-1, -1].spines[pos].set_visible(False)
-        axes[n_rows-1, -1].tick_params(
+            axes[n_rows-1, -n_fewer].spines[pos].set_visible(False)
+        axes[n_rows-1, -n_fewer].tick_params(
             axis='x', which='both', bottom=False, top=False, labelbottom=False
         )
-        axes[n_rows-1, -1].tick_params(
+        axes[n_rows-1, -n_fewer].tick_params(
             axis='y', which='both', right=False, left=False, labelleft=False
         )
 
