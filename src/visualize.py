@@ -15,6 +15,9 @@ FUNCTIONS
     plot_line()
         Generates line plot given input x, y values
 
+    plot_2d_embed_scatter()
+        Plots 2D scatterplot of dimension-reduced embeddings for train and test
+
     plot_true_pred()
         Plots model prediction results directly from model_dict or input arrays.
         Generates 5 subplots, (1) true values with predicted values overlay, 
@@ -48,7 +51,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import r2_score
 
 
-def plot_value_counts(value_counts, var_name, figsize=(9, 4),
+def plot_value_counts(value_counts, var_name, figsize=(9, 3),
                       color='tab:blue'):
     """Generates barplot from pandas value_counts series
     """
@@ -73,6 +76,8 @@ def plot_value_counts(value_counts, var_name, figsize=(9, 4),
         for x, y 
         in enumerate(value_counts)
     ]
+
+    plt.xticks(range(n_cats), value_counts.index, fontsize=14)
 
 
 def plot_barplot(value_counts, title, height=6, varname=None,
@@ -178,7 +183,6 @@ def plot_hist_comps(df, metric_1, metric_2, y_log=False, bins=20):
     plt.show()
 
 
-
 def plot_line(x_vals, y_vals, title, x_label, y_label, height=3.5):
     """Generates line plot given input x, y values 
     """
@@ -196,6 +200,48 @@ def plot_line(x_vals, y_vals, title, x_label, y_label, height=3.5):
     plt.ylabel(y_label, fontsize=16)
     plt.yticks(fontsize=14)
     plt.grid(':', alpha=0.4)
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_2d_embed_scatter(data1, data2, title, xlabel, ylabel,
+                          data1_name='training obs', data2_name='TEST obs',
+                          height=5):
+    """Plots 2D scatterplot of dimension-reduced embeddings for train and test
+
+    NOTE: This function assumes the data inputs are 2D np.array objects of
+          share (n, 2), and that two separate sets of encoded embeddings
+          are going to be plotted together (i.e. the train and the test
+          observations)
+
+    :param data1: np.array 2D containing 2 encoded dimensions
+    :param data1: a second np.array 2D containing 2 encoded dimensions     
+    :param xlabel: string representing the label for the x axis
+    :param ylabel: string representing the label for the y axis
+    :param data1_nme: string representing the name of the first dataset,
+                  this will be the label given to those points in the
+                  plot's legend (default 'training obs')
+    :param data2_nme: string representing the name of the first dataset,
+                  this will be the label given to those points in the
+                  plot's legend (default 'TEST obs')
+    :param height: integer that determines the hieght of the plot
+                   (default is 5)
+    
+    :return: 2D matplotlib scatterplot, no objects are returned
+    """
+    fig, ax = plt.subplots(figsize=(12, height))
+    plt.title(
+        title,
+        fontsize=18
+    )
+    plt.scatter(*data1.T,  color='silver', alpha=1, label=data1_name)
+    plt.scatter(*data2.T, color='k', alpha=1, label=data2_name)
+    plt.ylabel(ylabel, fontsize=14)
+    plt.xlabel(xlabel, fontsize=14)
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
+    plt.grid(':', alpha=0.4)
+    plt.legend(fontsize=12)
     plt.tight_layout()
     plt.show()
 
