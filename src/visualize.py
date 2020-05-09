@@ -212,7 +212,8 @@ def plot_2d_embed_scatter(data1, data2, title, xlabel, ylabel,
     NOTE: This function assumes the data inputs are 2D np.array objects of
           share (n, 2), and that two separate sets of encoded embeddings
           are going to be plotted together (i.e. the train and the test
-          observations)
+          observations). 2D pd.DataFrame objects can be passed, and are
+          converted to np.array within the plotting function.
 
     :param data1: np.array 2D containing 2 encoded dimensions
     :param data1: a second np.array 2D containing 2 encoded dimensions     
@@ -229,6 +230,13 @@ def plot_2d_embed_scatter(data1, data2, title, xlabel, ylabel,
     
     :return: 2D matplotlib scatterplot, no objects are returned
     """
+
+    # if y inputs are pandas dataframes, convert to numpy array
+    if type(data1)==pd.core.frame.DataFrame:
+        data1 = data1.copy().values        
+    if type(data2)==pd.core.frame.DataFrame:
+        data2 = data2.copy().values
+    
     fig, ax = plt.subplots(figsize=(12, height))
     plt.title(
         title,
