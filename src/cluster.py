@@ -20,12 +20,15 @@ FUNCTIONS
         Generates sil score ommitting observations not assigned to any cluster
         by dbscan
 
-    fit_dbscan():
+    fit_dbscan()
         Fits dbscan and returns dictionary of results including model, labels,
         indices
     
-    print_dbscan_results():
+    print_dbscan_results()
         Prints summary results of fitted dbscan_dict
+
+    plot_dendrogram()
+        Plots a dendrogram given a set of input hierarchy linkage data
 
 """
 
@@ -44,6 +47,7 @@ import matplotlib.cm as cm
 
 from sklearn.cluster import KMeans
 from gap_statistic import OptimalK
+import scipy.cluster.hierarchy as hac
 
 from .visualize import plot_line, plot_value_counts
 
@@ -309,3 +313,38 @@ def print_dbscan_results(dbscan_dict):
             '\nBecause only 1 cluster has been assigned by the algorithm, the '\
             'resulting silhouette score of 0 has been assigned to these results.\n'
         )
+
+
+def plot_dendrogram(linkage_data, method_name,
+                    yticks=16, ytick_interval=1, height=4.5):
+    """Plots a dendrogram given a set of input hierarchy linkage data
+    
+    :param linkage_data: np.array output from scipy.cluster.hierarchy, which
+                         should have been applied to a distance matrix to
+                         convert it to linkage data
+    :param method_name: string describing the linkage method used, should
+                        be fewer than 30 characters
+    :param yticks: integer, the number of desired y tick lavels for the
+                   resulting plot
+    :param ytick_interval: integer, the desired interval for the resulting
+                           y ticks
+    :param height: float, the desired height of the resulting plot
+    
+    return: plots dendrogram, no objects are returned
+    """
+    
+    plt.figure(figsize=(12, height))
+
+    hac.dendrogram(
+        linkage_data, above_threshold_color='lightgray', orientation="top"
+    )
+
+    plt.title(
+        "Agglomerative clustering dendrogram (using {})".format(method_name),
+        fontsize=18
+    )
+    plt.grid(":", axis='y', alpha=0.5)
+    plt.yticks(np.arange(0, yticks+1, ytick_interval), fontsize=10)
+    plt.ylabel('distance', fontsize=14)
+    plt.tight_layout()
+    plt.show()
