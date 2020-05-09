@@ -9,6 +9,9 @@ FUNCTIONS
     plot_barplot()
         Generates a horizontal barplot from a pandas value_counts series
 
+    plot_hist_comps()
+        Plots side-by-side histograms for comparison with log yscale option
+
     plot_line()
         Generates line plot given input x, y values
 
@@ -117,6 +120,61 @@ def plot_barplot(value_counts, title, height=6, varname=None,
 
     plt.grid(':', alpha=0.5)
     plt.tight_layout()
+    plt.show()
+
+
+def plot_hist_comps(df, metric_1, metric_2, y_log=False, bins=20):
+    """Plots side-by-side histograms for comparison with log yscale option 
+
+    :param df: pd.DataFrame object containing the data you wish to plot
+    :param metric_1: string, name of column containing data for the first plot
+    :param metric_1: string, name of column containing data for second plot
+    :param y_log: boolean, indicating whether the y-axis should be plotted
+                  with a log scale (default False)
+    :param bins: integer, the number of bins to use for the histogram
+                 (default 20)
+
+    :return: plots 2 subplots, no objects are returned
+    """
+    metrics_list = [metric_1, metric_2]
+    metrics_str = [
+        metric.replace('_', ' ').upper() for metric in metrics_list
+    ]
+    
+    fig, ax = plt.subplots(1, 2, sharey=True, figsize=(12, 4))
+    
+    plt.suptitle(
+        'Projects by {} and {}'.format(*metrics_str),
+        fontsize=18
+    )
+    
+    for (i, ax), metric_col, metric_name in zip(
+        enumerate(ax), metrics_list, metrics_str
+        ):
+        ax.hist(df[metric_col], bins=bins, alpha=0.7)
+        ax.axvline(df[metric_col].mean(), color='k', label='mean')
+        ax.axvline(
+            df[metric_col].quantile(q=.5), color='k',
+            linestyle='--', label='median'
+            )
+        ax.axvline(
+            df[metric_col].quantile(q=.025), color='k',
+            linestyle=':', label='95% range'
+            )
+        ax.axvline(df[metric_col].quantile(q=.975), color='k', linestyle=':')
+
+        ax.set_xlabel(metric_name, fontsize=14)
+        ax.grid(':', alpha=0.4)
+        if i==0:
+            ax.set_ylabel('frequency', fontsize=12)
+            ax.legend(edgecolor='k', fontsize=12)
+        if y_log:
+            ax.set_yscale('log')
+            if i==0:
+                ax.set_ylabel('frequency (log scale)', fontsize=12)
+            
+    
+    plt.tight_layout(rect=[0, 0.03, 1, .94])
     plt.show()
 
 
