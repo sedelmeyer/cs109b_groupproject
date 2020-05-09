@@ -4,6 +4,9 @@ unique capital project
 
 FUNCTIONS
 
+    print_record_project_count()
+        Prints summary of records and unique projects in dataframe
+
     generate_interval_data()
         Generates a project analysis dataset for the specified interval. The
         resulting dataframe contains details for each unique project as well
@@ -61,6 +64,47 @@ info_column_rename_dict = {
     'Original_Budget': 'Budget_Start',
     'Original_Schedule': 'Schedule_Start',
 }
+
+
+def print_record_project_count(dataframe, dataset='full'):
+    """Prints summary of records and unique projects in dataframe
+    
+    :param dataframe: pd.DataFrame object for the version of the NYC capital
+                      projects data you wish to summarize
+    :param dataset: string, accepts 'full', 'all', 'training', or 'test'
+                    (default 'full')
+                    
+    :return: prints to standard output, no objects returned
+    """
+    if dataset=='full':
+        print(
+            'For the ORIGINAL cleansed data, containing all available NYC capital '\
+            'projects change records:\n'
+        )
+
+    elif dataset=='all':
+        print(
+            'For the data containing start and end data for all available '\
+            'NYC capital projects for the ENTIRE INTERVAL of changes '\
+            'covered in the ORIGINAL data:\n'
+        )
+        
+    else:
+        print(
+            'For the final {} data, containing the {} split of 3-year '\
+            'project data used in this analysis:\n'.format(
+                dataset.upper(), dataset
+            )
+        )    
+    
+    # entries
+    print(f"\tNumber of dataset records: {len(dataframe)}")
+
+    # num projects
+    print(
+        f"\tNumber of unique projects in dataset: {dataframe['PID'].nunique()}\n"
+    )
+
 
 # define the functions used for generating our interval dataframe
 
