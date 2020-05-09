@@ -179,18 +179,16 @@ def plot_hist_comps(df, metric_1, metric_2, y_log=False, bins=20):
 
 
 
-def plot_line(x_vals, y_vals, title, x_label, y_label):
+def plot_line(x_vals, y_vals, title, x_label, y_label, height=3.5):
     """Generates line plot given input x, y values 
     """
-    fig, ax = plt.subplots(figsize=(12,7))
+    fig, ax = plt.subplots(figsize=(12,height))
 
     plt.title(title, fontsize=19)
 
     plt.plot(
         x_vals, y_vals,
         'ko-',
-        markersize=10,
-        linewidth=2
     )
 
     plt.xlabel(x_label, fontsize=16)
