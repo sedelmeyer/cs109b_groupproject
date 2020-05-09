@@ -106,9 +106,12 @@ def silplot(X, cluster_labels, clusterer, pointlabels=None, height=6):
         # Compute the new y_lower for next plot
         y_lower = y_upper + 10  # 10 for the 0 samples
 
-    ax1.set_title("The silhouette plot for the various clusters.")
-    ax1.set_xlabel("The silhouette coefficient values")
-    ax1.set_ylabel("Cluster label")
+    ax1.set_title(
+        "The silhouette plot for the various clusters",
+        fontsize=14
+    )
+    ax1.set_xlabel("The silhouette coefficient values", fontsize=12)
+    ax1.set_ylabel("Cluster label", fontsize=12)
     ax1.grid(':', alpha=0.5)
 
     # The vertical line for average silhouette score of all the values
@@ -142,18 +145,20 @@ def silplot(X, cluster_labels, clusterer, pointlabels=None, height=6):
         ax2.scatter(c[0], c[1], marker='$%d$' % int(i), alpha=1,
                     s=50, edgecolor='k')
 
-    ax2.set_title("PCA-based visualization of the clustered data.")
-    ax2.set_xlabel("PC1")
-    ax2.set_ylabel("PC2")
+    ax2.set_title(
+        "PCA-based visualization of the clustered data",
+        fontsize=14
+    )
+    ax2.set_xlabel("PC1", fontsize=12)
+    ax2.set_ylabel("PC2", fontsize=12)
     ax2.grid(':', alpha=0.5)
 
     plt.suptitle(
-        "Silhouette analysis for KMeans clustering on sample data "\
+        "Silhouette analysis, K-means clustering on sample data "\
         "with n_clusters = {},\naverage silhouette score: {:.4f}"\
         "".format(n_clusters, silhouette_avg),
-        fontsize=14,
-        fontweight='bold',
-        y=1.08
+        fontsize=18,
+        y=1.11
     )
     
     plt.tight_layout()
