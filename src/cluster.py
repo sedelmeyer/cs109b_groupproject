@@ -160,7 +160,7 @@ def silplot(X, cluster_labels, clusterer, pointlabels=None):
     plt.show()
 
 
-def display_gapstat_with_errbars(gap_df):
+def display_gapstat_with_errbars(gap_df, height=4):
     """Generates plots of gap stats with error bars for each number of clusters
     """
     gaps = gap_df["gap_value"].values
@@ -169,7 +169,7 @@ def display_gapstat_with_errbars(gap_df):
     err_bars = np.zeros(len(gap_df))
     err_bars[1:] = diffs[:-1] - gaps[:-1] + gaps[1:]
 
-    fig, ax = plt.subplots(figsize=(12,7))
+    fig, ax = plt.subplots(figsize=(12,height))
 
     plt.title('Gap statistic with error bars by number of clusters', fontsize=19)
 
