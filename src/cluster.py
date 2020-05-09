@@ -50,7 +50,7 @@ from .visualize import plot_line, plot_value_counts
 # Define plotting function to generate plot of gap stats with error bars
 
 
-def silplot(X, cluster_labels, clusterer, pointlabels=None):
+def silplot(X, cluster_labels, clusterer, pointlabels=None, height=6):
     """Generates silhouette subplot of kmeans clusters alongside PCA n=2
 
     Source: The majority of the code from this function was provided as a
@@ -64,7 +64,7 @@ def silplot(X, cluster_labels, clusterer, pointlabels=None):
     
     n_clusters = clusterer.n_clusters
     
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, height))
 
     # The 1st subplot is the silhouette plot
     # The silhouette coefficient can range from -1, 1 but in this example all
@@ -200,10 +200,10 @@ def fit_neighbors(data, min_samples):
     return distances
 
 
-def plot_epsilon(distances, min_samples):
+def plot_epsilon(distances, min_samples, height=5):
     """Plot epsilon by index sorted by increasing distance
     """
-    fig, ax = plt.subplots(figsize=(12,7))
+    fig, ax = plt.subplots(figsize=(12, height))
 
     plt.title(
         '{}-NN distance (epsilon) by sorted index'.format(min_samples-1),
@@ -276,6 +276,19 @@ def print_dbscan_results(dbscan_dict):
     
     # plot distribution of labels
     plot_value_counts(dbscan_dict['cluster_counts'], 'DBSCAN cluster')
+    plt.title(
+        'DBSCAN clustering results, min samples$={}$ and $\epsilon={}$'\
+        ''.format(min_samples, eps),
+        fontsize=16
+    )
+    plt.xlabel(
+        'DBSCAN clusters (-1 indicates unclustered)',
+        fontsize=12
+    )
+    plt.ylabel(
+        'number of observations',
+        fontsize=12
+    )
     
     # print silhouette score
     if n_clusters>1:
