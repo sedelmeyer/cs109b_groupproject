@@ -110,7 +110,7 @@ def plot_barplot(value_counts, title, height=6, varname=None,
             y+max_y*label_space, x,
             '{:,}'.format(y),
             color='k',
-            fontsize=14,
+            fontsize=12,
             verticalalignment='center'
         ) 
         for x, y 
@@ -118,7 +118,7 @@ def plot_barplot(value_counts, title, height=6, varname=None,
     ]
 
     plt.title(title, fontsize=18)
-    plt.yticks(range(n_cats), value_counts.index, fontsize=14)
+    plt.yticks(range(n_cats), value_counts.index, fontsize=12)
     plt.xlabel('count', fontsize=14)
     if varname:
         plt.ylabel(varname, fontsize=14)
