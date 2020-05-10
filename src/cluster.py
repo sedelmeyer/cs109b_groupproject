@@ -30,6 +30,15 @@ FUNCTIONS
     plot_dendrogram()
         Plots a dendrogram given a set of input hierarchy linkage data
 
+    plot_cluster_hist()
+        Requires melted dataframe as input and plots histograms by cluster
+
+    plot_umap_scatter()
+        plots scatterplot with color scale
+
+    plot_category_scatter()
+        plots scatterplot with categories colors
+
 CLASSES
 
     UMAP_embedder()
@@ -559,3 +568,87 @@ def plot_spider_clusters(title, mean_peaks_per_cluster):
             )
     fig.suptitle(title, fontsize=18, y=1.04)
     plt.tight_layout()
+
+
+def plot_cluster_hist(data, title, metric, cluster_col='cluster',
+                      val_col='Standardized Metric Value', metric_col='Metric',
+                      cmap='Paired', bins=6):
+    """Requires melted dataframe as input and plots histograms by cluster
+    """
+    cluster_list = sorted(list(set(data[cluster_col].values)))
+    
+    fig, ax = plt.subplots(figsize=(12,4))
+
+    plt.title(title, fontsize=18)
+    
+    for clus in cluster_list:
+        plt.hist(
+            data.loc[(data[metric_col]==metric) & (data[cluster_col]==clus)][val_col],
+            bins=bins,
+            alpha=0.5,
+            label=clus,
+        )
+    
+    plt.xlabel(val_col, fontsize=14)
+    plt.ylabel('number of observations', fontsize=14)
+    plt.legend(edgecolor='k', title=cluster_col, fontsize=12)
+    plt.grid(':', alpha=0.5)
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_umap_scatter(x, y, color, title, scale_var, colormap='Reds',
+                      xlabel='1st dimension', ylabel='2nd dimension'):
+    """plots scatterplot with color scale
+    """
+
+    fig, ax = plt.subplots(figsize=(12, 4))
+
+    plt.title(title, fontsize=18)
+
+    scatter = plt.scatter(
+        x, y,
+        c=color,
+        alpha=0.5,
+        s=120,
+        edgecolor='k',
+        cmap=colormap
+    )
+    plt.xlabel(xlabel, fontsize=14)
+    plt.ylabel(ylabel, fontsize=14)
+    cbar = plt.colorbar(scatter, label=scale_var.replace('_', ' '))
+    ax.grid(':', alpha=0.5)
+    plt.tight_layout()
+    plt.show()
+    
+
+def plot_category_scatter(data, x_col, y_col, cat_col, title,
+                          colormap='Paired', xlabel='1st dimension',
+                          ylabel='2nd dimension'
+                         ):
+    """plots scatterplot with categories colors
+    """
+    cat_list = sorted(list(set(data[cat_col].values)))
+
+    fig, ax = plt.subplots(figsize=(12, 4))
+
+    plt.title(title, fontsize=18)
+
+    for cat in cat_list:
+        plt.scatter(
+            data.loc[data[cat_col]==cat][x_col],
+            data.loc[data[cat_col]==cat][y_col],
+            alpha=0.5,
+            s=120,
+            edgecolor='k',
+            label=cat
+        )
+    plt.legend(
+        fontsize=10, loc='center left',
+        bbox_to_anchor=(1, 0.5), frameon=False
+    )
+    plt.xlabel(xlabel, fontsize=14)
+    plt.ylabel(ylabel, fontsize=14)
+    ax.grid(':', alpha=0.5)
+    plt.tight_layout()
+    plt.show()
