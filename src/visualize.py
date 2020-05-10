@@ -42,7 +42,15 @@ FUNCTIONS
     plot_coefficients()
         Plots coefficients from statsmodels linear regression model
 
+    def load_img_to_numpy()
+        Loads an image from file, converts it to np.array and returns the array
+        
+    plot_jpg()
+        Plots a jpeg image from file
+        
 """
+
+from PIL import Image
 
 import pandas as pd
 import numpy as np
@@ -843,5 +851,33 @@ def plot_coefficients(model_dict, subplots=(1,2),
         )
 
     plt.xticks(fontsize=12)
+    plt.tight_layout()
+    plt.show()
+
+
+def load_img_to_numpy(filepath) :
+    """Loads an image from file, converts it to np.array and returns the array
+    """
+    img = Image.open(filepath)
+    img.load()
+    img_array = np.asarray(img, dtype="int32")
+    return img_array
+
+
+def plot_jpg(filepath, title, figsize=(16,12)):
+    """Plots a jpeg image from file
+    """
+    fig, ax = plt.subplots(figsize=figsize, subplot_kw={'xticks': [], 'yticks': []})
+
+
+    plt.title(
+        '{}\n'.format(title),
+        fontsize=18,
+    )
+
+    plt.imshow(load_img_to_numpy(filepath))
+    for pos in ['right','top','bottom','left']:
+        ax.spines[pos].set_visible(False)
+
     plt.tight_layout()
     plt.show()
