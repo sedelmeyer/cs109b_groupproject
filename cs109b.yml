@@ -48,3 +48,4 @@ dependencies:
     - progressbar2
     - pygam
     - keras-bert
+    - graphviz
