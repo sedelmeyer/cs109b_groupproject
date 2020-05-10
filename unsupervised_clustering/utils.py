@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 import numpy as np
-import xgboost as xgb
-import shap
+#import xgboost as xgb
+#import shap
 from tqdm.auto import tqdm
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score,f1_score,confusion_matrix, plot_confusion_matrix, classification_report
@@ -194,6 +194,9 @@ def draw_umap(data,n_neighbors=15, min_dist=0.1, c=None,  n_components=2, metric
 
 def cluster_hdbscan(clusterable_embedding, min_cluster_size, viz_embedding_list):
     print(f"min_cluster size: {min_cluster_size}")
+    clusterer = hdbscan.HDBSCAN(
+        min_cluster_size=min_cluster_size, prediction_data=True
+    ).fit(clusterable_embedding)
     labels = hdbscan.HDBSCAN(
         min_cluster_size=min_cluster_size,
     ).fit_predict(clusterable_embedding)
@@ -215,46 +218,46 @@ def cluster_hdbscan(clusterable_embedding, min_cluster_size, viz_embedding_list)
         plt.legend(labels)
         plt.show()
         
-    return labels
+    return labels, clusterer
 
 
-def get_cluster_defining_features(X, clustering_label, cluster_setting_name):
-    """Need to provide X as features only and NO clustering label """
-    cluster_names = np.unique(clustering_label)
-    final_dict = {}
-    all_cluster_info_mean_peaks_per_cluster = []
+# def get_cluster_defining_features(X, clustering_label, cluster_setting_name):
+#     """Need to provide X as features only and NO clustering label """
+#     cluster_names = np.unique(clustering_label)
+#     final_dict = {}
+#     all_cluster_info_mean_peaks_per_cluster = []
     
-    for cluster_name in tqdm(cluster_names):
-        final_dict[cluster_name] = {}
-        cluster_one_v_all_labels = (clustering_label == cluster_name).astype(int)
-        #use scale_pos_weight to address imbalance between clustering class vs rest
+#     for cluster_name in tqdm(cluster_names):
+#         final_dict[cluster_name] = {}
+#         cluster_one_v_all_labels = (clustering_label == cluster_name).astype(int)
+#         #use scale_pos_weight to address imbalance between clustering class vs rest
         
        
-        all_OnevsAll_models_result_dict = utils.repeat_train(X, cluster_one_v_all_labels,num_times=1000, different_train_test_split=True, name=cluster_setting_name, scale_pos_weight=(cluster_one_v_all_labels== 0).sum()/(cluster_one_v_all_labels == 1).sum(), show_output=False)
+#         all_OnevsAll_models_result_dict = repeat_train(X, cluster_one_v_all_labels,num_times=1000, different_train_test_split=True, name=cluster_setting_name, scale_pos_weight=(cluster_one_v_all_labels== 0).sum()/(cluster_one_v_all_labels == 1).sum(), show_output=False)
         
-        final_dict[cluster_name]["AUC_fig"] = all_OnevsAll_models_result_dict["fig"]
+#         final_dict[cluster_name]["AUC_fig"] = all_OnevsAll_models_result_dict["fig"]
         
-        shap_mean_peaks_per_cluster_all_models = (pd.concat([result["shap_df"].assign(model_num=i) for i, result in enumerate(all_OnevsAll_models_result_dict["result_list"]) if result["metrics"]["test"]["AUC"] > 0.9]).reset_index())
-        #explainer = shap.TreeExplainer(shap_mean_peaks_per_cluster_list[0][2])
+#         shap_mean_peaks_per_cluster_all_models = (pd.concat([result["shap_df"].assign(model_num=i) for i, result in enumerate(all_OnevsAll_models_result_dict["result_list"]) if result["metrics"]["test"]["AUC"] > 0.9]).reset_index())
+#         #explainer = shap.TreeExplainer(shap_mean_peaks_per_cluster_list[0][2])
 
-        final_dict[cluster_name]["shap_summary_plot"]= shap.summary_plot(shap_mean_peaks_per_cluster_all_models.drop(columns=["model_num"]).groupby("index").mean().values, X[shap_mean_peaks_per_cluster_all_models.drop(columns=["index", "model_num"]).columns])
+#         final_dict[cluster_name]["shap_summary_plot"]= shap.summary_plot(shap_mean_peaks_per_cluster_all_models.drop(columns=["model_num"]).groupby("index").mean().values, X[shap_mean_peaks_per_cluster_all_models.drop(columns=["index", "model_num"]).columns])
 
-        aggregate_peak_info_mean_peaks_per_cluster = X[shap_mean_peaks_per_cluster_all_models.drop(columns=["index", "model_num"]).columns].assign(is_cluster = np.where(cluster_one_v_all_labels ==1, "cases_in_cluster", "cases_not_in_cluster")).groupby("is_cluster").agg(["mean", "median"]).swaplevel(-2,-1, axis=1)
-        aggregate_peak_info_mean_peaks_per_cluster = pd.concat([aggregate_peak_info_mean_peaks_per_cluster["mean"].T.add_suffix("_mean"), aggregate_peak_info_mean_peaks_per_cluster["median"].T.add_suffix("_median")], axis=1)
-        aggregate_peak_info_mean_peaks_per_cluster
+#         aggregate_peak_info_mean_peaks_per_cluster = X[shap_mean_peaks_per_cluster_all_models.drop(columns=["index", "model_num"]).columns].assign(is_cluster = np.where(cluster_one_v_all_labels ==1, "cases_in_cluster", "cases_not_in_cluster")).groupby("is_cluster").agg(["mean", "median"]).swaplevel(-2,-1, axis=1)
+#         aggregate_peak_info_mean_peaks_per_cluster = pd.concat([aggregate_peak_info_mean_peaks_per_cluster["mean"].T.add_suffix("_mean"), aggregate_peak_info_mean_peaks_per_cluster["median"].T.add_suffix("_median")], axis=1)
+#         aggregate_peak_info_mean_peaks_per_cluster
 
 
-        cluster_info_mean_peaks_per_cluster = shap_mean_peaks_per_cluster_all_models.drop_duplicates("model_num").drop(columns=["index", "model_num"]).count().to_frame()
-        cluster_info_mean_peaks_per_cluster.columns = ["num_model_used_this_peak"]
-        cluster_info_mean_peaks_per_cluster = cluster_info_mean_peaks_per_cluster.merge(aggregate_peak_info_mean_peaks_per_cluster, how = "outer", left_index = True, right_index=True)
-        cluster_info_mean_peaks_per_cluster["cluster"] = cluster_name
+#         cluster_info_mean_peaks_per_cluster = shap_mean_peaks_per_cluster_all_models.drop_duplicates("model_num").drop(columns=["index", "model_num"]).count().to_frame()
+#         cluster_info_mean_peaks_per_cluster.columns = ["num_model_used_this_peak"]
+#         cluster_info_mean_peaks_per_cluster = cluster_info_mean_peaks_per_cluster.merge(aggregate_peak_info_mean_peaks_per_cluster, how = "outer", left_index = True, right_index=True)
+#         cluster_info_mean_peaks_per_cluster["cluster"] = cluster_name
         
-        final_dict[cluster_name]["cluster_info_mean_peaks_per_cluster"] = cluster_info_mean_peaks_per_cluster
-        all_cluster_info_mean_peaks_per_cluster.append(cluster_info_mean_peaks_per_cluster)
+#         final_dict[cluster_name]["cluster_info_mean_peaks_per_cluster"] = cluster_info_mean_peaks_per_cluster
+#         all_cluster_info_mean_peaks_per_cluster.append(cluster_info_mean_peaks_per_cluster)
         
-    final_dict["combined_cluster_info_mean_peaks_per_cluster"] = pd.concat(all_cluster_info_mean_peaks_per_cluster)
-    final_dict["cluster_setting"] = cluster_setting_name
-    return final_dict
+#     final_dict["combined_cluster_info_mean_peaks_per_cluster"] = pd.concat(all_cluster_info_mean_peaks_per_cluster)
+#     final_dict["cluster_setting"] = cluster_setting_name
+#     return final_dict
 
 # def get_cluster_defining_features(X, clustering_label, cluster_setting_name):
 #     """Need to provide X as features only and NO clustering label """
