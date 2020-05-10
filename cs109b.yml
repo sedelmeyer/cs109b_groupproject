@@ -49,3 +49,5 @@ dependencies:
     - pygam
     - keras-bert
     - graphviz
+    - hdbscan
+    - umap-learn
