@@ -30,7 +30,14 @@ FUNCTIONS
     plot_dendrogram()
         Plots a dendrogram given a set of input hierarchy linkage data
 
+CLASSES
+
+    UMAP_embedder()
+        Used for UMAP embedding section of final report
+
 """
+
+from math import pi
 
 import pandas as pd
 import numpy as np
@@ -348,3 +355,207 @@ def plot_dendrogram(linkage_data, method_name,
     plt.ylabel('distance', fontsize=14)
     plt.tight_layout()
     plt.show()
+
+
+# from dataclasses import dataclass
+import hdbscan
+import umap
+# from pickle import dump, load
+# import plotly.io as pio
+# import plotly.express as px
+# from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
+# from IPython.display import Image, SVG
+# init_notebook_mode()
+# pio.renderers.keys()
+# pio.renderers.default = 'jupyterlab'
+
+
+class UMAP_embedder():
+    def __init__(self, scaler, final_cols, mapper_dict, clusterer, bert_embedding):
+        #self.initial_columns = columns
+        self.initial_columns = [
+            'PID', 'Project_Name', 'Description', 'Category', 'Borough',
+            'Managing_Agency', 'Client_Agency', 'Phase_Start',
+            'Current_Project_Years', 'Current_Project_Year', 'Design_Start',
+            'Budget_Start', 'Schedule_Start', 'Final_Change_Date',
+            'Final_Change_Years', 'Phase_End', 'Budget_End', 'Schedule_End',
+            'Number_Changes', 'Duration_Start', 'Duration_End',
+            'Schedule_Change', 'Budget_Change', 'Schedule_Change_Ratio',
+            'Budget_Change_Ratio', 'Budget_Abs_Per_Error',
+            'Budget_Rel_Per_Error', 'Duration_End_Ratio', 'Budget_End_Ratio',
+            'Duration_Ratio_Inv', 'Budget_Ratio_Inv'
+        ]
+        #self.scale_cols = df_to_transform.columns
+        self.scale_cols = [
+            'Current_Project_Years', 'Current_Project_Year', 'Budget_Start',
+            'Final_Change_Years', 'Budget_End', 'Number_Changes', 'Duration_Start',
+            'Duration_End', 'Schedule_Change', 'Budget_Change',
+            'Schedule_Change_Ratio', 'Budget_Change_Ratio', 'Budget_Abs_Per_Error',
+            'Budget_Rel_Per_Error', 'Duration_End_Ratio', 'Budget_End_Ratio',
+            'Duration_Ratio_Inv', 'Budget_Ratio_Inv'
+        ]
+        self.scaler = scaler
+        self.cols_to_dummify = [
+            'Borough', 'Category', 'Client_Agency', 'Managing_Agency',
+            'Phase_Start', 'Budget_Start', 'Duration_Start'
+        ] 
+        #self.cols_to_dummify = columns_before_dummified
+        self.final_cols = final_cols
+        self.mapper_dict = mapper_dict
+        self.clusterer = clusterer
+        self.embedding = bert_embedding
+        
+    def get_mapping_attributes(self,df, return_extra=False, dimensions="all"):
+        """
+        if return extra = True, returns 3 objects:
+            0. mapping
+            1. columns needed to be added to harmonize with entire data
+            2. dummified df before adding columns of [1]
+        """
+        raw_df = df[self.initial_columns]
+        df_to_transform = df[self.scale_cols]#.drop(columns=["PID"])
+        transformed_columns = pd.DataFrame(
+            self.scaler.transform(df_to_transform),
+            columns = df_to_transform.columns
+        )
+        scaled_df = (
+            df[df.columns.difference(transformed_columns.columns)]
+        ).join(transformed_columns)
+        dummified = pd.get_dummies(scaled_df[self.cols_to_dummify])
+        
+        added_cols = set(self.final_cols) - set(dummified.columns)
+        added_cols = {col: 0 for col in added_cols}
+        
+        dummified_full = dummified.assign(**added_cols)
+        dummified_full = dummified_full[self.final_cols]
+        mapping_df_list =[]
+        mapper_list = self.mapper_dict[
+            "attributes"
+        ].values() if dimensions == "all" else [
+            self.mapper_dict["attributes"][dimension]
+            for dimension in dimensions
+        ]
+
+        for mapper in mapper_list:
+            mapping = mapper.transform(dummified_full)
+            mapping_df = pd.DataFrame(
+                mapping,
+                columns= [
+                    f"umap_attributes_{mapping.shape[1]}D_embed_{col+1}"
+                    for col in range(mapping.shape[1])
+                ]
+            )
+            mapping_df_list.append(mapping_df)
+            
+        final_df = pd.concat(mapping_df_list, axis=1)
+        final_df["PID"] = scaled_df["PID"]
+        
+        if return_extra:
+            return final_df, added_cols, scaled_df, dummified
+        else:
+            return final_df
+       
+    def get_mapping_description(self, df, dimensions= "all"):
+        
+        merged = df[["PID"]].merge(
+            self.embedding, on = "PID", how="left"
+        ).drop(columns="PID")
+        mapping_df_list =[merged]
+        #mapping_columns = [list(self.embedding.columns.copy())]
+        mapper_list = self.mapper_dict[
+            "description"
+        ].values() if dimensions == "all" else [
+            self.mapper_dict["description"][dimension]
+            for dimension in dimensions
+        ]
+        for mapper in mapper_list:
+            mapping = mapper.transform(merged)
+            mapping_df = pd.DataFrame(
+                mapping,
+                columns= [
+                    f"umap_descr_{mapping.shape[1]}D_embed_{col+1}"
+                    for col in range(mapping.shape[1])
+                ]
+            )
+            mapping_df_list.append(mapping_df)
+           # mapping_columns += list(mapping_df.columns.copy())
+                                   
+        final_df = pd.concat(mapping_df_list, axis=1)
+        final_df["PID"] = df["PID"].values
+        
+        return final_df
+    
+    def get_full_df(self, df, dimensions="all"):
+        attribute_df = self.get_mapping_attributes(df,dimension="all")
+        description_df = self.get_mapping_description(df)
+        labels, probabilities = self.get_clustering(
+            attribute_df[
+                ["umap_attributes_2D_embed_1", "umap_attributes_2D_embed_2"]
+            ]
+        )
+        full_df = description_df.merge(attribute_df, on = "PID", how="left")
+        full_df["PID"] = attribute_df["PID"].values
+        full_df["attribute_clustering_label"] = labels
+        return full_df
+    
+    def get_clustering(self, attributes_2D_mapping):
+        assert attributes_2D_mapping.shape[1] ==2
+        new_labels = hdbscan.approximate_predict(clusterer, attributes_2D_mapping)
+        return new_labels
+
+
+def make_spider(mean_peaks_per_cluster, row, name, color):
+    # number of variable
+    categories=list(mean_peaks_per_cluster)[1:]
+    N = len(categories)
+
+    # What will be the angle of each axis in the plot? (we divide the plot / number of variable)
+    angles = [n / float(N) * 2 * pi for n in range(N)]
+    angles += angles[:1]
+
+    # Initialise the spider plot
+    ax = plt.subplot(3,2,row+1, polar=True, )
+
+    # If you want the first axis to be on top:
+    ax.set_theta_offset(pi / 2)
+    ax.set_theta_direction(-1)
+
+    # Draw one axe per variable + add labels labels yet
+    plt.xticks(angles[:-1], categories, color='grey', size=8)
+
+    # Draw ylabels
+    ax.set_rlabel_position(0)
+    #plt.yticks([10,20,30], ["10","20","30"], color="grey", size=7)
+    #plt.ylim(0,40)
+
+    # Ind1
+    scaled = mean_peaks_per_cluster.loc[row].drop('group').values
+    values=mean_peaks_per_cluster.loc[row].drop('group').values.flatten().tolist()
+    values += values[:1]
+    ax.plot(angles, values, color=color, linewidth=2, linestyle='solid')
+    ax.fill(angles, values, color=color, alpha=0.4)
+
+    # Add a title
+    plt.title(name, size=14, color=color, y=1.1)
+
+    
+def plot_spider_clusters(title, mean_peaks_per_cluster):
+    """Applies spider plot to all individuals and initialize the figure
+    """
+    my_dpi=50
+    
+    fig = plt.figure(figsize=(600/my_dpi, 700/my_dpi), dpi=my_dpi + 40)
+
+    # Create a color palette:
+    my_palette = plt.cm.get_cmap("Set2", len(mean_peaks_per_cluster.index))
+
+    # Loop to plot
+    for row in range(0, len(mean_peaks_per_cluster.index)):
+        make_spider(
+            mean_peaks_per_cluster,
+            row=row,
+            name='cluster '+mean_peaks_per_cluster['group'][row].astype("str"),
+            color=my_palette(row)
+            )
+    fig.suptitle(title, fontsize=18, y=1.04)
+    plt.tight_layout()
