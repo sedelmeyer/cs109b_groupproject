@@ -206,7 +206,7 @@ def plot_line(x_vals, y_vals, title, x_label, y_label, height=3.5):
 
 def plot_2d_embed_scatter(data1, data2, title, xlabel, ylabel,
                           data1_name='training obs', data2_name='TEST obs',
-                          height=5):
+                          height=5, point_size=None):
     """Plots 2D scatterplot of dimension-reduced embeddings for train and test
 
     NOTE: This function assumes the data inputs are 2D np.array objects of
@@ -227,6 +227,9 @@ def plot_2d_embed_scatter(data1, data2, title, xlabel, ylabel,
                   plot's legend (default 'TEST obs')
     :param height: integer that determines the hieght of the plot
                    (default is 5)
+    :param point_size: integer or None, default of None will revert to
+                       matplotlib scatter default, integer entered will
+                       override the default marker size
     
     :return: 2D matplotlib scatterplot, no objects are returned
     """
@@ -242,14 +245,14 @@ def plot_2d_embed_scatter(data1, data2, title, xlabel, ylabel,
         title,
         fontsize=18
     )
-    plt.scatter(*data1.T,  color='silver', alpha=1, label=data1_name)
-    plt.scatter(*data2.T, color='k', alpha=1, label=data2_name)
+    plt.scatter(*data1.T,  color='silver', alpha=1, s=point_size, label=data1_name)
+    plt.scatter(*data2.T, color='k', alpha=1, s=point_size, label=data2_name)
     plt.ylabel(ylabel, fontsize=14)
     plt.xlabel(xlabel, fontsize=14)
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
     plt.grid(':', alpha=0.4)
-    plt.legend(fontsize=12)
+    plt.legend(fontsize=14, edgecolor='k')
     plt.tight_layout()
     plt.show()
 
