@@ -194,6 +194,9 @@ def draw_umap(data,n_neighbors=15, min_dist=0.1, c=None,  n_components=2, metric
 
 def cluster_hdbscan(clusterable_embedding, min_cluster_size, viz_embedding_list):
     print(f"min_cluster size: {min_cluster_size}")
+    clusterer = hdbscan.HDBSCAN(
+        min_cluster_size=min_cluster_size, prediction_data=True
+    ).fit(clusterable_embedding)
     labels = hdbscan.HDBSCAN(
         min_cluster_size=min_cluster_size,
     ).fit_predict(clusterable_embedding)
@@ -215,7 +218,7 @@ def cluster_hdbscan(clusterable_embedding, min_cluster_size, viz_embedding_list)
         plt.legend(labels)
         plt.show()
         
-    return labels
+    return labels, clusterer
 
 
 def get_cluster_defining_features(X, clustering_label, cluster_setting_name):
@@ -230,7 +233,7 @@ def get_cluster_defining_features(X, clustering_label, cluster_setting_name):
         #use scale_pos_weight to address imbalance between clustering class vs rest
         
        
-        all_OnevsAll_models_result_dict = utils.repeat_train(X, cluster_one_v_all_labels,num_times=1000, different_train_test_split=True, name=cluster_setting_name, scale_pos_weight=(cluster_one_v_all_labels== 0).sum()/(cluster_one_v_all_labels == 1).sum(), show_output=False)
+        all_OnevsAll_models_result_dict = repeat_train(X, cluster_one_v_all_labels,num_times=1000, different_train_test_split=True, name=cluster_setting_name, scale_pos_weight=(cluster_one_v_all_labels== 0).sum()/(cluster_one_v_all_labels == 1).sum(), show_output=False)
         
         final_dict[cluster_name]["AUC_fig"] = all_OnevsAll_models_result_dict["fig"]
         
