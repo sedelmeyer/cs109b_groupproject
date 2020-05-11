@@ -100,7 +100,7 @@ def generate_adaboost_staged_scores(model_dict, X_train, X_test, y_train, y_test
     return staged_scores_train, staged_scores_test
 
 
-def plot_adaboost_staged_scores(model_dict, X_train, X_test, y_train, y_test):
+def plot_adaboost_staged_scores(model_dict, X_train, X_test, y_train, y_test, height=4):
     """Plots the adaboost staged scores for each y variable's predictions and iteration
     
     """
@@ -117,7 +117,7 @@ def plot_adaboost_staged_scores(model_dict, X_train, X_test, y_train, y_test):
     iteration_numbers = np.arange(model_dict['model'][0].n_estimators) + 1
 
     # plot figure
-    fig, ax = plt.subplots(figsize=(12, 8))
+    fig, ax = plt.subplots(figsize=(12, height))
 
     plt.title(
         "Number of iterations' effect on the AdaBoost Regessor's\nperformance "\
