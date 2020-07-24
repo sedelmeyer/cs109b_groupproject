@@ -8,4 +8,4 @@ except DistributionNotFound:
     pass
 
 # Initialize ``logging.NullHandler`` for caproj package
-logging.getLogger('caproj').addHandler(logging.NullHandler())
+logging.getLogger("caproj").addHandler(logging.NullHandler())

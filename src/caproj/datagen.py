@@ -25,48 +25,48 @@ import numpy as np
 # set default module parameters for the data generator
 
 endstate_columns = [
-    'Date_Reported_As_Of',
-    'Change_Years',
-    'PID',
-    'Current_Phase',
-    'Budget_Forecast',
-    'Forecast_Completion',
-    'PID_Index',
+    "Date_Reported_As_Of",
+    "Change_Years",
+    "PID",
+    "Current_Phase",
+    "Budget_Forecast",
+    "Forecast_Completion",
+    "PID_Index",
 ]
 
 endstate_column_rename_dict = {
-    'Date_Reported_As_Of': 'Final_Change_Date',
-    'Current_Phase': 'Phase_End',
-    'Budget_Forecast': 'Budget_End',
-    'Forecast_Completion': 'Schedule_End',
-    'PID_Index': 'Number_Changes',
-    'Change_Years': 'Final_Change_Years'
+    "Date_Reported_As_Of": "Final_Change_Date",
+    "Current_Phase": "Phase_End",
+    "Budget_Forecast": "Budget_End",
+    "Forecast_Completion": "Schedule_End",
+    "PID_Index": "Number_Changes",
+    "Change_Years": "Final_Change_Years",
 }
 
 info_columns = [
-    'PID',
-    'Project_Name',
-    'Description',
-    'Category',
-    'Borough',
-    'Managing_Agency',
-    'Client_Agency',
-    'Current_Phase',
-    'Current_Project_Years',
-    'Current_Project_Year',
-    'Design_Start',
-    'Original_Budget',
-    'Original_Schedule',
+    "PID",
+    "Project_Name",
+    "Description",
+    "Category",
+    "Borough",
+    "Managing_Agency",
+    "Client_Agency",
+    "Current_Phase",
+    "Current_Project_Years",
+    "Current_Project_Year",
+    "Design_Start",
+    "Original_Budget",
+    "Original_Schedule",
 ]
 
 info_column_rename_dict = {
-    'Current_Phase': 'Phase_Start',
-    'Original_Budget': 'Budget_Start',
-    'Original_Schedule': 'Schedule_Start',
+    "Current_Phase": "Phase_Start",
+    "Original_Budget": "Budget_Start",
+    "Original_Schedule": "Schedule_Start",
 }
 
 
-def print_record_project_count(dataframe, dataset='full'):
+def print_record_project_count(dataframe, dataset="full"):
     """Prints summary of records and unique projects in dataframe
     
     :param dataframe: pd.DataFrame object for the version of the NYC capital
@@ -76,27 +76,27 @@ def print_record_project_count(dataframe, dataset='full'):
                     
     :return: prints to standard output, no objects returned
     """
-    if dataset=='full':
+    if dataset == "full":
         print(
-            'For the ORIGINAL cleansed data, containing all available NYC capital '\
-            'projects change records:\n'
+            "For the ORIGINAL cleansed data, containing all available NYC capital "
+            "projects change records:\n"
         )
 
-    elif dataset=='all':
+    elif dataset == "all":
         print(
-            'For the data containing start and end data for all available '\
-            'NYC capital projects for the ENTIRE INTERVAL of changes '\
-            'covered in the ORIGINAL data:\n'
+            "For the data containing start and end data for all available "
+            "NYC capital projects for the ENTIRE INTERVAL of changes "
+            "covered in the ORIGINAL data:\n"
         )
-        
+
     else:
         print(
-            'For the final {} data, containing the {} split of 3-year '\
-            'project data used in this analysis:\n'.format(
+            "For the final {} data, containing the {} split of 3-year "
+            "project data used in this analysis:\n".format(
                 dataset.upper(), dataset
             )
-        )    
-    
+        )
+
     # entries
     print(f"\tNumber of dataset records: {len(dataframe)}")
 
@@ -108,6 +108,7 @@ def print_record_project_count(dataframe, dataset='full'):
 
 # define the functions used for generating our interval dataframe
 
+
 def ensure_datetime_and_sort(df):
     """Ensures datetime columns are formatted correctly and changes are sorted
     
@@ -117,24 +118,28 @@ def ensure_datetime_and_sort(df):
              sorted
     """
     datetime_cols = [
-        'Date_Reported_As_Of',
-        'Design_Start',
-        'Original_Schedule',
-        'Forecast_Completion'
+        "Date_Reported_As_Of",
+        "Design_Start",
+        "Original_Schedule",
+        "Forecast_Completion",
     ]
 
     for col in datetime_cols:
         df[col] = pd.to_datetime(df[col])
-    
-    # make sure data is sorted properly
-    df = df.sort_values(by=['PID', 'PID_Index'])
-    
-    return df
-    
 
-def extract_project_details(df, copy_columns=info_columns,
-                            column_rename_dict=info_column_rename_dict,
-                            use_record=0, record_index='PID_Index'):
+    # make sure data is sorted properly
+    df = df.sort_values(by=["PID", "PID_Index"])
+
+    return df
+
+
+def extract_project_details(
+    df,
+    copy_columns=info_columns,
+    column_rename_dict=info_column_rename_dict,
+    use_record=0,
+    record_index="PID_Index",
+):
     """Generates a dataframe with project details for each unique PID 
 
     :param df: pd.DataFrame of the cleaned capital projects change records data
@@ -153,17 +158,21 @@ def extract_project_details(df, copy_columns=info_columns,
     :return: pd.DataFrame containing the primary project details for each
              unique PID, and the PID is set as the index
     """
-    df_details = df.copy().loc[df[record_index]==use_record][copy_columns]
-    
+    df_details = df.copy().loc[df[record_index] == use_record][copy_columns]
+
     if column_rename_dict:
-        df_details = df_details.copy().rename(columns=column_rename_dict) 
-    
-    return df_details.set_index('PID')
+        df_details = df_details.copy().rename(columns=column_rename_dict)
+
+    return df_details.set_index("PID")
 
 
-def subset_project_changes(df, change_year_interval=3, change_col='Change_Year',
-                           project_age_col='Current_Project_Year',
-                           inclusive_stop=True):
+def subset_project_changes(
+    df,
+    change_year_interval=3,
+    change_col="Change_Year",
+    project_age_col="Current_Project_Year",
+    inclusive_stop=True,
+):
     """Generates a subsetted dataframe with only the change records that occur
     in or before the specified max interval year
 
@@ -187,16 +196,18 @@ def subset_project_changes(df, change_year_interval=3, change_col='Change_Year',
              record's 'Record_ID' value
     """
     df_subset = df.copy().loc[
-        (df[change_col]<=change_year_interval) & (
-            df[project_age_col]>=change_year_interval if inclusive_stop
-            else df[project_age_col]>change_year_interval
+        (df[change_col] <= change_year_interval)
+        & (
+            df[project_age_col] >= change_year_interval
+            if inclusive_stop
+            else df[project_age_col] > change_year_interval
         )
     ]
-    
-    return df_subset.set_index('Record_ID')
+
+    return df_subset.set_index("Record_ID")
 
 
-def find_max_record_indices(df, record_index='PID_Index'):
+def find_max_record_indices(df, record_index="PID_Index"):
     """Creates a list of Record_ID values of the max record ID for each PID
 
     :param df: pd.DataFrame containing the cleaned capital project change
@@ -206,23 +217,25 @@ def find_max_record_indices(df, record_index='PID_Index'):
 
     :return: list of max Record_ID values for each PID
     """
-    df_group = df.groupby('PID').agg({record_index: max})
+    df_group = df.groupby("PID").agg({record_index: max})
     pid_dict = dict(zip(df_group.index, df_group.values.ravel()))
     record_id_indices = [
-        str(pid) + '-' + str(pid_index)
-        for pid, pid_index in pid_dict.items()
+        str(pid) + "-" + str(pid_index) for pid, pid_index in pid_dict.items()
     ]
-    
+
     return record_id_indices
 
 
-def project_interval_endstate(df, keep_columns=endstate_columns,
-                              column_rename_dict=endstate_column_rename_dict,
-                              change_year_interval=None,
-                              record_index='PID_Index',
-                              change_col='Change_Year',
-                              project_age_col='Current_Project_Year',
-                              inclusive_stop=True):
+def project_interval_endstate(
+    df,
+    keep_columns=endstate_columns,
+    column_rename_dict=endstate_column_rename_dict,
+    change_year_interval=None,
+    record_index="PID_Index",
+    change_col="Change_Year",
+    project_age_col="Current_Project_Year",
+    inclusive_stop=True,
+):
     """Generates a dataframe of endstate data for each unique PID given the
     specified analysis interval
 
@@ -258,21 +271,26 @@ def project_interval_endstate(df, keep_columns=endstate_columns,
     """
     if change_year_interval:
         df = subset_project_changes(
-            df.copy(), change_year_interval, change_col, project_age_col, inclusive_stop)
+            df.copy(),
+            change_year_interval,
+            change_col,
+            project_age_col,
+            inclusive_stop,
+        )
     else:
-        df = df.copy().set_index('Record_ID')
-    
+        df = df.copy().set_index("Record_ID")
+
     max_record_list = find_max_record_indices(df, record_index)
-    
+
     df_endstate = df.copy().loc[max_record_list][keep_columns]
-    
+
     if column_rename_dict:
-            df_endstate = df_endstate.copy().rename(columns=column_rename_dict)
-    
-    return df_endstate.set_index('PID')
+        df_endstate = df_endstate.copy().rename(columns=column_rename_dict)
+
+    return df_endstate.set_index("PID")
 
 
-def join_data_endstate(df_details, df_endstate, how='inner'):
+def join_data_endstate(df_details, df_endstate, how="inner"):
     """Creates dataframe joining the df_details and df_endstate dataframes by PID
 
     :param df_details: pd.DataFrame output from the extract_project_details()
@@ -287,7 +305,7 @@ def join_data_endstate(df_details, df_endstate, how='inner'):
     df_join = pd.merge(
         df_details, df_endstate, how=how, left_index=True, right_index=True
     )
-    
+
     return df_join.reset_index()
 
 
@@ -304,49 +322,63 @@ def add_change_features(df):
     df_copy = df.copy()
 
     # calculate interval change features
-    df_copy['Duration_Start'] = (
-        df_copy['Schedule_Start'] - df_copy['Design_Start']
+    df_copy["Duration_Start"] = (
+        df_copy["Schedule_Start"] - df_copy["Design_Start"]
     ).dt.days
-    df_copy['Duration_End'] = (
-        df_copy['Schedule_End'] - df_copy['Design_Start']
+    df_copy["Duration_End"] = (
+        df_copy["Schedule_End"] - df_copy["Design_Start"]
     ).dt.days
-    df_copy['Schedule_Change'] = df_copy['Duration_End'] - df_copy['Duration_Start']
-    df_copy['Budget_Change'] = df_copy['Budget_End'] - df_copy['Budget_Start']
+    df_copy["Schedule_Change"] = (
+        df_copy["Duration_End"] - df_copy["Duration_Start"]
+    )
+    df_copy["Budget_Change"] = df_copy["Budget_End"] - df_copy["Budget_Start"]
 
     # define schedule change ratio
-    df_copy['Schedule_Change_Ratio'] = df_copy['Schedule_Change']/df_copy['Duration_Start']
+    df_copy["Schedule_Change_Ratio"] = (
+        df_copy["Schedule_Change"] / df_copy["Duration_Start"]
+    )
     # define budget change ratio
-    df_copy['Budget_Change_Ratio'] = df_copy['Budget_Change']/df_copy['Budget_Start']
-    
+    df_copy["Budget_Change_Ratio"] = (
+        df_copy["Budget_Change"] / df_copy["Budget_Start"]
+    )
+
     # define project metrics
-    df_copy['Budget_Abs_Per_Error'] = (
-        df_copy['Budget_Start'] - df_copy['Budget_End']
-    ).abs() / df_copy['Budget_End']
-    
-    df_copy['Budget_Rel_Per_Error'] = (
-        df_copy['Budget_Start'] - df_copy['Budget_End']
-    ).abs() / df_copy['Budget_Start']
-   
-    df_copy['Duration_End_Ratio'] = df_copy['Duration_End']/df_copy['Duration_Start']
-    df_copy['Budget_End_Ratio'] = df_copy['Budget_End']/df_copy['Budget_Start']
+    df_copy["Budget_Abs_Per_Error"] = (
+        df_copy["Budget_Start"] - df_copy["Budget_End"]
+    ).abs() / df_copy["Budget_End"]
+
+    df_copy["Budget_Rel_Per_Error"] = (
+        df_copy["Budget_Start"] - df_copy["Budget_End"]
+    ).abs() / df_copy["Budget_Start"]
+
+    df_copy["Duration_End_Ratio"] = (
+        df_copy["Duration_End"] / df_copy["Duration_Start"]
+    )
+    df_copy["Budget_End_Ratio"] = (
+        df_copy["Budget_End"] / df_copy["Budget_Start"]
+    )
 
     # previously titled 'Mark Metric'
-    df_copy['Duration_Ratio_Inv'] = (
-        df_copy['Duration_Start']/df_copy['Duration_End']
+    df_copy["Duration_Ratio_Inv"] = (
+        df_copy["Duration_Start"] / df_copy["Duration_End"]
     ) - 1
-    df_copy['Budget_Ratio_Inv'] = (
-        df_copy['Budget_Start']/df_copy['Budget_End']
+    df_copy["Budget_Ratio_Inv"] = (
+        df_copy["Budget_Start"] / df_copy["Budget_End"]
     ) - 1
-    
+
     return df_copy
 
 
-def generate_interval_data(data, change_year_interval=None, 
-                           inclusive_stop=True,
-                           to_csv=False,
-                           save_dir='../data/interim/',
-                           custom_filename=None,
-                           verbose=1, return_df=True):
+def generate_interval_data(
+    data,
+    change_year_interval=None,
+    inclusive_stop=True,
+    to_csv=False,
+    save_dir="../data/interim/",
+    custom_filename=None,
+    verbose=1,
+    return_df=True,
+):
     """Generates a project analysis dataset for the specified interval
 
     NOTE:
@@ -399,8 +431,9 @@ def generate_interval_data(data, change_year_interval=None,
     data = ensure_datetime_and_sort(data.copy())
 
     df_endstate = project_interval_endstate(
-        data, change_year_interval=change_year_interval,
-        inclusive_stop=inclusive_stop
+        data,
+        change_year_interval=change_year_interval,
+        inclusive_stop=inclusive_stop,
     )
 
     df_details = extract_project_details(data)
@@ -409,42 +442,43 @@ def generate_interval_data(data, change_year_interval=None,
 
     df_features = add_change_features(df_merged)
 
-    if verbose==1:
+    if verbose == 1:
         # print numbeer of projects in the resulting dataframe
         print(
-            'The number of unique projects in the resulting dataframe: {}\n'\
-            ''.format(df_features['PID'].nunique())
+            "The number of unique projects in the resulting dataframe: {}\n"
+            "".format(df_features["PID"].nunique())
         )
 
     if to_csv:
         if custom_filename:
             save_path = os.path.join(save_dir, custom_filename)
         else:
-            filename_base = 'NYC_capital_projects_'
+            filename_base = "NYC_capital_projects_"
             if change_year_interval:
                 save_path = os.path.join(
-                    save_dir, '{}{}yr.csv'.format(
-                        filename_base, change_year_interval
-                    )
+                    save_dir,
+                    "{}{}yr.csv".format(filename_base, change_year_interval),
                 )
             else:
                 save_path = os.path.join(
-                    save_dir, '{}all.csv'.format(filename_base)
+                    save_dir, "{}all.csv".format(filename_base)
                 )
-        
+
         df_features.to_csv(save_path, index=False)
 
         print(
-            'The resulting interval features dataframe was saved to .csv at:'\
-            '\n\n\t{}\n'.format(save_path)
+            "The resulting interval features dataframe was saved to .csv at:"
+            "\n\n\t{}\n".format(save_path)
         )
 
     if return_df:
         return df_features
 
 
-def print_interval_dict(datadict_dir='../references/data_dicts/',
-                        datadict_filename='data_dict_interval.csv'):
+def print_interval_dict(
+    datadict_dir="../references/data_dicts/",
+    datadict_filename="data_dict_interval.csv",
+):
     """Prints summary of data dictionary for the generate_interval_data output
 
     :param datadict_dir: optional string indicating directory location of
@@ -459,13 +493,13 @@ def print_interval_dict(datadict_dir='../references/data_dicts/',
 
     data_dict = pd.read_csv(filepath)
 
-    print(
-        'DATA DICTIONARY: GENERATED INTERVAL DATASETS\n'
-    )
+    print("DATA DICTIONARY: GENERATED INTERVAL DATASETS\n")
 
-    for i, (name, descr, datatype) in enumerate(zip(
-        data_dict['name'].values,
-        data_dict['description'].values,
-        data_dict['dtype'].values
-    )):
-        print('{}: {} ({})\n\n\t{}\n\n'.format(i, name, datatype, descr))
+    for i, (name, descr, datatype) in enumerate(
+        zip(
+            data_dict["name"].values,
+            data_dict["description"].values,
+            data_dict["dtype"].values,
+        )
+    ):
+        print("{}: {} ({})\n\n\t{}\n\n".format(i, name, datatype, descr))
