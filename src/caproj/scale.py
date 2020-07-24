@@ -1,28 +1,18 @@
 """
+caproj.scale
+~~~~~~~~~~~~
+
 This module contains functions for scaling features of an X features design
 matrix and for encoding categorical variables
 
-FUNCTIONS
+**Module functions:**
 
-    encode_categories()
-        Encodes categorical variable column and appends values to dataframe. 
-        This function offers the option to either one-hot-encode (0,1) or
-        'LabelEncode'(as consecutive integers (0, n)) categorical values
-        by setting the one_hot argument to either True or False.
+.. autosummary::
 
-    scale_features()
-        Scales a dataframe's features based on the values of a training
-        dataframe and returns the resulting scaled dataframe. Accepts various
-        sklearn scalers and allows you to specify features you do not want
-        affected by scaling by using the exclude_scale_cols parameter.
-
-    sigmoid()
-        Efficient numpy-based sigmoid transformation of a dataframe, array,
-        or matrix
-
-    log_plus_one()
-        Adds 1 to the input data and then applies Log transformation to those
-        values
+   encode_categories
+   scale_features
+   sigmoid
+   log_plus_one
 
 """
 
@@ -42,14 +32,14 @@ def scale_features(
     **kwargs
 ):
     """Scales val_df features based on train_df and returns scaled dataframe
-    
+
     Accepts various sklearn scalers and allows you to specify features you do
     not want affected by scaling by using the exclude_scale_cols parameter.
 
-    NOTE: 
-    
+    NOTE:
+
         Be certain to reset the index of your accompanying y_train and y_test
-        dataframes, or you will risk running into potential indexing errors 
+        dataframes, or you will risk running into potential indexing errors
         while working with your scaled X dataframes
 
     :param train_df: The training data
@@ -137,7 +127,7 @@ def scale_features(
 
 def sigmoid(x):
     """Efficient numpy sigmoid transformation of dataframe, array, or matrix
-    
+
     :param x: data to undergo transformation (datatypes accepted include,
               pandas DataFrames and Series, numpy matrices and arrays, or
               single int or float values x)
@@ -149,7 +139,7 @@ def sigmoid(x):
 
 def log_plus_one(x):
     """Adds 1 to input data and then applies Log transformation to those values
-    
+
     :param x: data to undergo transformation (datatypes accepted include,
               pandas DataFrames and Series, numpy matrices and arrays, or
               single int or float values x)
@@ -201,7 +191,7 @@ def encode_categories(
                            in instances where multiple columns have
                            identical category names within them or, a
                            category name matches an existing column.
-                           None will result in no string being added. 
+                           None will result in no string being added.
                            (default append_colname=None)
 
     :return: pd.DataFrame of the original input dataframe with the additional
