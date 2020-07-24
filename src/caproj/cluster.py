@@ -81,16 +81,16 @@ def silplot(X, cluster_labels, clusterer, pointlabels=None, height=6):
             http://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_silhouette_analysis.html
  
     """
-    
+
     n_clusters = clusterer.n_clusters
-    
+
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, height))
 
     # The 1st subplot is the silhouette plot
     # The silhouette coefficient can range from -1, 1 but in this example all
     # lie within [-0.1, 1]
     ax1.set_xlim([-0.1, 1])
-    
+
     # The (n_clusters+1)*10 is for inserting blank space between silhouette
     # plots of individual clusters, to demarcate them clearly.
     ax1.set_ylim([0, len(X) + (n_clusters + 1) * 10])
@@ -104,11 +104,12 @@ def silplot(X, cluster_labels, clusterer, pointlabels=None, height=6):
     sample_silhouette_values = silhouette_samples(X, cluster_labels)
 
     y_lower = 10
-    for i in range(0,n_clusters+1):
+    for i in range(0, n_clusters + 1):
         # Aggregate the silhouette scores for samples belonging to
         # cluster i, and sort them
-        ith_cluster_silhouette_values = \
-            sample_silhouette_values[cluster_labels == i]
+        ith_cluster_silhouette_values = sample_silhouette_values[
+            cluster_labels == i
+        ]
 
         ith_cluster_silhouette_values.sort()
 
@@ -116,9 +117,14 @@ def silplot(X, cluster_labels, clusterer, pointlabels=None, height=6):
         y_upper = y_lower + size_cluster_i
 
         color = cm.nipy_spectral(float(i) / n_clusters)
-        ax1.fill_betweenx(np.arange(y_lower, y_upper),
-                          0, ith_cluster_silhouette_values,
-                          facecolor=color, edgecolor=color, alpha=0.7)
+        ax1.fill_betweenx(
+            np.arange(y_lower, y_upper),
+            0,
+            ith_cluster_silhouette_values,
+            facecolor=color,
+            edgecolor=color,
+            alpha=0.7,
+        )
 
         # Label the silhouette plots with their cluster numbers at the middle
         ax1.text(-0.05, y_lower + 0.5 * size_cluster_i, str(i))
@@ -126,13 +132,10 @@ def silplot(X, cluster_labels, clusterer, pointlabels=None, height=6):
         # Compute the new y_lower for next plot
         y_lower = y_upper + 10  # 10 for the 0 samples
 
-    ax1.set_title(
-        "The silhouette plot for the various clusters",
-        fontsize=14
-    )
+    ax1.set_title("The silhouette plot for the various clusters", fontsize=14)
     ax1.set_xlabel("The silhouette coefficient values", fontsize=12)
     ax1.set_ylabel("Cluster label", fontsize=12)
-    ax1.grid(':', alpha=0.5)
+    ax1.grid(":", alpha=0.5)
 
     # The vertical line for average silhouette score of all the values
     ax1.axvline(x=silhouette_avg, color="red", linestyle="--")
@@ -142,45 +145,57 @@ def silplot(X, cluster_labels, clusterer, pointlabels=None, height=6):
 
     # 2nd Plot showing the actual clusters formed
     colors = cm.nipy_spectral(cluster_labels.astype(float) / n_clusters)
-    
-    pca = PCA(n_components=2).fit(X)
-    X_pca = pca.transform(X) 
-    ax2.scatter(X_pca[:, 0], X_pca[:, 1], marker='.', s=200, lw=0, alpha=0.7,
-                c=colors, edgecolor='k')
-    xs = X_pca[:, 0]
-    ys = X_pca[:, 1]    
 
-    
+    pca = PCA(n_components=2).fit(X)
+    X_pca = pca.transform(X)
+    ax2.scatter(
+        X_pca[:, 0],
+        X_pca[:, 1],
+        marker=".",
+        s=200,
+        lw=0,
+        alpha=0.7,
+        c=colors,
+        edgecolor="k",
+    )
+    xs = X_pca[:, 0]
+    ys = X_pca[:, 1]
+
     if pointlabels is not None:
         for i in range(len(xs)):
-            plt.text(xs[i],ys[i],pointlabels[i])
+            plt.text(xs[i], ys[i], pointlabels[i])
 
     # Labeling the clusters (transform to PCA space for plotting)
     centers = pca.transform(clusterer.cluster_centers_)
     # Draw white circles at cluster centers
-    ax2.scatter(centers[:, 0], centers[:, 1], marker='o',
-                c="white", alpha=1, s=200, edgecolor='k')
+    ax2.scatter(
+        centers[:, 0],
+        centers[:, 1],
+        marker="o",
+        c="white",
+        alpha=1,
+        s=200,
+        edgecolor="k",
+    )
 
     for i, c in enumerate(centers):
-        ax2.scatter(c[0], c[1], marker='$%d$' % int(i), alpha=1,
-                    s=50, edgecolor='k')
+        ax2.scatter(
+            c[0], c[1], marker="$%d$" % int(i), alpha=1, s=50, edgecolor="k"
+        )
 
-    ax2.set_title(
-        "PCA-based visualization of the clustered data",
-        fontsize=14
-    )
+    ax2.set_title("PCA-based visualization of the clustered data", fontsize=14)
     ax2.set_xlabel("PC1", fontsize=12)
     ax2.set_ylabel("PC2", fontsize=12)
-    ax2.grid(':', alpha=0.5)
+    ax2.grid(":", alpha=0.5)
 
     plt.suptitle(
-        "Silhouette analysis, K-means clustering on sample data "\
-        "with n_clusters = {},\naverage silhouette score: {:.4f}"\
+        "Silhouette analysis, K-means clustering on sample data "
+        "with n_clusters = {},\naverage silhouette score: {:.4f}"
         "".format(n_clusters, silhouette_avg),
         fontsize=18,
-        y=1.11
+        y=1.11,
     )
-    
+
     plt.tight_layout()
     plt.show()
 
@@ -190,32 +205,35 @@ def display_gapstat_with_errbars(gap_df, height=4):
     """
     gaps = gap_df["gap_value"].values
     diffs = gap_df["diff"]
-    
+
     err_bars = np.zeros(len(gap_df))
     err_bars[1:] = diffs[:-1] - gaps[:-1] + gaps[1:]
 
-    fig, ax = plt.subplots(figsize=(12,height))
+    fig, ax = plt.subplots(figsize=(12, height))
 
-    plt.title('Gap statistic with error bars by number of clusters', fontsize=19)
+    plt.title(
+        "Gap statistic with error bars by number of clusters", fontsize=19
+    )
 
-    plt.scatter(gap_df["n_clusters"], gap_df["gap_value"], color='k')
+    plt.scatter(gap_df["n_clusters"], gap_df["gap_value"], color="k")
     plt.errorbar(
         gap_df["n_clusters"],
         gap_df["gap_value"],
         yerr=err_bars,
         capsize=6,
-        color='k'
+        color="k",
     )
-    
+
     plt.xlabel("Number of Clusters", fontsize=16)
     plt.ylabel("Gap Statistic", fontsize=16)
     plt.tick_params(labelsize=14)
-    plt.grid(':', alpha=0.4)
+    plt.grid(":", alpha=0.4)
     plt.tight_layout()
     plt.show()
-    
+
 
 # Define functions for identifying epsilon values, fitting dbscan, and evaluating results
+
 
 def fit_neighbors(data, min_samples):
     """Fits n nearest neighbors based on min samples and returns distances
@@ -231,20 +249,20 @@ def plot_epsilon(distances, min_samples, height=5):
     fig, ax = plt.subplots(figsize=(12, height))
 
     plt.title(
-        '{}-NN distance (epsilon) by sorted index'.format(min_samples-1),
-        fontsize=19
+        "{}-NN distance (epsilon) by sorted index".format(min_samples - 1),
+        fontsize=19,
     )
-    
-    dist_to_nth_nearest_neighbor = distances[:,-1]
-    plt.plot(np.sort(dist_to_nth_nearest_neighbor), color='k')
+
+    dist_to_nth_nearest_neighbor = distances[:, -1]
+    plt.plot(np.sort(dist_to_nth_nearest_neighbor), color="k")
     plt.xlabel("Index (sorted by increasing distances)", fontsize=16)
     plt.ylabel("$\epsilon$", fontsize=18)
     plt.tick_params(right=True, labelright=True, labelsize=14)
-    plt.grid(':', alpha=0.4)
+    plt.grid(":", alpha=0.4)
     plt.tight_layout()
     plt.show()
 
-    
+
 def silscore_dbscan(data, labels, clustered_bool):
     """Generates sil score ommitting observations not assigned to any cluster by dbscan 
     """
@@ -257,19 +275,20 @@ def fit_dbscan(data, min_samples, eps):
     fitted_dbscan = DBSCAN(eps=eps, min_samples=min_samples).fit(data)
     db_labels = fitted_dbscan.labels_
     n_clusters = sum([i != -1 for i in set(db_labels)])
-    
+
     # generate boolean indices for observations assigned to clusters
     clustered_bool = [i != -1 for i in db_labels]
-    
+
     dbscan_dict = {
-        'model': fitted_dbscan,
-        'n_clusters': n_clusters,
-        'labels': db_labels,
-        'core_sample_indices': fitted_dbscan.core_sample_indices_,
-        'clustered_bool': clustered_bool,
-        'cluster_counts': pd.Series(db_labels).value_counts(),
-        'sil_score': silscore_dbscan(data, db_labels, clustered_bool)
-                     if n_clusters>1 else 0
+        "model": fitted_dbscan,
+        "n_clusters": n_clusters,
+        "labels": db_labels,
+        "core_sample_indices": fitted_dbscan.core_sample_indices_,
+        "clustered_bool": clustered_bool,
+        "cluster_counts": pd.Series(db_labels).value_counts(),
+        "sil_score": silscore_dbscan(data, db_labels, clustered_bool)
+        if n_clusters > 1
+        else 0,
     }
     return dbscan_dict
 
@@ -277,62 +296,57 @@ def fit_dbscan(data, min_samples, eps):
 def print_dbscan_results(dbscan_dict):
     """Prints summary results of fitted dbscan_dict
     """
-    eps = dbscan_dict['model'].eps
-    min_samples = dbscan_dict['model'].min_samples
-    n_samples = len(dbscan_dict['labels'])
-    n_unclustered = dbscan_dict['cluster_counts'].loc[-1]
-    n_clusters = dbscan_dict['n_clusters']
-    
+    eps = dbscan_dict["model"].eps
+    min_samples = dbscan_dict["model"].min_samples
+    n_samples = len(dbscan_dict["labels"])
+    n_unclustered = dbscan_dict["cluster_counts"].loc[-1]
+    n_clusters = dbscan_dict["n_clusters"]
+
     # print basic summary info
     print(
-        '\nFor the DBSCAN model:\n\n{}\n\n'\
-        '{} {} identified, and {:,} of the n={:,} observations '\
-        'were not assigned to any clusters.\n\n'\
-        'The distribution of resulting labels are illustrated by this chart '\
-        'with un-clustered observations represented by the cluster labeled -1.\n'\
-        ''.format(
-            dbscan_dict['model'],
+        "\nFor the DBSCAN model:\n\n{}\n\n"
+        "{} {} identified, and {:,} of the n={:,} observations "
+        "were not assigned to any clusters.\n\n"
+        "The distribution of resulting labels are illustrated by this chart "
+        "with un-clustered observations represented by the cluster labeled -1.\n"
+        "".format(
+            dbscan_dict["model"],
             n_clusters,
-            'clusters were' if n_clusters>1 else 'cluster was',
+            "clusters were" if n_clusters > 1 else "cluster was",
             n_unclustered,
-            n_samples
+            n_samples,
         )
     )
-    
+
     # plot distribution of labels
-    plot_value_counts(dbscan_dict['cluster_counts'], 'DBSCAN cluster')
+    plot_value_counts(dbscan_dict["cluster_counts"], "DBSCAN cluster")
     plt.title(
-        'DBSCAN clustering results, min samples$={}$ and $\epsilon={}$'\
-        ''.format(min_samples, eps),
-        fontsize=16
+        "DBSCAN clustering results, min samples$={}$ and $\epsilon={}$"
+        "".format(min_samples, eps),
+        fontsize=16,
     )
-    plt.xlabel(
-        'DBSCAN clusters (-1 indicates unclustered)',
-        fontsize=12
-    )
-    plt.ylabel(
-        'number of observations',
-        fontsize=12
-    )
-    
+    plt.xlabel("DBSCAN clusters (-1 indicates unclustered)", fontsize=12)
+    plt.ylabel("number of observations", fontsize=12)
+
     # print silhouette score
-    if n_clusters>1:
+    if n_clusters > 1:
         print(
-            '\nThe resulting silhouette score, excluding the points not '\
-            'assigned to any cluster is:\n\n\t{:.4f}\n'.format(
-                dbscan_dict['sil_score']
+            "\nThe resulting silhouette score, excluding the points not "
+            "assigned to any cluster is:\n\n\t{:.4f}\n".format(
+                dbscan_dict["sil_score"]
             )
         )
-    
+
     else:
         print(
-            '\nBecause only 1 cluster has been assigned by the algorithm, the '\
-            'resulting silhouette score of 0 has been assigned to these results.\n'
+            "\nBecause only 1 cluster has been assigned by the algorithm, the "
+            "resulting silhouette score of 0 has been assigned to these results.\n"
         )
 
 
-def plot_dendrogram(linkage_data, method_name,
-                    yticks=16, ytick_interval=1, height=4.5):
+def plot_dendrogram(
+    linkage_data, method_name, yticks=16, ytick_interval=1, height=4.5
+):
     """Plots a dendrogram given a set of input hierarchy linkage data
     
     :param linkage_data: np.array output from scipy.cluster.hierarchy, which
@@ -348,20 +362,20 @@ def plot_dendrogram(linkage_data, method_name,
     
     return: plots dendrogram, no objects are returned
     """
-    
+
     plt.figure(figsize=(12, height))
 
     hac.dendrogram(
-        linkage_data, above_threshold_color='lightgray', orientation="top"
+        linkage_data, above_threshold_color="lightgray", orientation="top"
     )
 
     plt.title(
         "Agglomerative clustering dendrogram (using {})".format(method_name),
-        fontsize=18
+        fontsize=18,
     )
-    plt.grid(":", axis='y', alpha=0.5)
-    plt.yticks(np.arange(0, yticks+1, ytick_interval), fontsize=10)
-    plt.ylabel('distance', fontsize=14)
+    plt.grid(":", axis="y", alpha=0.5)
+    plt.yticks(np.arange(0, yticks + 1, ytick_interval), fontsize=10)
+    plt.ylabel("distance", fontsize=14)
     plt.tight_layout()
     plt.show()
 
@@ -369,6 +383,7 @@ def plot_dendrogram(linkage_data, method_name,
 # from dataclasses import dataclass
 import hdbscan
 import umap
+
 # from pickle import dump, load
 # import plotly.io as pio
 # import plotly.express as px
@@ -379,42 +394,82 @@ import umap
 # pio.renderers.default = 'jupyterlab'
 
 
-class UMAP_embedder():
-    def __init__(self, scaler, final_cols, mapper_dict, clusterer, bert_embedding):
-        #self.initial_columns = columns
+class UMAP_embedder:
+    def __init__(
+        self, scaler, final_cols, mapper_dict, clusterer, bert_embedding
+    ):
+        # self.initial_columns = columns
         self.initial_columns = [
-            'PID', 'Project_Name', 'Description', 'Category', 'Borough',
-            'Managing_Agency', 'Client_Agency', 'Phase_Start',
-            'Current_Project_Years', 'Current_Project_Year', 'Design_Start',
-            'Budget_Start', 'Schedule_Start', 'Final_Change_Date',
-            'Final_Change_Years', 'Phase_End', 'Budget_End', 'Schedule_End',
-            'Number_Changes', 'Duration_Start', 'Duration_End',
-            'Schedule_Change', 'Budget_Change', 'Schedule_Change_Ratio',
-            'Budget_Change_Ratio', 'Budget_Abs_Per_Error',
-            'Budget_Rel_Per_Error', 'Duration_End_Ratio', 'Budget_End_Ratio',
-            'Duration_Ratio_Inv', 'Budget_Ratio_Inv'
+            "PID",
+            "Project_Name",
+            "Description",
+            "Category",
+            "Borough",
+            "Managing_Agency",
+            "Client_Agency",
+            "Phase_Start",
+            "Current_Project_Years",
+            "Current_Project_Year",
+            "Design_Start",
+            "Budget_Start",
+            "Schedule_Start",
+            "Final_Change_Date",
+            "Final_Change_Years",
+            "Phase_End",
+            "Budget_End",
+            "Schedule_End",
+            "Number_Changes",
+            "Duration_Start",
+            "Duration_End",
+            "Schedule_Change",
+            "Budget_Change",
+            "Schedule_Change_Ratio",
+            "Budget_Change_Ratio",
+            "Budget_Abs_Per_Error",
+            "Budget_Rel_Per_Error",
+            "Duration_End_Ratio",
+            "Budget_End_Ratio",
+            "Duration_Ratio_Inv",
+            "Budget_Ratio_Inv",
         ]
-        #self.scale_cols = df_to_transform.columns
+        # self.scale_cols = df_to_transform.columns
         self.scale_cols = [
-            'Current_Project_Years', 'Current_Project_Year', 'Budget_Start',
-            'Final_Change_Years', 'Budget_End', 'Number_Changes', 'Duration_Start',
-            'Duration_End', 'Schedule_Change', 'Budget_Change',
-            'Schedule_Change_Ratio', 'Budget_Change_Ratio', 'Budget_Abs_Per_Error',
-            'Budget_Rel_Per_Error', 'Duration_End_Ratio', 'Budget_End_Ratio',
-            'Duration_Ratio_Inv', 'Budget_Ratio_Inv'
+            "Current_Project_Years",
+            "Current_Project_Year",
+            "Budget_Start",
+            "Final_Change_Years",
+            "Budget_End",
+            "Number_Changes",
+            "Duration_Start",
+            "Duration_End",
+            "Schedule_Change",
+            "Budget_Change",
+            "Schedule_Change_Ratio",
+            "Budget_Change_Ratio",
+            "Budget_Abs_Per_Error",
+            "Budget_Rel_Per_Error",
+            "Duration_End_Ratio",
+            "Budget_End_Ratio",
+            "Duration_Ratio_Inv",
+            "Budget_Ratio_Inv",
         ]
         self.scaler = scaler
         self.cols_to_dummify = [
-            'Borough', 'Category', 'Client_Agency', 'Managing_Agency',
-            'Phase_Start', 'Budget_Start', 'Duration_Start'
-        ] 
-        #self.cols_to_dummify = columns_before_dummified
+            "Borough",
+            "Category",
+            "Client_Agency",
+            "Managing_Agency",
+            "Phase_Start",
+            "Budget_Start",
+            "Duration_Start",
+        ]
+        # self.cols_to_dummify = columns_before_dummified
         self.final_cols = final_cols
         self.mapper_dict = mapper_dict
         self.clusterer = clusterer
         self.embedding = bert_embedding
-        
-    def get_mapping_attributes(self,df, return_extra=False, dimensions="all"):
+
+    def get_mapping_attributes(self, df, return_extra=False, dimensions="all"):
         """
         if return extra = True, returns 3 objects:
             0. mapping
@@ -422,100 +477,108 @@ class UMAP_embedder():
             2. dummified df before adding columns of [1]
         """
         raw_df = df[self.initial_columns]
-        df_to_transform = df[self.scale_cols]#.drop(columns=["PID"])
+        df_to_transform = df[self.scale_cols]  # .drop(columns=["PID"])
         transformed_columns = pd.DataFrame(
             self.scaler.transform(df_to_transform),
-            columns = df_to_transform.columns
+            columns=df_to_transform.columns,
         )
         scaled_df = (
             df[df.columns.difference(transformed_columns.columns)]
         ).join(transformed_columns)
         dummified = pd.get_dummies(scaled_df[self.cols_to_dummify])
-        
+
         added_cols = set(self.final_cols) - set(dummified.columns)
         added_cols = {col: 0 for col in added_cols}
-        
+
         dummified_full = dummified.assign(**added_cols)
         dummified_full = dummified_full[self.final_cols]
-        mapping_df_list =[]
-        mapper_list = self.mapper_dict[
-            "attributes"
-        ].values() if dimensions == "all" else [
-            self.mapper_dict["attributes"][dimension]
-            for dimension in dimensions
-        ]
+        mapping_df_list = []
+        mapper_list = (
+            self.mapper_dict["attributes"].values()
+            if dimensions == "all"
+            else [
+                self.mapper_dict["attributes"][dimension]
+                for dimension in dimensions
+            ]
+        )
 
         for mapper in mapper_list:
             mapping = mapper.transform(dummified_full)
             mapping_df = pd.DataFrame(
                 mapping,
-                columns= [
+                columns=[
                     f"umap_attributes_{mapping.shape[1]}D_embed_{col+1}"
                     for col in range(mapping.shape[1])
-                ]
+                ],
             )
             mapping_df_list.append(mapping_df)
-            
+
         final_df = pd.concat(mapping_df_list, axis=1)
         final_df["PID"] = scaled_df["PID"]
-        
+
         if return_extra:
             return final_df, added_cols, scaled_df, dummified
         else:
             return final_df
-       
-    def get_mapping_description(self, df, dimensions= "all"):
-        
-        merged = df[["PID"]].merge(
-            self.embedding, on = "PID", how="left"
-        ).drop(columns="PID")
-        mapping_df_list =[merged]
-        #mapping_columns = [list(self.embedding.columns.copy())]
-        mapper_list = self.mapper_dict[
-            "description"
-        ].values() if dimensions == "all" else [
-            self.mapper_dict["description"][dimension]
-            for dimension in dimensions
-        ]
+
+    def get_mapping_description(self, df, dimensions="all"):
+
+        merged = (
+            df[["PID"]]
+            .merge(self.embedding, on="PID", how="left")
+            .drop(columns="PID")
+        )
+        mapping_df_list = [merged]
+        # mapping_columns = [list(self.embedding.columns.copy())]
+        mapper_list = (
+            self.mapper_dict["description"].values()
+            if dimensions == "all"
+            else [
+                self.mapper_dict["description"][dimension]
+                for dimension in dimensions
+            ]
+        )
         for mapper in mapper_list:
             mapping = mapper.transform(merged)
             mapping_df = pd.DataFrame(
                 mapping,
-                columns= [
+                columns=[
                     f"umap_descr_{mapping.shape[1]}D_embed_{col+1}"
                     for col in range(mapping.shape[1])
-                ]
+                ],
             )
             mapping_df_list.append(mapping_df)
-           # mapping_columns += list(mapping_df.columns.copy())
-                                   
+        # mapping_columns += list(mapping_df.columns.copy())
+
         final_df = pd.concat(mapping_df_list, axis=1)
         final_df["PID"] = df["PID"].values
-        
+
         return final_df
-    
+
     def get_full_df(self, df, dimensions="all"):
-        attribute_df = self.get_mapping_attributes(df,dimension="all")
+        attribute_df = self.get_mapping_attributes(df, dimension="all")
         description_df = self.get_mapping_description(df)
         labels, probabilities = self.get_clustering(
             attribute_df[
                 ["umap_attributes_2D_embed_1", "umap_attributes_2D_embed_2"]
             ]
         )
-        full_df = description_df.merge(attribute_df, on = "PID", how="left")
+        full_df = description_df.merge(attribute_df, on="PID", how="left")
         full_df["PID"] = attribute_df["PID"].values
         full_df["attribute_clustering_label"] = labels
         return full_df
-    
+
     def get_clustering(self, attributes_2D_mapping):
-        assert attributes_2D_mapping.shape[1] ==2
-        new_labels = hdbscan.approximate_predict(clusterer, attributes_2D_mapping)
+        assert attributes_2D_mapping.shape[1] == 2
+        new_labels = hdbscan.approximate_predict(
+            clusterer, attributes_2D_mapping
+        )
         return new_labels
 
 
 def make_spider(mean_peaks_per_cluster, row, name, color):
     # number of variable
-    categories=list(mean_peaks_per_cluster)[1:]
+    categories = list(mean_peaks_per_cluster)[1:]
     N = len(categories)
 
     # What will be the angle of each axis in the plot? (we divide the plot / number of variable)
@@ -523,37 +586,39 @@ def make_spider(mean_peaks_per_cluster, row, name, color):
     angles += angles[:1]
 
     # Initialise the spider plot
-    ax = plt.subplot(3,2,row+1, polar=True, )
+    ax = plt.subplot(3, 2, row + 1, polar=True,)
 
     # If you want the first axis to be on top:
     ax.set_theta_offset(pi / 2)
     ax.set_theta_direction(-1)
 
     # Draw one axe per variable + add labels labels yet
-    plt.xticks(angles[:-1], categories, color='grey', size=8)
+    plt.xticks(angles[:-1], categories, color="grey", size=8)
 
     # Draw ylabels
     ax.set_rlabel_position(0)
-    #plt.yticks([10,20,30], ["10","20","30"], color="grey", size=7)
-    #plt.ylim(0,40)
+    # plt.yticks([10,20,30], ["10","20","30"], color="grey", size=7)
+    # plt.ylim(0,40)
 
     # Ind1
-    scaled = mean_peaks_per_cluster.loc[row].drop('group').values
-    values=mean_peaks_per_cluster.loc[row].drop('group').values.flatten().tolist()
+    scaled = mean_peaks_per_cluster.loc[row].drop("group").values
+    values = (
+        mean_peaks_per_cluster.loc[row].drop("group").values.flatten().tolist()
+    )
     values += values[:1]
-    ax.plot(angles, values, color=color, linewidth=2, linestyle='solid')
+    ax.plot(angles, values, color=color, linewidth=2, linestyle="solid")
     ax.fill(angles, values, color=color, alpha=0.4)
 
     # Add a title
     plt.title(name, size=14, color=color, y=1.1)
 
-    
+
 def plot_spider_clusters(title, mean_peaks_per_cluster):
     """Applies spider plot to all individuals and initialize the figure
     """
-    my_dpi=50
-    
-    fig = plt.figure(figsize=(600/my_dpi, 700/my_dpi), dpi=my_dpi + 40)
+    my_dpi = 50
+
+    fig = plt.figure(figsize=(600 / my_dpi, 700 / my_dpi), dpi=my_dpi + 40)
 
     # Create a color palette:
     my_palette = plt.cm.get_cmap("Set2", len(mean_peaks_per_cluster.index))
@@ -563,42 +628,60 @@ def plot_spider_clusters(title, mean_peaks_per_cluster):
         make_spider(
             mean_peaks_per_cluster,
             row=row,
-            name='cluster '+mean_peaks_per_cluster['group'][row].astype("str"),
-            color=my_palette(row)
-            )
+            name="cluster "
+            + mean_peaks_per_cluster["group"][row].astype("str"),
+            color=my_palette(row),
+        )
     fig.suptitle(title, fontsize=18, y=1.04)
     plt.tight_layout()
 
 
-def plot_cluster_hist(data, title, metric, cluster_col='cluster',
-                      val_col='Standardized Metric Value', metric_col='Metric',
-                      cmap='Paired', bins=6):
+def plot_cluster_hist(
+    data,
+    title,
+    metric,
+    cluster_col="cluster",
+    val_col="Standardized Metric Value",
+    metric_col="Metric",
+    cmap="Paired",
+    bins=6,
+):
     """Requires melted dataframe as input and plots histograms by cluster
     """
     cluster_list = sorted(list(set(data[cluster_col].values)))
-    
-    fig, ax = plt.subplots(figsize=(12,4))
+
+    fig, ax = plt.subplots(figsize=(12, 4))
 
     plt.title(title, fontsize=18)
-    
+
     for clus in cluster_list:
         plt.hist(
-            data.loc[(data[metric_col]==metric) & (data[cluster_col]==clus)][val_col],
+            data.loc[
+                (data[metric_col] == metric) & (data[cluster_col] == clus)
+            ][val_col],
             bins=bins,
             alpha=0.5,
             label=clus,
         )
-    
+
     plt.xlabel(val_col, fontsize=14)
-    plt.ylabel('number of observations', fontsize=14)
-    plt.legend(edgecolor='k', title=cluster_col, fontsize=12)
-    plt.grid(':', alpha=0.5)
+    plt.ylabel("number of observations", fontsize=14)
+    plt.legend(edgecolor="k", title=cluster_col, fontsize=12)
+    plt.grid(":", alpha=0.5)
     plt.tight_layout()
     plt.show()
 
 
-def plot_umap_scatter(x, y, color, title, scale_var, colormap='Reds',
-                      xlabel='1st dimension', ylabel='2nd dimension'):
+def plot_umap_scatter(
+    x,
+    y,
+    color,
+    title,
+    scale_var,
+    colormap="Reds",
+    xlabel="1st dimension",
+    ylabel="2nd dimension",
+):
     """plots scatterplot with color scale
     """
 
@@ -607,25 +690,26 @@ def plot_umap_scatter(x, y, color, title, scale_var, colormap='Reds',
     plt.title(title, fontsize=18)
 
     scatter = plt.scatter(
-        x, y,
-        c=color,
-        alpha=0.5,
-        s=120,
-        edgecolor='k',
-        cmap=colormap
+        x, y, c=color, alpha=0.5, s=120, edgecolor="k", cmap=colormap
     )
     plt.xlabel(xlabel, fontsize=14)
     plt.ylabel(ylabel, fontsize=14)
-    cbar = plt.colorbar(scatter, label=scale_var.replace('_', ' '))
-    ax.grid(':', alpha=0.5)
+    cbar = plt.colorbar(scatter, label=scale_var.replace("_", " "))
+    ax.grid(":", alpha=0.5)
     plt.tight_layout()
     plt.show()
-    
 
-def plot_category_scatter(data, x_col, y_col, cat_col, title,
-                          colormap='Paired', xlabel='1st dimension',
-                          ylabel='2nd dimension'
-                         ):
+
+def plot_category_scatter(
+    data,
+    x_col,
+    y_col,
+    cat_col,
+    title,
+    colormap="Paired",
+    xlabel="1st dimension",
+    ylabel="2nd dimension",
+):
     """plots scatterplot with categories colors
     """
     cat_list = sorted(list(set(data[cat_col].values)))
@@ -636,19 +720,18 @@ def plot_category_scatter(data, x_col, y_col, cat_col, title,
 
     for cat in cat_list:
         plt.scatter(
-            data.loc[data[cat_col]==cat][x_col],
-            data.loc[data[cat_col]==cat][y_col],
+            data.loc[data[cat_col] == cat][x_col],
+            data.loc[data[cat_col] == cat][y_col],
             alpha=0.5,
             s=120,
-            edgecolor='k',
-            label=cat
+            edgecolor="k",
+            label=cat,
         )
     plt.legend(
-        fontsize=10, loc='center left',
-        bbox_to_anchor=(1, 0.5), frameon=False
+        fontsize=10, loc="center left", bbox_to_anchor=(1, 0.5), frameon=False
     )
     plt.xlabel(xlabel, fontsize=14)
     plt.ylabel(ylabel, fontsize=14)
-    ax.grid(':', alpha=0.5)
+    ax.grid(":", alpha=0.5)
     plt.tight_layout()
     plt.show()

@@ -8,22 +8,22 @@ channels:
 - defaults
 
 dependencies:
-- altair
-- arviz
+# - altair
+# - arviz
 - bokeh
-- beautifulsoup4
-- dash
-- gensim
-- holoviews
-- ipytest
-- IPython
-- ipywidgets
-- json
+# - beautifulsoup4
+# - dash
+# - gensim
+# - holoviews
+# - ipytest
+# - IPython
+# - ipywidgets
+# - json
 - jupyter
-- jupyterlab
+# - jupyterlab
 - matplotlib
-- mkl-service
-- nltk
+# - mkl-service
+# - nltk
 - numpy
 - pandas
 - pillow
@@ -31,21 +31,21 @@ dependencies:
 - plotly
 # students will install this from repo
 # - pyESN
-- pymc3
+# - pymc3
 - python>=3.6
-- requests
+# - requests
 - scipy
-- scikit-image
+# - scikit-image
 - scikit-learn
 - seaborn
-- spacy
+# - spacy
 - statsmodels
 - tensorflow>=2.0.0
 
 - pip:
     - gap-stat
-    - gym
-    - progressbar2
+    # - gym
+    # - progressbar2
     - pygam
     - keras-bert
     - graphviz

@@ -31,10 +31,16 @@ import numpy as np
 from sklearn.preprocessing import RobustScaler
 
 
-def scale_features(train_df, val_df, exclude_scale_cols=[],
-                   scaler=RobustScaler,
-                   scale_before_func=None, scale_after_func=None,
-                   reapply_scaler=False, **kwargs):
+def scale_features(
+    train_df,
+    val_df,
+    exclude_scale_cols=[],
+    scaler=RobustScaler,
+    scale_before_func=None,
+    scale_after_func=None,
+    reapply_scaler=False,
+    **kwargs
+):
     """Scales val_df features based on train_df and returns scaled dataframe
     
     Accepts various sklearn scalers and allows you to specify features you do
@@ -77,36 +83,32 @@ def scale_features(train_df, val_df, exclude_scale_cols=[],
     """
     # create list of columns to ensure proper ordering of columns for output df
     col_list = list(train_df)
-    
+
     # create list of non-binary column names for scaling
     scaled_columns = train_df.columns.difference(exclude_scale_cols)
-    
+
     scaled_val_df = val_df.copy()[scaled_columns]
 
     # apply initial scaling if specified
     if scale_before_func:
         train_df = scale_before_func(train_df.copy()[scaled_columns])
         scaled_val_df = scale_before_func(scaled_val_df.copy())
-        
+
     # initialize list for storing fitted scaler objects
     Scaler = []
-    
+
     # create Scaler instance fitted on non-binary train data
-    Scaler.append(
-        scaler(**kwargs).fit(train_df[scaled_columns])
-    )
-    
+    Scaler.append(scaler(**kwargs).fit(train_df[scaled_columns]))
+
     # scale val_df and convert to dataframe with column names
     scaled_train_df = pd.DataFrame(
-        Scaler[0].transform(train_df[scaled_columns]),
-        columns=scaled_columns,
+        Scaler[0].transform(train_df[scaled_columns]), columns=scaled_columns,
     )
 
     scaled_val_df = pd.DataFrame(
-        Scaler[0].transform(scaled_val_df),
-        columns=scaled_columns,
+        Scaler[0].transform(scaled_val_df), columns=scaled_columns,
     )
-    
+
     # apply initial scaling if specified
     if scale_after_func:
         scaled_train_df = scale_after_func(scaled_train_df.copy())
@@ -114,24 +116,21 @@ def scale_features(train_df, val_df, exclude_scale_cols=[],
 
     # create StandardScaler instance fitted on non-binary train data
     if reapply_scaler:
-        Scaler.append(
-            scaler(**kwargs).fit(scaled_train_df[scaled_columns])
-        )
-        
+        Scaler.append(scaler(**kwargs).fit(scaled_train_df[scaled_columns]))
+
         scaled_val_df = pd.DataFrame(
-            Scaler[1].transform(scaled_val_df),
-            columns=scaled_columns,
+            Scaler[1].transform(scaled_val_df), columns=scaled_columns,
         )
 
     # merge scaled columns with unscaled columns
     scaled_df = pd.concat(
         [
             val_df.drop(scaled_columns, axis=1).reset_index(drop=True),
-            scaled_val_df.copy()
+            scaled_val_df.copy(),
         ],
         axis=1,
     )[col_list]
-    
+
     # Return full scaled val dataframe and fitted Scaler object list
     return scaled_df, Scaler
 
@@ -145,7 +144,7 @@ def sigmoid(x):
     :return: The transformed dataframe, series, array, or value depending on
              the type of original input x object
     """
-    return 1/(1 + np.exp(-x)) 
+    return 1 / (1 + np.exp(-x))
 
 
 def log_plus_one(x):
@@ -160,9 +159,15 @@ def log_plus_one(x):
     return np.log(x + 1)
 
 
-def encode_categories(data, colname, one_hot=True, drop_cat=None,
-                      cat_list=None, drop_original_col=False,
-                      append_colname=None):
+def encode_categories(
+    data,
+    colname,
+    one_hot=True,
+    drop_cat=None,
+    cat_list=None,
+    drop_original_col=False,
+    append_colname=None,
+):
     """Encodes categorical variable column and appends values to dataframe
 
     This function offers the option to either one-hot-encode (0,1) or
@@ -223,24 +228,22 @@ def encode_categories(data, colname, one_hot=True, drop_cat=None,
         cat_dummies_df = pd.get_dummies(data_copy[colname])[cat_list]
         # append columns to original dataframe
         if append_colname:
-            cat_list = ['{}_{}'.format(append_colname, cat) for cat in cat_list]
+            cat_list = ["{}_{}".format(append_colname, cat) for cat in cat_list]
         data_copy[cat_list] = cat_dummies_df
 
     else:
         # create dictionary for encoding categories to numerical values
-        cat_map_dict = {
-            cat: i for i, cat in enumerate(cat_list_ordered)
-        }
+        cat_map_dict = {cat: i for i, cat in enumerate(cat_list_ordered)}
         # generate encoded labels in one single 'coded' column
-        data_copy['{}_Code'.format(colname)] = data_copy[colname].map(
-            cat_map_dict
-        ).fillna(data_copy[colname])
+        data_copy["{}_Code".format(colname)] = (
+            data_copy[colname].map(cat_map_dict).fillna(data_copy[colname])
+        )
 
     if drop_original_col:
         # drop original category column if specified
         data_copy = data_copy.drop(columns=colname)
-    
+
     # replace spaces in column names with underscores
-    data_copy.columns = [col.replace(' ', '_') for col in data_copy.columns]
+    data_copy.columns = [col.replace(" ", "_") for col in data_copy.columns]
 
     return data_copy

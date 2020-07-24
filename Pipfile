@@ -1,0 +1,37 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+tox = "*"
+pytest = "*"
+pytest-cov = "*"
+flake8 = "*"
+sphinx = "*"
+black = "==19.10b0"
+
+[packages]
+caproj = {editable = true,path = "."}
+bokeh = "*"
+gap-stat = "*"
+graphviz = "*"
+jupyter = "*"
+keras-bert = "*"
+matplotlib = "*"
+numpy = "*"
+pandas = "*"
+pillow = "*"
+plotly = "*"
+pygam = "*"
+scikit-learn = "*"
+scipy = "*"
+seaborn = "*"
+statsmodels = "*"
+tensorflow = "*"
+tqdm = "*"
+umap-learn = "*"
+hdbscan = "*"
+
+[requires]
+python_version = "3.7"
