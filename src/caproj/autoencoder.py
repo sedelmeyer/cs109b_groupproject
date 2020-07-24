@@ -1,34 +1,26 @@
 """
+caproj.autoencoder
+~~~~~~~~~~~~~~~~~~
+
 This module contains functions for visualizing data and model results
 
-PARAMETERS
+**Module variables:**
 
-    random_seed = 109
-        This module sets a random seed for numpy.random.seed() and
-        tensorflow.random.set_seed() to help ensure reproducible results
+.. autosummary::
 
-FUNCTIONS
+   random_seed
 
-    build_dense_ae_architecture()
-        Builds and compiles a tensorflow.keras dense autoencoder network
 
-    plot_history()
-        Plot training and validation loss using keras history object
+**Module functions:**
+
+.. autosummary::
+
+   build_dense_ae_architecture
+   plot_history
 
 """
-
-# import and set seeds for reproducible results
-random_seed = 109
-
 from numpy.random import seed
-
-seed(random_seed)
-
 import tensorflow as tf
-
-tf.random.set_seed(random_seed)
-
-# import remaining imports
 from tensorflow.keras import Input
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Dropout
@@ -37,16 +29,25 @@ from tensorflow.keras.optimizers import Adam
 import numpy as np
 import matplotlib.pyplot as plt
 
+random_seed = 109
+"""Import and set seed for reproducible results"""
+
+seed(random_seed)
+
+tf.random.set_seed(random_seed)
+
 
 def build_dense_ae_architecture(
     input_dim, encoding_dim, droprate, learning_rate, name
 ):
     """Builds and compiles a tensorflow.keras dense autoencoder network
 
-    NOTE: This network architecture was designed for the specific purpose of
-          encoding a dataset of 1D embeddings. Therefore, the input dimension
-          must be 1D with a length that equals the number of values in any
-          single observation's embedding
+    NOTE:
+
+       This network architecture was designed for the specific purpose of
+       encoding a dataset of 1D embeddings. Therefore, the input dimension
+       must be 1D with a length that equals the number of values in any
+       single observation's embedding
 
     :param input_dim: integer, the length of each embedding (must all be of
                       the same length)
@@ -57,7 +58,6 @@ def build_dense_ae_architecture(
     :param learning_rate: float, the desired learning rate for the Adam
                           optimizer used while compiling the model
     :param name: string, the desired name of the resulting network
-
     :return: tuple of 3 tf.keras model object, [0] full autoencoder model,
              [1] encoder model, [2] decoder model
     """
@@ -106,7 +106,7 @@ def build_dense_ae_architecture(
     decoder = Model(latent_input, decoded, name="{}_decoder".format(name))
 
     # define full non-linear autoencoder model
-    ae = Sequential([encoder, decoder,], name=name)
+    ae = Sequential([encoder, decoder], name=name)
 
     # set loss, optimizer, and compile model
     loss = tf.keras.losses.mean_squared_error
@@ -119,7 +119,7 @@ def build_dense_ae_architecture(
 
 def plot_history(history, title, val_name="validation", loss_type="MSE"):
     """Plot training and validation loss using keras history object
-    
+
     :param history: keras training history object or dict. If a dict is
                     used, it must have two keys named 'loss' and 'val_loss'
                     for which the corresponding values must be lists or
@@ -129,7 +129,6 @@ def plot_history(history, title, val_name="validation", loss_type="MSE"):
                      legend (default 'validation')
     :param loss_type: string, the loss type name to be printed as the
                       y axis label (default 'MSE')
-    
     :return: a line plot illustrating model training history, no
              objects are returned
     """
