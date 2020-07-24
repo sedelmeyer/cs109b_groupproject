@@ -4,9 +4,11 @@ NYC Capital Projects
 This project is an exploratory analysis experimenting with different approaches to modeling and feature engineering to predict budget and schedule outcomes for New York City-managed capital projects with budgets greater than $25 million, using a `data set hosted by NYC Open Data`_.
 
 
-.. image:: https://github.com/sedelmeyer/caproj-sandbox/workflows/build/badge.svg?branch=master
-    :target: https://github.com/sedelmeyer/caproj-sandbox/actions
+.. image:: https://github.com/sedelmeyer/nyc-capital-projects/workflows/build/badge.svg?branch=master
+    :target: https://github.com/sedelmeyer/nyc-capital-projects/actions
 
+.. image:: https://img.shields.io/badge/License-MIT-black.svg
+    :target: https://github.com/sedelmeyer/cc-pydata/blob/master/LICENSE
 
 .. contents:: Contents
   :local:
