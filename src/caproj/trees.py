@@ -20,8 +20,6 @@ tree ensemble models and visualizing the model results
    plot_adaboost_staged_scores
    calc_meanstd_logistic
    calc_meanstd_regression
-   define_train_and_test
-   expand_attributes
    plot_me
    calculate
    calc_models
@@ -51,8 +49,20 @@ def generate_adaboost_staged_scores(
 ):
     """Generates adaboost staged scores in order to find ideal number of iterations
 
-    :return: tuple of 2D np.arrays for adaboost staged scores at each iteration and
+    :param model_dict: Output fitted model dictionary generated using
+            :func:`caproj.model.generate_model_dict`
+    :type model_dict: dict
+    :param X_train: Training data X values
+    :type X_train: array-like
+    :param X_test: Test data X values
+    :type X_test: array-like
+    :param y_train: Training data y values
+    :type y_train: array-like
+    :param y_test: Test data y values
+    :type y_test: array-like
+    :return: tuple of 2D numpy arrays for adaboost staged scores at each iteration and
              each response variable, one array for training scores and one for test
+    :rtype: tuple
     """
     staged_scores_train = np.hstack(
         [
@@ -89,6 +99,20 @@ def plot_adaboost_staged_scores(
     model_dict, X_train, X_test, y_train, y_test, height=4
 ):
     """Plots the adaboost staged scores for each y variable's predictions and iteration
+
+    :param model_dict: Output fitted model dictionary generated using
+            :func:`caproj.model.generate_model_dict`
+    :type model_dict: dict
+    :param X_train: Training data X values
+    :type X_train: array-like
+    :param X_test: Test data X values
+    :type X_test: array-like
+    :param y_train: Training data y values
+    :type y_train: array-like
+    :param y_test: Test data y values
+    :type y_test: array-like
+    :param height: Height dimension of resulting plot, defaults to 4
+    :type height: int, optional
     """
     # generate staged_scores
     training_scores, test_scores = generate_adaboost_staged_scores(
@@ -163,24 +187,26 @@ def plot_adaboost_staged_scores(
 def calc_meanstd_logistic(
     X_tr, y_tr, X_te, y_te, depths: list = depths, cv: int = cv
 ):
-    """[summary]
+    """Fits and generates tree classifier results, iterated for each input depth
 
-    [extended_summary]
-
-    :param X_tr: [description]
-    :type X_tr: [type]
-    :param y_tr: [description]
-    :type y_tr: [type]
-    :param X_te: [description]
-    :type X_te: [type]
-    :param y_te: [description]
-    :type y_te: [type]
-    :param depths: [description], defaults to depths
+    :param X_tr: Training data X values
+    :type X_tr: array-like
+    :param y_tr: Training data y values
+    :type y_tr: array-like
+    :param X_te: Test data X values
+    :type X_te: array-like
+    :param y_te: Test data y values
+    :type y_te: array-like
+    :param depths: List of depths for each iterated decision tree classifier,
+            defaults to depths
     :type depths: list, optional
-    :param cv: [description], defaults to cv
+    :param cv: Number of k-folds used for cross-validation, defaults to cv
     :type cv: int, optional
-    :return: [description]
-    :rtype: [type]
+    :return: Five arrays are returned (1) mean cross-validation scores for each
+            iteration, (2) standard deviation of each cross-validation score, (3)
+            each training observation's ROC AUC score, (4) each test observation's
+            ROC AUC score, (5) each fitted classifier's model object
+    :rtype: tuple
     """
     cvmeans = []
     cvstds = []
@@ -222,24 +248,26 @@ def calc_meanstd_logistic(
 def calc_meanstd_regression(
     X_tr, y_tr, X_te, y_te, depths: list = depths, cv: int = cv
 ):
-    """[summary]
+    """Fits and generates tree regressor results, iterated for each input depth
 
-    [extended_summary]
-
-    :param X_tr: [description]
-    :type X_tr: [type]
-    :param y_tr: [description]
-    :type y_tr: [type]
-    :param X_te: [description]
-    :type X_te: [type]
-    :param y_te: [description]
-    :type y_te: [type]
-    :param depths: [description], defaults to depths
+    :param X_tr: Training data X values
+    :type X_tr: array-like
+    :param y_tr: Training data y values
+    :type y_tr: array-like
+    :param X_te: Test data X values
+    :type X_te: array-like
+    :param y_te: Test data y values
+    :type y_te: array-like
+    :param depths: List of depths for each iterated decision tree regressor,
+            defaults to depths
     :type depths: list, optional
-    :param cv: [description], defaults to cv
+    :param cv: Number of k-folds used for cross-validation, defaults to cv
     :type cv: int, optional
-    :return: [description]
-    :rtype: [type]
+    :return: Five arrays are returned (1) mean cross-validation scores for each
+            iteration, (2) standard deviation of each cross-validation score, (3)
+            each training observation's :math:`R^2` score, (4) each test observation's
+            :math:`R^2` score, (5) each fitted regressors's model object
+    :rtype: tuple
     """
     cvmeans = []
     cvstds = []
@@ -278,59 +306,11 @@ def calc_meanstd_regression(
     return cvmeans, cvstds, train_scores, test_scores, models
 
 
-def define_train_and_test(
-    data_train, data_test, attributes, response, logistic
-) -> (pd.DataFrame, pd.DataFrame):
-    """Return x and y data for train and test sets
-    """
-    X_tr = data_train[attributes]
-    y_tr = data_train[response]
-
-    X_te = data_test[attributes]
-    y_te = data_test[response]
-
-    if logistic:
-        y_tr = (y_tr > 0) * 1
-        y_te = (y_te > 0) * 1
-
-    return X_tr, X_te, y_tr, y_te
-
-
-def expand_attributes(attrs, categories):
-    """helper function to expand attributes when dummies or multuple colmuns are used
-    """
-    # update the attributes to use dummies if 'category' is included
-    if "Category" in attrs:
-        attrs.remove("Category")
-        attrs += categories
-
-    if "umap_attributes_2D_embed" in attrs:
-        attrs.remove("umap_attributes_2D_embed")
-        attrs += ["umap_attributes_2D_embed_1", "umap_attributes_2D_embed_2"]
-
-    # ensure that only 1 embedding is selected
-    count = 0
-    embedding = None
-    for i in ["umap_descr_2D_embed", "ae_descr_embed", "pca_descr_embed"]:
-        if i in attrs:
-            count += 1
-            embedding = i
-    if count > 1:
-        print("ERROR")
-        print("Only one of the three embeddings is allowed.")
-        return
-
-    if embedding in attrs:
-        attrs.remove(embedding)
-        attrs += [f"{embedding}_1", f"{embedding}_2"]
-
-    return attrs
-
-
 def plot_me(result):
     """plot the best depth finder for decision tree model
 
-    Relies on results dictionary from :func:`calculate` function.
+    :param result: Dictionary returned from the :func:`calculate` function
+    :type result: dict
     """
     depths = list(range(1, 21))
 
@@ -386,6 +366,55 @@ def plot_me(result):
             a.legend(bbox_to_anchor=(1, 1), loc="upper left", ncol=1)
 
 
+def _define_train_and_test(
+    data_train, data_test, attributes, response, logistic
+) -> (pd.DataFrame, pd.DataFrame):
+    """Return x and y data for train and test sets
+    """
+    X_tr = data_train[attributes]
+    y_tr = data_train[response]
+
+    X_te = data_test[attributes]
+    y_te = data_test[response]
+
+    if logistic:
+        y_tr = (y_tr > 0) * 1
+        y_te = (y_te > 0) * 1
+
+    return X_tr, X_te, y_tr, y_te
+
+
+def _expand_attributes(attrs, categories):
+    """Helper function to expand attributes when dummies or multuple columns are used
+    """
+    # update the attributes to use dummies if 'category' is included
+    if "Category" in attrs:
+        attrs.remove("Category")
+        attrs += categories
+
+    if "umap_attributes_2D_embed" in attrs:
+        attrs.remove("umap_attributes_2D_embed")
+        attrs += ["umap_attributes_2D_embed_1", "umap_attributes_2D_embed_2"]
+
+    # ensure that only 1 embedding is selected
+    count = 0
+    embedding = None
+    for i in ["umap_descr_2D_embed", "ae_descr_embed", "pca_descr_embed"]:
+        if i in attrs:
+            count += 1
+            embedding = i
+    if count > 1:
+        print("ERROR")
+        print("Only one of the three embeddings is allowed.")
+        return
+
+    if embedding in attrs:
+        attrs.remove(embedding)
+        attrs += [f"{embedding}_1", f"{embedding}_2"]
+
+    return attrs
+
+
 def calculate(
     data_train,
     data_test,
@@ -394,7 +423,28 @@ def calculate(
     responses_list: list,
     logistic=True,
 ):
-    """Returns the results of using a set of attributes on the data
+    """Calculate decision tree results using a particular set of X features
+
+    :param data_train: Training dataset
+    :type data_train: array-like
+    :param data_test: Test dataset
+    :type data_test: array-like
+    :param categories: List of project categories as they appear in the data
+    :type categories: list
+    :param attributes: Column names of feature columns (i.e. each different
+            X variable under consideration)
+    :type attributes: list
+    :param responses_list: Column names of model responses (i.e. each different
+            y variable)
+    :type responses_list: list
+    :param logistic: Indicates whether to use decision tree classifier
+            (i.e. ``logistic=True``) or regressor (i.e. ``logistic=False``),
+            defaults to True
+    :type logistic: bool, optional
+    :return: Two lists containing (1) dictionaries of model results and
+            (2) fitted model dictionaries, one dictionary for each response
+            variable
+    :rtype: tuple
     """
     if logistic:
         model_type = "Logistic"
@@ -417,11 +467,11 @@ def calculate(
     results = []
     model_dict = []
     # update the attributes to use dummies if 'category' is included
-    attrs = expand_attributes(attributes.copy(), categories)
+    attrs = _expand_attributes(attributes.copy(), categories)
 
     for i, response in enumerate(responses):
 
-        X_tr, X_te, y_tr, y_te = define_train_and_test(
+        X_tr, X_te, y_tr, y_te = _define_train_and_test(
             data_train,
             data_test,
             attrs,
@@ -497,7 +547,30 @@ def calc_models(
     responses_list,
     logistic=True,
 ):
-    """iterates over all combinations of attributes to return lists of resulting models
+    """Iterate over all combinations of attributes to return lists of resulting models
+
+    :param data_train: Training dataset
+    :type data_train: array-like
+    :param data_test: Test dataset
+    :type data_test: array-like
+    :param categories: List of project categories as they appear in the data
+    :type categories: list
+    :param nondescr_attrbutes: Column names of all features not consisting of those
+            engineered from project descriptions
+    :type nondescr_attrbutes: list
+    :param descr_attributes: Column names of features engineered using project
+            descriptions
+    :type descr_attributes: list
+    :param responses_list: Column names of model responses (i.e. each different
+            y variable)
+    :type responses_list: list
+    :param logistic: Indicates whether to use decision tree classifier
+            (i.e. ``logistic=True``) or regressor (i.e. ``logistic=False``),
+            defaults to True
+    :type logistic: bool, optional
+    :return: Two list objects containing (1) lists of dictionaries of model results and
+            (2) lists of fitted model dictionaries for each iterated model
+    :rtype: tuple
     """
     results_all = []
     model_dicts = []
