@@ -1,77 +1,58 @@
 """
+caproj.trees
+~~~~~~~~~~~~
+
 This module contains functions for generating and analyzing trees and
 tree ensemble models and visualizing the model results
 
-PARAMETERS
+**Module variables:**
 
-    depths = list(range(1,21))
-        sets default depths for comparison in cross validation
+.. autosummary::
 
-    cv = 5
-        sets cross-validation kfold parameter
+   depths
+   cv
 
-FUNCTIONS
+**Module functions:**
 
-    generate_adaboost_staged_scores()
-        Generates adaboost staged scores in order to find ideal number of
-        iterations
+.. autosummary::
 
-    plot_adaboost_staged_scores()
-        Plots the adaboost staged scores for each y variable's predictions
-        and iteration
-
-    calc_meanstd_logistic()
-
-    calc_meanstd_regression()
-
-    define_train_and_test()
-        Return x and y data for train and test sets
-
-    expand_attributes()
-        helper function to expand attributes when dummies or multiple
-        columns are used
-
-    plot_me()
-        plot the best depth finder for decision tree model
-
-    calculate()
-        returns the results of using a set of attributes on the data
-
-    calc_models()
-        iterates over all combinations of attributes to return lists of
-        resulting models    
+   generate_adaboost_staged_scores
+   plot_adaboost_staged_scores
+   calc_meanstd_logistic
+   calc_meanstd_regression
+   define_train_and_test
+   expand_attributes
+   plot_me
+   calculate
+   calc_models
 
 """
-
-
 import itertools
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from tqdm.notebook import tqdm
-import matplotlib.pyplot as plt
-
-from sklearn.metrics import accuracy_score, roc_auc_score
+from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import cross_val_score
-
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
+from tqdm.notebook import tqdm
 
 from .model import generate_model_dict
 
-
-# Calculate train and test scores for model inputs and outputs
-
 depths = list(range(1, 21))
+"""sets default depths for comparison in cross validation"""
+
 cv = 5
+"""sets cross-validation kfold parameter"""
 
 
 def generate_adaboost_staged_scores(
     model_dict, X_train, X_test, y_train, y_test
 ):
     """Generates adaboost staged scores in order to find ideal number of iterations
-    
+
     :return: tuple of 2D np.arrays for adaboost staged scores at each iteration and
-             each response variable, one array for training scores and one for test 
+             each response variable, one array for training scores and one for test
     """
     staged_scores_train = np.hstack(
         [
@@ -108,7 +89,6 @@ def plot_adaboost_staged_scores(
     model_dict, X_train, X_test, y_train, y_test, height=4
 ):
     """Plots the adaboost staged scores for each y variable's predictions and iteration
-    
     """
     # generate staged_scores
     training_scores, test_scores = generate_adaboost_staged_scores(
@@ -183,6 +163,25 @@ def plot_adaboost_staged_scores(
 def calc_meanstd_logistic(
     X_tr, y_tr, X_te, y_te, depths: list = depths, cv: int = cv
 ):
+    """[summary]
+
+    [extended_summary]
+
+    :param X_tr: [description]
+    :type X_tr: [type]
+    :param y_tr: [description]
+    :type y_tr: [type]
+    :param X_te: [description]
+    :type X_te: [type]
+    :param y_te: [description]
+    :type y_te: [type]
+    :param depths: [description], defaults to depths
+    :type depths: list, optional
+    :param cv: [description], defaults to cv
+    :type cv: int, optional
+    :return: [description]
+    :rtype: [type]
+    """
     cvmeans = []
     cvstds = []
     train_scores = []
@@ -223,6 +222,25 @@ def calc_meanstd_logistic(
 def calc_meanstd_regression(
     X_tr, y_tr, X_te, y_te, depths: list = depths, cv: int = cv
 ):
+    """[summary]
+
+    [extended_summary]
+
+    :param X_tr: [description]
+    :type X_tr: [type]
+    :param y_tr: [description]
+    :type y_tr: [type]
+    :param X_te: [description]
+    :type X_te: [type]
+    :param y_te: [description]
+    :type y_te: [type]
+    :param depths: [description], defaults to depths
+    :type depths: list, optional
+    :param cv: [description], defaults to cv
+    :type cv: int, optional
+    :return: [description]
+    :rtype: [type]
+    """
     cvmeans = []
     cvstds = []
     train_scores = []
@@ -311,14 +329,12 @@ def expand_attributes(attrs, categories):
 
 def plot_me(result):
     """plot the best depth finder for decision tree model
-    
-    relies on 'result' dictionary from 'calculate' function
+
+    Relies on results dictionary from :func:`calculate` function.
     """
     depths = list(range(1, 21))
-    cv = 5
 
     responses = result.get("responses")
-    full_attributes = result.get("full_attributes")
     attributes = result.get("attributes")
     score_type = result.get("scoring")
     model_type = result.get("model_type")
@@ -341,7 +357,8 @@ def plot_me(result):
         title = f"Model: {model_type}\nResp: {response}\nAttrs: {attrs_title}"
 
         a.set_title(
-            f"{title}\nBest test {score_type.capitalize()} score: {best_score} at depth {best_depth}",
+            f"{title}\nBest test {score_type.capitalize()} score: {best_score} "
+            f"at depth {best_depth}",
             fontsize=10,
         )
         a.set_ylabel(f"{score_type.capitalize()} Score")
@@ -377,7 +394,7 @@ def calculate(
     responses_list: list,
     logistic=True,
 ):
-    """returns the results of using a set of attributes on the data
+    """Returns the results of using a set of attributes on the data
     """
     if logistic:
         model_type = "Logistic"
@@ -417,7 +434,6 @@ def calculate(
         )
 
         best_model = models[test_scores.argmax()]
-        best_score = test_scores[test_scores.argmax()]
         best_depth = test_scores.argmax() + 1
 
         desc = f"{model_type} Tree. Depth: {best_depth}"
