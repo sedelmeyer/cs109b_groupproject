@@ -1,7 +1,11 @@
 API Reference
 =============
 
-.. contents:: Contents
+.. Note::
+
+   All of the ``caproj`` modules outlined below were developed for use in an interactive enviroment, such as that of an Jupyter notebook. Additionally, no testing is in place for any of the modules outlined here. Therefore, if you wish to use functions or classes contained in any of these modules, expect very well that your mileage may vary.
+
+.. contents:: Modules
   :local:
   :depth: 2
   :backlinks: top
