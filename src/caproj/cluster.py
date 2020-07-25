@@ -344,12 +344,12 @@ def fit_dbscan(data, min_samples, eps):
 
 
 def print_dbscan_results(dbscan_dict):
-    """Prints summary results of fitted dbscan_dict
+    """Prints summary results of fitted DBSCAN results dictionary
 
-    [extended_summary]
+    Provides printed summary and plotted value counts by cluster
 
-    :param dbscan_dict: [description]
-    :type dbscan_dict: [type]
+    :param dbscan_dict: returned output dictionary from :func:`fit_dbscan`` function
+    :type dbscan_dict: dict
     """
     eps = dbscan_dict["model"].eps
     min_samples = dbscan_dict["model"].min_samples
@@ -449,6 +449,9 @@ def plot_dendrogram(
 
 
 class UMAP_embedder:
+    """Class methods for generating UMAP embedding and HDBSCAN clusters
+    """
+
     def __init__(
         self, scaler, final_cols, mapper_dict, clusterer, bert_embedding
     ):
@@ -575,7 +578,8 @@ class UMAP_embedder:
             return final_df
 
     def get_mapping_description(self, df, dimensions="all"):
-
+        """Returns UMAP final dataframe
+        """
         merged = (
             df[["PID"]]
             .merge(self.embedding, on="PID", how="left")
@@ -609,6 +613,8 @@ class UMAP_embedder:
         return final_df
 
     def get_full_df(self, df, dimensions="all"):
+        """Returns UMAP full dataframe
+        """
         attribute_df = self.get_mapping_attributes(df, dimension="all")
         description_df = self.get_mapping_description(df)
         labels, probabilities = self.get_clustering(
@@ -622,6 +628,8 @@ class UMAP_embedder:
         return full_df
 
     def get_clustering(self, attributes_2D_mapping):
+        """Returns HDBSCAN cluster labels
+        """
         assert attributes_2D_mapping.shape[1] == 2
         new_labels = hdbscan.approximate_predict(
             self.clusterer, attributes_2D_mapping
@@ -630,6 +638,8 @@ class UMAP_embedder:
 
 
 def make_spider(mean_peaks_per_cluster, row, name, color):
+    """Generate spider plot showing attributes of a single cluster
+    """
     # number of variable
     categories = list(mean_peaks_per_cluster)[1:]
     N = len(categories)
@@ -666,7 +676,7 @@ def make_spider(mean_peaks_per_cluster, row, name, color):
 
 
 def plot_spider_clusters(title, mean_peaks_per_cluster):
-    """Applies spider plot to all individuals and initialize the figure
+    """Generate spider plot subplots for all input clusters
     """
     my_dpi = 50
 
