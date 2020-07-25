@@ -1,29 +1,34 @@
 """
-This module contains functions for generating the interval metrics for each
-unique capital project
+caproj.datagen
+~~~~~~~~~~~~~~
 
-FUNCTIONS
+This module contains functions for generating the interval metrics used in modeling
+for each unique capital project
 
-    print_record_project_count()
-        Prints summary of records and unique projects in dataframe
+**Module variables:**
 
-    generate_interval_data()
-        Generates a project analysis dataset for the specified interval. The
-        resulting dataframe contains details for each unique project as well
-        as project change metrics specific to each project for the given
-        interval. 
-    
-    print_interval_dict()
-        Prints summary of data dictionary for the generate_interval_data output
+.. autosummary::
+
+   endstate_columns
+   endstate_column_rename_dict
+   info_columns
+   info_column_rename_dict
+
+**Module functions:**
+
+.. autosummary::
+
+   print_record_project_count
+   generate_interval_data
+   print_interval_dict
 
 """
 
 import os
+
 import pandas as pd
-import numpy as np
 
-# set default module parameters for the data generator
-
+#: List of column names containing info for each project's end-state
 endstate_columns = [
     "Date_Reported_As_Of",
     "Change_Years",
@@ -34,6 +39,7 @@ endstate_columns = [
     "PID_Index",
 ]
 
+#: Dictionary for mapping members of ``endstate_columns`` to new column names
 endstate_column_rename_dict = {
     "Date_Reported_As_Of": "Final_Change_Date",
     "Current_Phase": "Phase_End",
@@ -43,6 +49,7 @@ endstate_column_rename_dict = {
     "Change_Years": "Final_Change_Years",
 }
 
+#: List of column names containing descriptive info for each project
 info_columns = [
     "PID",
     "Project_Name",
@@ -59,6 +66,7 @@ info_columns = [
     "Original_Schedule",
 ]
 
+#: Dictionary for mapping members of ``info_columns`` to new column names
 info_column_rename_dict = {
     "Current_Phase": "Phase_Start",
     "Original_Budget": "Budget_Start",
@@ -68,12 +76,12 @@ info_column_rename_dict = {
 
 def print_record_project_count(dataframe, dataset="full"):
     """Prints summary of records and unique projects in dataframe
-    
+
     :param dataframe: pd.DataFrame object for the version of the NYC capital
                       projects data you wish to summarize
     :param dataset: string, accepts 'full', 'all', 'training', or 'test'
                     (default 'full')
-                    
+
     :return: prints to standard output, no objects returned
     """
     if dataset == "full":
@@ -111,9 +119,9 @@ def print_record_project_count(dataframe, dataset="full"):
 
 def ensure_datetime_and_sort(df):
     """Ensures datetime columns are formatted correctly and changes are sorted
-    
+
     :param df: pd.DataFrame of the cleaned capital projects change records data
-    
+
     :return: Original pd.DataFrame with datetime columns formatted and records
              sorted
     """
@@ -140,23 +148,27 @@ def extract_project_details(
     use_record=0,
     record_index="PID_Index",
 ):
-    """Generates a dataframe with project details for each unique PID 
+    """Generates a dataframe with project details for each unique PID
 
-    :param df: pd.DataFrame of the cleaned capital projects change records data
+    :param df: The cleaned capital projects change records data
+    :type df: dataframe
     :param copy_columns: list of the names of columns that should be copied
-                         containing primary information about each project 
+                         containing primary information about each project,
+                         defaults to info_columns
+    :type copy_columns: list, optional
     :param column_rename_dict: dict of column name mappings to rename copied
-                               columns
+                               columns, defaults to info_column_rename_dict
+    :type column_rename_dict: dict, optional
     :param use_record: integer record_index value to use as the basis the
-                       resulting project info (default use_record=0,
-                       indicating that the first chronological record for
-                       each project will be used)
-    :param record_index: string indicating the column name to use for the
-                         record_index referenced use_record (default
-                         record_index='PID_Index')
-
-    :return: pd.DataFrame containing the primary project details for each
+                       resulting project info, defaults to 0 (indicating that
+                       the first chronological record for each project will be used)
+    :type use_record: int, optional
+    :param record_index: indicates the column name to use for the
+                         record_index referenced use_record, defaults to "PID_Index"
+    :type record_index: str, optional
+    :return: dataframe containing the primary project details for each
              unique PID, and the PID is set as the index
+    :rtype: dataframe
     """
     df_details = df.copy().loc[df[record_index] == use_record][copy_columns]
 
@@ -181,7 +193,7 @@ def subset_project_changes(
                                  to include changes for each project (default
                                  change_year_interval=3)
     :param change_col: string, name of column containing change year indicators
-                       (default change_col='Change_Year') 
+                       (default change_col='Change_Year')
     :param project_age_col: string, name of column containing current age of
                             each project at the time the dataset was compiled
                             (default project_age_col='Current_Project_Year')
@@ -241,7 +253,7 @@ def project_interval_endstate(
 
     :param df: pd.DataFrame of the cleaned capital projects change records data
     :param keep_columns: list of column names for columns that should be kept
-                         as part of the resulting dataframe (default 
+                         as part of the resulting dataframe (default
                          keep_columns=endstate_columns module variable)
     :param column_rename_dict: dict mapping existing column names to the new
                                names to which they should be named (default
@@ -255,7 +267,7 @@ def project_interval_endstate(
     :param record_index: string name of column containing PID ordinal
                          indices (defaul record_index='PID_Index')
     :param change_col: string, name of column containing change year indicators
-                       (default change_col='Change_Year') 
+                       (default change_col='Change_Year')
     :param project_age_col: string, name of column containing current age of
                             each project at the time the dataset was compiled
                             (default project_age_col='Current_Project_Year')
@@ -265,7 +277,7 @@ def project_interval_endstate(
                            equal-to-or-older-than the change_year_interval year
                            If True, >= is used for subsetting, if False > is
                            used (default inclusive_stop=True)
-    
+
     :return: pd.DataFrame containing endstate data for each unique project,
              the index is set to the PID
     """
@@ -314,7 +326,7 @@ def add_change_features(df):
 
     :param df: pd.DataFrame containing joined project interval data output
                from the join_data_endstate() function
-    
+
     :return: Copy of input pd.DataFrame with the new metrics appended as
              additional columns
     """
@@ -383,18 +395,18 @@ def generate_interval_data(
 
     NOTE:
 
-        If you specify to_csv=True, the default bahavior will be to
+        If you specify ``to_csv=True``, the default bahavior will be to
         save the resulting dataframe as:
 
-        ../data/interim/NYC_capital_projects_{predict_interval}yr.csv
+        ``../data/interim/NYC_capital_projects_{predict_interval}yr.csv``
 
-        or if change_year_interval=None:
-        
-        ../data/interim/NYC_capital_projects_all.csv
+        or if ``change_year_interval=None``:
 
-        The save_dir and custom_filename arguments allow you to change
-        this to_csv behavior, however using them is not recommended
-        for the sake of file naming consistency in this project. 
+        ``../data/interim/NYC_capital_projects_all.csv``
+
+        The ``save_dir`` and ``custom_filename`` arguments allow you to change
+        this ``to_csv`` behavior, however using them is not recommended
+        for the sake of file naming consistency in this project.
 
     :param data: pd.DataFrame of the cleaned capital projects change
                  records data
@@ -413,7 +425,7 @@ def generate_interval_data(
                    should be saved to disk (default to_csv=False)
     :param save_path: string or None, indicating the path to which the
                       resulting dataframe should be saved to .csv, if None
-                      the dataframe is not saved, just returned (default 
+                      the dataframe is not saved, just returned (default
                       save_path=None)
     :param custom_filename: string or None, indicating whether to name the
                             resulting .csv file something other than the
@@ -483,9 +495,9 @@ def print_interval_dict(
 
     :param datadict_dir: optional string indicating directory location of
                          target data dictionary (default
-                         '../references/data_dicts/') 
+                         ``../references/data_dicts/``)
     :param datadict_filename: optional string indicating filename of target
-                              data dict (default 'data_dict_interval.csv')
+                              data dict (default ``data_dict_interval.csv``)
 
     :return: No objects are returned, printed output only
     """
