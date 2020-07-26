@@ -151,7 +151,7 @@ def extract_project_details(
     """Generates a dataframe with project details for each unique PID
 
     :param df: The cleaned capital projects change records data
-    :type df: dataframe
+    :type df: pd.DataFrame
     :param copy_columns: list of the names of columns that should be copied
                          containing primary information about each project,
                          defaults to info_columns
@@ -168,7 +168,7 @@ def extract_project_details(
     :type record_index: str, optional
     :return: dataframe containing the primary project details for each
              unique PID, and the PID is set as the index
-    :rtype: dataframe
+    :rtype: pd.DataFrame
     """
     df_details = df.copy().loc[df[record_index] == use_record][copy_columns]
 
