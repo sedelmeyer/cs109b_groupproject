@@ -374,7 +374,7 @@ def print_dbscan_results(dbscan_dict):
     )
 
     # plot distribution of labels
-    plot_value_counts(dbscan_dict["cluster_counts"], "DBSCAN cluster")
+    plot_value_counts(dbscan_dict["cluster_counts"])
     plt.title(
         r"DBSCAN clustering results, min samples$={}$ and $\epsilon={}$"
         r"".format(min_samples, eps),
