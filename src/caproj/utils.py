@@ -1,14 +1,16 @@
-from umap import UMAP
+"""
+caproj.utils
+~~~~~~~~~~~~
+
+This module contains utlility functions for performaing HDBSCAN and UMAP analyses
+
+"""
+import logging
+
 import hdbscan
 import matplotlib.pyplot as plt
-import seaborn as sns
 import plotly.express as px
 import numpy as np
-
-# import xgboost as xgb
-# import shap
-from tqdm.auto import tqdm
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     roc_auc_score,
     f1_score,
@@ -16,10 +18,19 @@ from sklearn.metrics import (
     plot_confusion_matrix,
     classification_report,
 )
-import sklearn
-import pandas as pd
-from IPython.utils import io
-import contextlib
+from umap import UMAP
+
+# imports not installed in environment
+# NOTE: code using these libraries is commented out below
+# import xgboost as xgb
+# import shap
+
+# Unused imports required for commented-out functions
+# import contextlib
+# from IPython.utils.capture import capture_output
+# import pandas as pd
+# from sklearn.model_selection import train_test_split
+# from tqdm.auto import tqdm
 
 
 def predict_ensemble(ensemble, X):
@@ -27,7 +38,8 @@ def predict_ensemble(ensemble, X):
     predict_ensemble runs the X data set through
     each classifier in the ensemble list to get predicted
     probabilities.
-    Those are then averaged out across all classifiers. 
+
+    Those are then averaged out across all classifiers.
     """
     probs = [r.predict_proba(X)[:, 1] for r in ensemble]
     return np.vstack(probs).mean(axis=0)
@@ -47,10 +59,12 @@ def print_report(
     """
     print_report prints a comprehensive classification report
     on both validation and training set (if provided).
-    The metrics returned are AUC, F1, Precision, Recall and 
+    The metrics returned are AUC, F1, Precision, Recall and
     Confusion Matrix.
+
     It accepts both single classifiers and ensembles.
-    Results are dependent on the probability threshold t 
+
+    Results are dependent on the probability threshold
     applied to individual predictions.
     """
     #     X_train = X_train.values
@@ -104,104 +118,107 @@ def print_report(
     }
 
 
-def train_output_metrics(
-    X,
-    y,
-    *,
-    test_size=0.3,
-    name,
-    path=None,
-    no_seed=False,
-    fitted=None,
-    show_output=True,
-    early_stopping,
-    model=None,
-    **kwargs,
-):
-    if no_seed:
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=test_size, stratify=y
-        )
-    else:
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=test_size, random_state=42, stratify=y
-        )
+# def train_output_metrics(
+#     X,
+#     y,
+#     *,
+#     test_size=0.3,
+#     name,
+#     path=None,
+#     no_seed=False,
+#     fitted=None,
+#     show_output=True,
+#     early_stopping,
+#     model=None,
+#     **kwargs,
+# ):
+#     if no_seed:
+#         X_train, X_test, y_train, y_test = train_test_split(
+#             X, y, test_size=test_size, stratify=y
+#         )
+#     else:
+#         X_train, X_test, y_train, y_test = train_test_split(
+#             X, y, test_size=test_size, random_state=42, stratify=y
+#         )
 
-    if not fitted:
+#     if not fitted:
 
-        if not model:
-            model = xgb.XGBClassifier(
-                verbosity=0, **kwargs
-            )  # xgb.XGBClassifier(n_estimators=100,  subsample=0.8, colsample_bytree=0.5)
-        eval_set = [(X_train, y_train), (X_test, y_test)]
-        eval_metric = ["error", "logloss", "auc"]
+#         if not model:
+#             model = xgb.XGBClassifier(verbosity=0, **kwargs)
+#            # xgb.XGBClassifier(
+#            #     n_estimators=100,  subsample=0.8, colsample_bytree=0.5
+#            # )
+#         eval_set = [(X_train, y_train), (X_test, y_test)]
+#         eval_metric = ["error", "logloss", "auc"]
 
-        # check if multi-label classification
-        if "num_class" in kwargs.keys():
-            eval_metric += ["merror", "mlogloss"]
+#         # check if multi-label classification
+#         if "num_class" in kwargs.keys():
+#             eval_metric += ["merror", "mlogloss"]
 
-        with contextlib.nullcontext() if show_output else io.capture_output() as captured:
-            print(f"extra XGBoost kwargs: {kwargs}")
-            print(X_train.shape, y_train.shape)
-            print(eval_metric)
+#         with contextlib.nullcontext() if show_output else capture_output():
+#             print(f"extra XGBoost kwargs: {kwargs}")
+#             print(X_train.shape, y_train.shape)
+#             print(eval_metric)
 
-            if early_stopping:
-                fitted = model.fit(
-                    X_train,
-                    y_train,
-                    early_stopping_rounds=5,
-                    eval_metric=eval_metric,
-                    eval_set=eval_set,
-                )
+#             if early_stopping:
+#                 fitted = model.fit(
+#                     X_train,
+#                     y_train,
+#                     early_stopping_rounds=5,
+#                     eval_metric=eval_metric,
+#                     eval_set=eval_set,
+#                 )
 
-            else:
-                fitted = model.fit(
-                    X_train,
-                    y_train,
-                    eval_metric=["error", "logloss", "auc", "aucpr", "map"],
-                    eval_set=eval_set,
-                )
+#             else:
+#                 fitted = model.fit(
+#                     X_train,
+#                     y_train,
+#                     eval_metric=["error", "logloss", "auc", "aucpr", "map"],
+#                     eval_set=eval_set,
+#                 )
 
-        results = model.evals_result()
-    if show_output:
-        logging.info(f"train size:{1- test_size}, test_size:{test_size}")
-        logging.info(
-            f"train case/control num {y_train.value_counts()[1]}/{y_train.value_counts()[0]}"
-        )
-        logging.info(
-            f"test case/control num  {y_test.value_counts()[1]}/{y_test.value_counts()[0]}"
-        )
+#         results = model.evals_result()
+#     if show_output:
+#         logging.info(f"train size:{1- test_size}, test_size:{test_size}")
+#         logging.info(
+#             f"train case/control num "
+#             f"{y_train.value_counts()[1]}/{y_train.value_counts()[0]}"
+#         )
+#         logging.info(
+#             f"test case/control num  "
+#             f"{y_test.value_counts()[1]}/{y_test.value_counts()[0]}"
+#         )
 
-    metrics_dict = print_report(
-        model,
-        X_test,
-        y_test,
-        t=0.5,
-        X_train=X_train,
-        y_train=y_train,
-        show_output=show_output,
-    )
+#     metrics_dict = print_report(
+#         model,
+#         X_test,
+#         y_test,
+#         t=0.5,
+#         X_train=X_train,
+#         y_train=y_train,
+#         show_output=show_output,
+#     )
 
-    if path:
-        dump(fitted, open(path, "wb"))
-    explainer = shap.TreeExplainer(model)
-    shap_values = explainer.shap_values(X)
-    shap_values_non_zero = pd.DataFrame(shap_values, columns=X.columns).loc[
-        :, shap_values.sum(axis=0) != 0
-    ]
-    important_feat = (
-        np.abs(shap_values_non_zero).mean().sort_values(ascending=False)
-    )
+#     if path:
+#         dump(fitted, open(path, "wb"))
+#     explainer = shap.TreeExplainer(model)
+#     shap_values = explainer.shap_values(X)
+#     shap_values_non_zero = pd.DataFrame(shap_values, columns=X.columns).loc[
+#         :, shap_values.sum(axis=0) != 0
+#     ]
+#     important_feat = (
+#         np.abs(shap_values_non_zero).mean().sort_values(ascending=False)
+#     )
 
-    formatted_name = name.format()
-    important_feat.name = f"{name}_shap_vals"
-    important_feat = important_feat.to_frame()
-    return {
-        "shap_df": shap_values_non_zero,
-        "important_feat": important_feat,
-        "metrics": metrics_dict,
-        "model": model,
-    }
+#     formatted_name = name.format()
+#     important_feat.name = f"{name}_shap_vals"
+#     important_feat = important_feat.to_frame()
+#     return {
+#         "shap_df": shap_values_non_zero,
+#         "important_feat": important_feat,
+#         "metrics": metrics_dict,
+#         "model": model,
+#     }
 
 
 # def train_multi_params(*args, param_dict:dict=None, func=None, **kwargs):
@@ -216,28 +233,47 @@ def train_output_metrics(
 #                 results[key][val] = func(*args,**new_dict)
 
 
-def repeat_train(
-    X, y, num_times, different_train_test_split, name, model=None, **kwargs
-):
-    result_list = []
-    print(f"Extra params: {kwargs}")
-    for i in tqdm(range(num_times), f"Training {num_times} models"):
-        result_dict = train_output_metrics(
-            X,
-            y,
-            name="base_model",
-            no_seed=different_train_test_split,
-            early_stopping=True,
-            model=model,
-            **kwargs,
-        )
-        result_list.append(result_dict)
-    auc_list = [
-        metric_dict["metrics"]["test"]["AUC"] for metric_dict in result_list
-    ]
-    auc_df = pd.DataFrame({"AUC": auc_list, "dataset": name})
-    fig = px.violin(auc_df, box=True, y="AUC", color="dataset")
-    return {"AUC": auc_df, "result_list": result_list, "fig": fig}
+# def repeat_train(
+#     X, y, num_times, different_train_test_split, name, model=None, **kwargs
+# ):
+#     """[summary]
+
+#     [extended_summary]
+
+#     :param X: [description]
+#     :type X: [type]
+#     :param y: [description]
+#     :type y: [type]
+#     :param num_times: [description]
+#     :type num_times: [type]
+#     :param different_train_test_split: [description]
+#     :type different_train_test_split: [type]
+#     :param name: [description]
+#     :type name: [type]
+#     :param model: [description], defaults to None
+#     :type model: [type], optional
+#     :return: [description]
+#     :rtype: [type]
+#     """
+#     result_list = []
+#     print(f"Extra params: {kwargs}")
+#     for i in tqdm(range(num_times), f"Training {num_times} models"):
+#         result_dict = train_output_metrics(
+#             X,
+#             y,
+#             name="base_model",
+#             no_seed=different_train_test_split,
+#             early_stopping=True,
+#             model=model,
+#             **kwargs,
+#         )
+#         result_list.append(result_dict)
+#     auc_list = [
+#         metric_dict["metrics"]["test"]["AUC"] for metric_dict in result_list
+#     ]
+#     auc_df = pd.DataFrame({"AUC": auc_list, "dataset": name})
+#     fig = px.violin(auc_df, box=True, y="AUC", color="dataset")
+#     return {"AUC": auc_df, "result_list": result_list, "fig": fig}
 
 
 def draw_umap(
@@ -253,6 +289,33 @@ def draw_umap(
     use_plotly=False,
     **kwargs,
 ):
+    """[summary]
+
+    [extended_summary]
+
+    :param data: [description]
+    :type data: [type]
+    :param n_neighbors: [description], defaults to 15
+    :type n_neighbors: int, optional
+    :param min_dist: [description], defaults to 0.1
+    :type min_dist: float, optional
+    :param c: [description], defaults to None
+    :type c: [type], optional
+    :param n_components: [description], defaults to 2
+    :type n_components: int, optional
+    :param metric: [description], defaults to "euclidean"
+    :type metric: str, optional
+    :param title: [description], defaults to ""
+    :type title: str, optional
+    :param plot: [description], defaults to True
+    :type plot: bool, optional
+    :param cmap: [description], defaults to None
+    :type cmap: [type], optional
+    :param use_plotly: [description], defaults to False
+    :type use_plotly: bool, optional
+    :return: [description]
+    :rtype: [type]
+    """
     fit = UMAP(
         n_neighbors=n_neighbors,
         min_dist=min_dist,
@@ -313,14 +376,13 @@ def cluster_hdbscan(
             s=10,
             alpha=0.5,
         )
-        scatter = plt.scatter(
+        plt.scatter(
             embedding[clustered][:, 0],
             embedding[clustered][:, 1],
             c=labels[clustered],
             s=10,
             cmap="Spectral",
         )
-        legend = scatter
         plt.legend(labels)
         plt.show()
 
@@ -417,12 +479,13 @@ def cluster_hdbscan(
 #         cluster_info_mean_peaks_per_cluster.columns = [
 #             "num_model_used_this_peak"
 #         ]
-#         cluster_info_mean_peaks_per_cluster = cluster_info_mean_peaks_per_cluster.merge(
-#             aggregate_peak_info_mean_peaks_per_cluster,
-#             how="outer",
-#             left_index=True,
-#             right_index=True,
-#         )
+#        cluster_info_mean_peaks_per_cluster = cluster_info_mean_peaks_per_cluster.
+#        merge(
+#            aggregate_peak_info_mean_peaks_per_cluster,
+#            how="outer",
+#            left_index=True,
+#            right_index=True,
+#        )
 #         cluster_info_mean_peaks_per_cluster["cluster"] = cluster_name
 
 #         final_dict[cluster_name][
@@ -528,12 +591,13 @@ def cluster_hdbscan(
 #         cluster_info_mean_peaks_per_cluster.columns = [
 #             "num_model_used_this_feature"
 #         ]
-#         cluster_info_mean_peaks_per_cluster = cluster_info_mean_peaks_per_cluster.merge(
-#             aggregate_peak_info_mean_peaks_per_cluster,
-#             how="outer",
-#             left_index=True,
-#             right_index=True,
-#         )
+#        cluster_info_mean_peaks_per_cluster = cluster_info_mean_peaks_per_cluster.
+#        merge(
+#            aggregate_peak_info_mean_peaks_per_cluster,
+#            how="outer",
+#            left_index=True,
+#            right_index=True,
+#        )
 #         cluster_info_mean_peaks_per_cluster["cluster"] = cluster_name
 
 #         final_dict[cluster_name][
