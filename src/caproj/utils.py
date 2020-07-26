@@ -4,6 +4,20 @@ caproj.utils
 
 This module contains utlility functions for performaing HDBSCAN and UMAP analyses
 
+.. Note::
+
+   Documentation is currently incomplete for each function in this module.
+
+**Module functions:**
+
+.. autosummary::
+
+   predict_ensemble
+   adjusted_classes
+   print_report
+   draw_umap
+   cluster_hdbscan
+
 """
 import logging
 
@@ -34,21 +48,18 @@ from umap import UMAP
 
 
 def predict_ensemble(ensemble, X):
-    """
-    predict_ensemble runs the X data set through
-    each classifier in the ensemble list to get predicted
-    probabilities.
+    """Run data through each classifier in ensemble list to get predicted probabilities
 
-    Those are then averaged out across all classifiers.
+    * Those are then averaged out across all classifiers.
     """
     probs = [r.predict_proba(X)[:, 1] for r in ensemble]
     return np.vstack(probs).mean(axis=0)
 
 
 def adjusted_classes(y_scores, t):
-    """
-    This function adjusts class predictions based on the prediction threshold (t).
-    Will only work for binary classification problems.
+    """Adjust class predictions based on the prediction threshold (t)
+
+    * Will only work for binary classification problems.
     """
     return [1 if y >= t else 0 for y in y_scores]
 
@@ -56,16 +67,11 @@ def adjusted_classes(y_scores, t):
 def print_report(
     m, X_valid, y_valid, t=0.5, X_train=None, y_train=None, show_output=True
 ):
-    """
-    print_report prints a comprehensive classification report
-    on both validation and training set (if provided).
-    The metrics returned are AUC, F1, Precision, Recall and
-    Confusion Matrix.
+    """Print a comprehensive classification report on both validation and training set
 
-    It accepts both single classifiers and ensembles.
-
-    Results are dependent on the probability threshold
-    applied to individual predictions.
+    * The metrics returned are AUC, F1, Precision, Recall and Confusion Matrix.
+    * It accepts both single classifiers and ensembles.
+    * Results are dependent on probability threshold applied to individual predictions.
     """
     #     X_train = X_train.values
     #     X_valid = X_valid.values
@@ -289,32 +295,7 @@ def draw_umap(
     use_plotly=False,
     **kwargs,
 ):
-    """[summary]
-
-    [extended_summary]
-
-    :param data: [description]
-    :type data: [type]
-    :param n_neighbors: [description], defaults to 15
-    :type n_neighbors: int, optional
-    :param min_dist: [description], defaults to 0.1
-    :type min_dist: float, optional
-    :param c: [description], defaults to None
-    :type c: [type], optional
-    :param n_components: [description], defaults to 2
-    :type n_components: int, optional
-    :param metric: [description], defaults to "euclidean"
-    :type metric: str, optional
-    :param title: [description], defaults to ""
-    :type title: str, optional
-    :param plot: [description], defaults to True
-    :type plot: bool, optional
-    :param cmap: [description], defaults to None
-    :type cmap: [type], optional
-    :param use_plotly: [description], defaults to False
-    :type use_plotly: bool, optional
-    :return: [description]
-    :rtype: [type]
+    """Generate plot of UMAP algorithm results based on specified arguments
     """
     fit = UMAP(
         n_neighbors=n_neighbors,
@@ -358,6 +339,8 @@ def draw_umap(
 def cluster_hdbscan(
     clusterable_embedding, min_cluster_size, viz_embedding_list
 ):
+    """Generate plot of HDBSCAN algorithm results based on specified arguments
+    """
     print(f"min_cluster size: {min_cluster_size}")
     clusterer = hdbscan.HDBSCAN(
         min_cluster_size=min_cluster_size, prediction_data=True
