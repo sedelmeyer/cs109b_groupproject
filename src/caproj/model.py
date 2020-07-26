@@ -1,21 +1,17 @@
 """
+caproj.model
+~~~~~~~~~~~~
+
 This module contains functions for generating fitted models and summarizing the results
 
-FUNCTIONS
+**Module functions:**
 
-    generate_model_dict()
-        Fits the specified model type and generates a dictionary of the results.
-        This function is compatible with sklearn, keras, pygam, and statsmodels models.
-        Statsmodels models used with this function must be called using the
-        statsmodels.formulas.api interface.
+.. autosummary::
 
-    print_model_results()
-        Summarizes model results that are stored in a generate_model_dict() output
-        model dictionary
+   generate_model_dict
+   print_model_results
 
 """
-
-import pandas as pd
 import numpy as np
 from sklearn.metrics import r2_score
 
@@ -37,19 +33,19 @@ def generate_model_dict(
     **kwargs
 ):
     """Fits the specified model type and generates a dictionary of results
-    
-    This function works for fitting and generating predictions for 
+
+    This function works for fitting and generating predictions for
     sklearn, keras, and statsmodels models. PyGam models typically also
     work by specifying the 'sklearn' model_api. For statsmodels models, only those
     that depend on the statsmodels.formula.api work.
 
-    The returned output dictionary follows this structure:
+    The returned output dictionary follows this structure::
 
         {
             'description': model_descr_string
             'model': fitted model object
             'y_variables': [y1_varname_string, y2_varname_string]
-            'formulas': [y1_formula_string, y2_formula_string] 
+            'formulas': [y1_formula_string, y2_formula_string]
                         empty list if statsmodel api is not used
             'y_values': {
                 'train': y_train array,
@@ -65,33 +61,33 @@ def generate_model_dict(
             }
 
         }
-    
+
     :param model: the uninitialized sklearn, pygam, or statsmodels regression
                   model object, or a previously compiled keras model
     :param model_descr: a brief string describing the model (cannot exceed 80
-                        characters)  
+                        characters)
     :param X_train, X_test, y_train, y_test: the datasets on which to fit and
                                              evaluate the model
     :param multioutput: Boolean, if True and sklearn model_api, will attempt
                         fitting a single multioutput model, if False or 'statsmodel'
                         model_api fits separate models for each output
     :param verbose: if True, prints resulting fitted model object (default=False)
-    :param predictions: if True the dict stores model.predict() predictions for
-                        both the X_train and X_test input dataframes
+    :param predictions: if True the dict stores ``model.predict()`` predictions for
+                        both the ``X_train`` and ``X_test`` input dataframes
     :param scores: if True, metrics scores are calculated and stored in the
                    resulting dict for both the train and test predictions
     :param model_api: specifies the api-type required for the input model, options
                       include 'sklearn', 'keras', or 'statsmodels' (default='sklearn')
     :param sm_formulas: list of statsmodels formulas defining model for each output y
-                       (include only endogenous variables, such as 'x1 + x2 + x3'
-                       instead of 'y ~ x1 + x2 + x3'), default is None
+                       (include only endogenous variables, such as ``x1 + x2 + x3``
+                       instead of ``y ~ x1 + x2 + x3``), default is None
     :param y_stored: boolean, determines whether the true y values are stored in the
                      resulting dictionary. It is convenient to keep these stored
                      alongside the predictions for easier evaluation later (default
                      is y_stored=True)
-    :param **kwargs: are optional arguments that pass directly to the model object
+    :param kwargs: are optional arguments that pass directly to the model object
                      at time of initialization, or in the case of the 'keras' model
-                     api, they pass to the keras.mdoel.fit() method
+                     api, they pass to the ``keras.mdoel.fit()`` method
 
     :return: returns a dictionary object containing the resulting fitted model
              object, resulting predictions, and train and test scores (if specified
@@ -205,12 +201,12 @@ def print_model_results(model_dict, score="both"):
     """
     Prints a model results summary from the model dictionary generated
     using the generate_model_dict() function
-    
+
     :param model_dict: dict, output dictionary from the generate_model_dict()
                        function
     :param accuracy: None, 'both', 'test', or 'train' parameters accepted,
               identifies which results to print for this particular metric
-              
+
     :return: nothing is returned, this function just prints summary output
     """
     train_opt = ["train", "both"]

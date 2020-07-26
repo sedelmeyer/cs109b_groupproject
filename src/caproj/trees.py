@@ -1,77 +1,68 @@
 """
+caproj.trees
+~~~~~~~~~~~~
+
 This module contains functions for generating and analyzing trees and
 tree ensemble models and visualizing the model results
 
-PARAMETERS
+**Module variables:**
 
-    depths = list(range(1,21))
-        sets default depths for comparison in cross validation
+.. autosummary::
 
-    cv = 5
-        sets cross-validation kfold parameter
+   depths
+   cv
 
-FUNCTIONS
+**Module functions:**
 
-    generate_adaboost_staged_scores()
-        Generates adaboost staged scores in order to find ideal number of
-        iterations
+.. autosummary::
 
-    plot_adaboost_staged_scores()
-        Plots the adaboost staged scores for each y variable's predictions
-        and iteration
-
-    calc_meanstd_logistic()
-
-    calc_meanstd_regression()
-
-    define_train_and_test()
-        Return x and y data for train and test sets
-
-    expand_attributes()
-        helper function to expand attributes when dummies or multiple
-        columns are used
-
-    plot_me()
-        plot the best depth finder for decision tree model
-
-    calculate()
-        returns the results of using a set of attributes on the data
-
-    calc_models()
-        iterates over all combinations of attributes to return lists of
-        resulting models    
+   generate_adaboost_staged_scores
+   plot_adaboost_staged_scores
+   calc_meanstd_logistic
+   calc_meanstd_regression
+   plot_me
+   calculate
+   calc_models
 
 """
-
-
 import itertools
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from tqdm.notebook import tqdm
-import matplotlib.pyplot as plt
-
-from sklearn.metrics import accuracy_score, roc_auc_score
+from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import cross_val_score
-
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
+from tqdm.notebook import tqdm
 
 from .model import generate_model_dict
 
-
-# Calculate train and test scores for model inputs and outputs
-
 depths = list(range(1, 21))
+"""sets default depths for comparison in cross validation"""
+
 cv = 5
+"""sets cross-validation kfold parameter"""
 
 
 def generate_adaboost_staged_scores(
     model_dict, X_train, X_test, y_train, y_test
 ):
     """Generates adaboost staged scores in order to find ideal number of iterations
-    
-    :return: tuple of 2D np.arrays for adaboost staged scores at each iteration and
-             each response variable, one array for training scores and one for test 
+
+    :param model_dict: Output fitted model dictionary generated using
+            :func:`caproj.model.generate_model_dict`
+    :type model_dict: dict
+    :param X_train: Training data X values
+    :type X_train: array-like
+    :param X_test: Test data X values
+    :type X_test: array-like
+    :param y_train: Training data y values
+    :type y_train: array-like
+    :param y_test: Test data y values
+    :type y_test: array-like
+    :return: tuple of 2D numpy arrays for adaboost staged scores at each iteration and
+             each response variable, one array for training scores and one for test
+    :rtype: tuple
     """
     staged_scores_train = np.hstack(
         [
@@ -108,7 +99,20 @@ def plot_adaboost_staged_scores(
     model_dict, X_train, X_test, y_train, y_test, height=4
 ):
     """Plots the adaboost staged scores for each y variable's predictions and iteration
-    
+
+    :param model_dict: Output fitted model dictionary generated using
+            :func:`caproj.model.generate_model_dict`
+    :type model_dict: dict
+    :param X_train: Training data X values
+    :type X_train: array-like
+    :param X_test: Test data X values
+    :type X_test: array-like
+    :param y_train: Training data y values
+    :type y_train: array-like
+    :param y_test: Test data y values
+    :type y_test: array-like
+    :param height: Height dimension of resulting plot, defaults to 4
+    :type height: int, optional
     """
     # generate staged_scores
     training_scores, test_scores = generate_adaboost_staged_scores(
@@ -183,6 +187,27 @@ def plot_adaboost_staged_scores(
 def calc_meanstd_logistic(
     X_tr, y_tr, X_te, y_te, depths: list = depths, cv: int = cv
 ):
+    """Fits and generates tree classifier results, iterated for each input depth
+
+    :param X_tr: Training data X values
+    :type X_tr: array-like
+    :param y_tr: Training data y values
+    :type y_tr: array-like
+    :param X_te: Test data X values
+    :type X_te: array-like
+    :param y_te: Test data y values
+    :type y_te: array-like
+    :param depths: List of depths for each iterated decision tree classifier,
+            defaults to depths
+    :type depths: list, optional
+    :param cv: Number of k-folds used for cross-validation, defaults to cv
+    :type cv: int, optional
+    :return: Five arrays are returned (1) mean cross-validation scores for each
+            iteration, (2) standard deviation of each cross-validation score, (3)
+            each training observation's ROC AUC score, (4) each test observation's
+            ROC AUC score, (5) each fitted classifier's model object
+    :rtype: tuple
+    """
     cvmeans = []
     cvstds = []
     train_scores = []
@@ -223,6 +248,27 @@ def calc_meanstd_logistic(
 def calc_meanstd_regression(
     X_tr, y_tr, X_te, y_te, depths: list = depths, cv: int = cv
 ):
+    """Fits and generates tree regressor results, iterated for each input depth
+
+    :param X_tr: Training data X values
+    :type X_tr: array-like
+    :param y_tr: Training data y values
+    :type y_tr: array-like
+    :param X_te: Test data X values
+    :type X_te: array-like
+    :param y_te: Test data y values
+    :type y_te: array-like
+    :param depths: List of depths for each iterated decision tree regressor,
+            defaults to depths
+    :type depths: list, optional
+    :param cv: Number of k-folds used for cross-validation, defaults to cv
+    :type cv: int, optional
+    :return: Five arrays are returned (1) mean cross-validation scores for each
+            iteration, (2) standard deviation of each cross-validation score, (3)
+            each training observation's :math:`R^2` score, (4) each test observation's
+            :math:`R^2` score, (5) each fitted regressors's model object
+    :rtype: tuple
+    """
     cvmeans = []
     cvstds = []
     train_scores = []
@@ -260,7 +306,67 @@ def calc_meanstd_regression(
     return cvmeans, cvstds, train_scores, test_scores, models
 
 
-def define_train_and_test(
+def plot_me(result):
+    """plot the best depth finder for decision tree model
+
+    :param result: Dictionary returned from the :func:`calculate` function
+    :type result: dict
+    """
+    depths = list(range(1, 21))
+
+    responses = result.get("responses")
+    attributes = result.get("attributes")
+    score_type = result.get("scoring")
+    model_type = result.get("model_type")
+    train_scores = result.get("train_scores")
+    test_scores = result.get("test_scores")
+    x = result.get("depths")
+
+    print(f"Model Optmized for: {result.get('responses')}")
+
+    fig, ax = plt.subplots(ncols=len(responses), figsize=(15, 6))
+
+    for i, (a, response) in enumerate(zip(np.ravel(ax), responses)):
+
+        best_depth = result.get("best_depth")
+        best_score = test_scores[best_depth - 1]
+
+        a.set_xlabel("Maximum Tree Depth")
+
+        attrs_title = "\n".join(attributes)
+        title = f"Model: {model_type}\nResp: {response}\nAttrs: {attrs_title}"
+
+        a.set_title(
+            f"{title}\nBest test {score_type.capitalize()} score: {best_score} "
+            f"at depth {best_depth}",
+            fontsize=10,
+        )
+        a.set_ylabel(f"{score_type.capitalize()} Score")
+        a.set_xticks(depths)
+
+        # Plot model train scores
+        a.plot(
+            x,
+            train_scores,
+            "b-",
+            marker="o",
+            label=f"Model Train {score_type.capitalize()} Score",
+        )
+
+        # Plot model test scores
+        a.plot(
+            x,
+            test_scores,
+            "o-",
+            marker=".",
+            label=f"Model Test {score_type.capitalize()} Score",
+        )
+
+        if i == len(responses) - 1:
+            a.legend(bbox_to_anchor=(1, 1), loc="upper left", ncol=1)
+
+
+def _define_train_and_test(
     data_train, data_test, attributes, response, logistic
 ) -> (pd.DataFrame, pd.DataFrame):
     """Return x and y data for train and test sets
@@ -278,8 +384,8 @@ def define_train_and_test(
     return X_tr, X_te, y_tr, y_te
 
 
-def expand_attributes(attrs, categories):
-    """helper function to expand attributes when dummies or multuple colmuns are used
+def _expand_attributes(attrs, categories):
+    """Helper function to expand attributes when dummies or multuple columns are used
     """
     # update the attributes to use dummies if 'category' is included
     if "Category" in attrs:
@@ -309,66 +415,6 @@ def expand_attributes(attrs, categories):
     return attrs
 
 
-def plot_me(result):
-    """plot the best depth finder for decision tree model
-    
-    relies on 'result' dictionary from 'calculate' function
-    """
-    depths = list(range(1, 21))
-    cv = 5
-
-    responses = result.get("responses")
-    full_attributes = result.get("full_attributes")
-    attributes = result.get("attributes")
-    score_type = result.get("scoring")
-    model_type = result.get("model_type")
-    train_scores = result.get("train_scores")
-    test_scores = result.get("test_scores")
-    x = result.get("depths")
-
-    print(f"Model Optmized for: {result.get('responses')}")
-
-    fig, ax = plt.subplots(ncols=len(responses), figsize=(15, 6))
-
-    for i, (a, response) in enumerate(zip(np.ravel(ax), responses)):
-
-        best_depth = result.get("best_depth")
-        best_score = test_scores[best_depth - 1]
-
-        a.set_xlabel("Maximum Tree Depth")
-
-        attrs_title = "\n".join(attributes)
-        title = f"Model: {model_type}\nResp: {response}\nAttrs: {attrs_title}"
-
-        a.set_title(
-            f"{title}\nBest test {score_type.capitalize()} score: {best_score} at depth {best_depth}",
-            fontsize=10,
-        )
-        a.set_ylabel(f"{score_type.capitalize()} Score")
-        a.set_xticks(depths)
-
-        # Plot model train scores
-        a.plot(
-            x,
-            train_scores,
-            "b-",
-            marker="o",
-            label=f"Model Train {score_type.capitalize()} Score",
-        )
-
-        # Plot model test scores
-        a.plot(
-            x,
-            test_scores,
-            "o-",
-            marker=".",
-            label=f"Model Test {score_type.capitalize()} Score",
-        )
-
-        if i == len(responses) - 1:
-            a.legend(bbox_to_anchor=(1, 1), loc="upper left", ncol=1)
-
-
 def calculate(
     data_train,
     data_test,
@@ -377,7 +423,28 @@ def calculate(
     responses_list: list,
     logistic=True,
 ):
-    """returns the results of using a set of attributes on the data
+    """Calculate decision tree results using a particular set of X features
+
+    :param data_train: Training dataset
+    :type data_train: array-like
+    :param data_test: Test dataset
+    :type data_test: array-like
+    :param categories: List of project categories as they appear in the data
+    :type categories: list
+    :param attributes: Column names of feature columns (i.e. each different
+            X variable under consideration)
+    :type attributes: list
+    :param responses_list: Column names of model responses (i.e. each different
+            y variable)
+    :type responses_list: list
+    :param logistic: Indicates whether to use decision tree classifier
+            (i.e. ``logistic=True``) or regressor (i.e. ``logistic=False``),
+            defaults to True
+    :type logistic: bool, optional
+    :return: Two lists containing (1) dictionaries of model results and
+            (2) fitted model dictionaries, one dictionary for each response
+            variable
+    :rtype: tuple
     """
     if logistic:
         model_type = "Logistic"
@@ -400,11 +467,11 @@ def calculate(
     results = []
     model_dict = []
     # update the attributes to use dummies if 'category' is included
-    attrs = expand_attributes(attributes.copy(), categories)
+    attrs = _expand_attributes(attributes.copy(), categories)
 
     for i, response in enumerate(responses):
 
-        X_tr, X_te, y_tr, y_te = define_train_and_test(
+        X_tr, X_te, y_tr, y_te = _define_train_and_test(
             data_train,
             data_test,
             attrs,
@@ -417,7 +484,6 @@ def calculate(
         )
 
         best_model = models[test_scores.argmax()]
-        best_score = test_scores[test_scores.argmax()]
         best_depth = test_scores.argmax() + 1
 
         desc = f"{model_type} Tree. Depth: {best_depth}"
@@ -481,7 +547,30 @@ def calc_models(
     responses_list,
     logistic=True,
 ):
-    """iterates over all combinations of attributes to return lists of resulting models
+    """Iterate over all combinations of attributes to return lists of resulting models
+
+    :param data_train: Training dataset
+    :type data_train: array-like
+    :param data_test: Test dataset
+    :type data_test: array-like
+    :param categories: List of project categories as they appear in the data
+    :type categories: list
+    :param nondescr_attrbutes: Column names of all features not consisting of those
+            engineered from project descriptions
+    :type nondescr_attrbutes: list
+    :param descr_attributes: Column names of features engineered using project
+            descriptions
+    :type descr_attributes: list
+    :param responses_list: Column names of model responses (i.e. each different
+            y variable)
+    :type responses_list: list
+    :param logistic: Indicates whether to use decision tree classifier
+            (i.e. ``logistic=True``) or regressor (i.e. ``logistic=False``),
+            defaults to True
+    :type logistic: bool, optional
+    :return: Two list objects containing (1) lists of dictionaries of model results and
+            (2) lists of fitted model dictionaries for each iterated model
+    :rtype: tuple
     """
     results_all = []
     model_dicts = []
