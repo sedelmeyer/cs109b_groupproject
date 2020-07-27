@@ -153,7 +153,7 @@ def plot_history(history, title, val_name="validation", loss_type="MSE"):
 
     fig, ax = plt.subplots(1, 1, figsize=(12, 5))
 
-    plt.suptitle("{}".format(title), fontsize=18)
+    plt.suptitle("{}".format(title), fontsize=18, y=1)
 
     ax.plot(x_vals, loss, "k--", label="training")
     ax.plot(x_vals, val_loss, "k-", label=val_name)
@@ -164,5 +164,5 @@ def plot_history(history, title, val_name="validation", loss_type="MSE"):
     ax.tick_params(labelsize=12)
 
     plt.legend(fontsize=14)
-    plt.tight_layout(rect=[0, 0.03, 1, 0.9])
+    plt.tight_layout()
     plt.show()
