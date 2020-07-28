@@ -130,7 +130,7 @@ def plot_hist_comps(df, metric_1, metric_2, y_log=False, bins=20):
 
     fig, ax = plt.subplots(1, 2, sharey=True, figsize=(12, 4))
 
-    plt.suptitle("Projects by {} and {}".format(*metrics_str), fontsize=18)
+    plt.suptitle("Projects by {} and {}".format(*metrics_str), fontsize=18, y=1)
 
     for (i, ax), metric_col, metric_name in zip(
         enumerate(ax), metrics_list, metrics_str
@@ -161,7 +161,7 @@ def plot_hist_comps(df, metric_1, metric_2, y_log=False, bins=20):
             if i == 0:
                 ax.set_ylabel("frequency (log scale)", fontsize=12)
 
-    plt.tight_layout(rect=[0, 0.03, 1, 0.94])
+    plt.tight_layout()
     plt.show()
 
 
@@ -371,7 +371,7 @@ def plot_true_pred(
 
     plt.suptitle(
         "Predictions and residuals vs. true values by output variable",
-        y=1.05,
+        y=1,
         fontsize=16,
     )
 
@@ -454,7 +454,7 @@ def plot_bdgt_sched_scaled(
         "Original budget and duration values vs. {} scaled values".format(
             scale_descr
         ),
-        y=1.05,
+        y=1,
         fontsize=18,
     )
 
@@ -568,8 +568,12 @@ def plot_change_trend(trend_data, pid_data, pid, interval=None):
     fig, ax = plt.subplots(2, 2, sharex=True, figsize=(12, 6))
 
     plt.suptitle(
-        r"PID {}\n{}\nCategory: {}\nBorough: {}\nOriginal Budget: \${:.2f} million\n"
-        r"Original Duration: {:,.0f} days".format(
+        r"""        PID {}
+        {}
+        Category: {}
+        Borough: {}
+        Original Budget: \${:.2f} million
+        Original Duration: {:,.0f} days""".format(
             pid,
             pid_record["Project_Name"].values[0][:88],
             pid_record["Category"].values[0],
@@ -578,7 +582,7 @@ def plot_change_trend(trend_data, pid_data, pid, interval=None):
             pid_record["Duration_Start"].values[0],
         ),
         fontsize=fs,
-        y=1.25,
+        y=1,
     )
 
     # plot budget forecast
@@ -661,7 +665,7 @@ def plot_change_trend(trend_data, pid_data, pid, interval=None):
 
 
 def plot_gam_by_predictor(
-    model_dict, model_index, X_data, y_data, dataset="train", suptitle_y=1.14
+    model_dict, model_index, X_data, y_data, dataset="train", suptitle_y=1
 ):
     """Calculates and plots the partial dependence and 95% CIs for a GAM model
 
@@ -752,7 +756,7 @@ def plot_gam_by_predictor(
 
 
 def plot_coefficients(
-    model_dict, subplots=(1, 2), fig_height=8, suptitle_spacing=1.10
+    model_dict, subplots=(1, 2), fig_height=8, suptitle_spacing=1
 ):
     """Plots coefficients from statsmodels linear regression model
 

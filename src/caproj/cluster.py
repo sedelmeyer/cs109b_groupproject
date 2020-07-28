@@ -180,7 +180,7 @@ def silplot(X, cluster_labels, clusterer, pointlabels=None, height=6):
         "with n_clusters = {},\naverage silhouette score: {:.4f}"
         "".format(n_clusters, silhouette_avg),
         fontsize=18,
-        y=1.11,
+        y=1,
     )
 
     plt.tight_layout()
@@ -374,7 +374,7 @@ def print_dbscan_results(dbscan_dict):
     )
 
     # plot distribution of labels
-    plot_value_counts(dbscan_dict["cluster_counts"], "DBSCAN cluster")
+    plot_value_counts(dbscan_dict["cluster_counts"])
     plt.title(
         r"DBSCAN clustering results, min samples$={}$ and $\epsilon={}$"
         r"".format(min_samples, eps),
@@ -694,7 +694,7 @@ def plot_spider_clusters(title, mean_peaks_per_cluster):
             + mean_peaks_per_cluster["group"][row].astype("str"),
             color=my_palette(row),
         )
-    fig.suptitle(title, fontsize=18, y=1.04)
+    fig.suptitle(title, fontsize=18, y=1)
     plt.tight_layout()
 
 

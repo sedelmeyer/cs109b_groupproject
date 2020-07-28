@@ -16,6 +16,7 @@ references/**
 models/**
 !models/**/
 !models/**/.gitkeep
+!models/pretrained_bert/**
 
 .idea/
 .ipynb_checkpoints/
