@@ -42,14 +42,14 @@ After initial exploration and cleansing of the available data, modeling efforts 
 
 The significance of a model that can accurately address this question means, given any new project, project managers and city administrators would have another tool at their disposal for objectively identifying potential budget and schedule risk at the start of a new city-run capital project. Such a tool can help to overcome common planning fallacies and optimism biases to help to mitigate cost and and schedule overruns.
 
-Analysis and findings
+Analysis and outcomes
 ---------------------
 
-Documentation for this project can be found here:
+Documentation for this project's anlysis and findings can be found here:
 
-https://sedelmeyer.github.io/nyc-capital-projects
+https://sedelmeyer.github.io/nyc-capital-projects/analysis.html
 
-**NOTE:** The next release of this project will include an html version of the project findings illustrated in `the final report notebook <final report_>`_.
+**NOTE:** The next release of this project will include an html version of the in-depth project findings illustrated in `the final report notebook <final report_>`_.
 
 Source code API documentation
 -----------------------------
