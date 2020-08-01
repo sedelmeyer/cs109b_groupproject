@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.abspath("../src"))
 
 project = "NYC Capital Projects"
 year = "2020"
-author = "Michael Sedelmeyer"
+author = "An Hoang, Mark McDonald, and Michael Sedelmeyer"
 copyright = "{0}, {1}".format(year, author)
 
 # The full version, including alpha/beta/rc tags, updated

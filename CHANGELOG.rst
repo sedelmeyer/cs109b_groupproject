@@ -6,11 +6,17 @@ Future releases
 
 .. todo::
 
-    * Remove unused notebook output files
     * Convert notebook ``00_FINAL_REPORT.ipnb`` findings to ``.rst`` format for online Sphinx rendering
     * Generate dependency workflow schematic, illustrating DAG of notebook inputs and outputs
     * Fix notebook ``05_umap_hdbscan_features.ipynb`` data generation functionality
     * Improve ``caproj.utils`` API documentation
+
+v2.0.1 (2020-08-01)
+-------------------
+
+* Add all author names to ``docs/conf.py`` and ``setup.py``
+* Remove unused notebook-generated outputs from each respective notebook
+* Commit ``notebook/05_umap_hdbscan_features.ipynb`` output feature data to version control due to notebook errors preventing successful output
 
 v2.0.0 (2020-08-01)
 -------------------
