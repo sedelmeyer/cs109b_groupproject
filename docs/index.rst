@@ -7,17 +7,17 @@ Predicting outcomes for NYC capital projects
 An investigation into feature engineering and modeling project-change data for large-scale capital projects.
 -------------------------------------------------------------------------------------------------------------
 
-.. note::
+.. image:: https://github.com/sedelmeyer/nyc-capital-projects/workflows/build/badge.svg?branch=master
+    :target: https://github.com/sedelmeyer/nyc-capital-projects/actions
 
-    This project is being actively developed. Therefore this site currently contains little more than a starting skeleton with which to document the project and its findings as they are developed.
-
-    Check back later for additional content.
+.. image:: https://img.shields.io/badge/License-MIT-black.svg
+    :target: https://github.com/sedelmeyer/cc-pydata/blob/master/LICENSE
 
 .. toctree::
    :maxdepth: 2
 
    readme
-   introduction
+   analysis
    modules
    changelog
 

@@ -9,7 +9,7 @@ data/**
 references/**
 !references/**/
 !references/**/.gitkeep
-!references/data_dicts/**
+!references/documentation/**
 
 # Ignore saved models as a default to prevent excessively large
 # git history, but .gitkeep models directory for common guidance
