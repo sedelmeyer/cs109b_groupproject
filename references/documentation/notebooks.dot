@@ -1,0 +1,36 @@
+digraph {
+    rankdir=TB;
+    {
+    	node [shape = box, fontname = Monospace, fixedsize=true, width=4]
+        00 [label = "00_eda_and_clean_data"]
+        01 [label = "01_generate_data_splits"]
+        02 [label = "02_bert_embedded_descriptions"]
+        03 [label = "03_kmeans_attribute_features"]
+        04 [label = "04_pca_autencoder_features"]
+        05 [label = "05_umap_hdbscan_features"]
+        06 [label = "06_merge_final_features"]
+        07 [label = "07_baseline_linear_models"]
+        08 [label = "08_smoothing_spline_models"]
+        09 [label = "09_decision_tree_models"]
+        10 [label = "10_ensemble_tree_models"]
+        11 [label = "11_FINAL_REPORT"]
+    };
+    subgraph cluster_notebooks {
+        label="notebooks/";
+        fontname=Monospace;
+        fontsize=20;
+        rankdir=TB;
+        00 -> 01;
+        01 -> 02;
+        02 -> 03;
+        03 -> 04;
+        04 -> 05;
+        05 -> 06;
+        06 -> 07;
+        07 -> 08;
+        08 -> 09;
+        09 -> 10;
+        10 -> 11;
+        
+    }
+}
