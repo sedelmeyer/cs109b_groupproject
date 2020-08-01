@@ -1,0 +1,1842 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference &#8212; NYC Capital Projects 1.0.1.dev31+g88fbd44 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="canonical" href="https://sedelmeyer.github.io/nyc-capital-projects/modules.html" />
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Changelog" href="changelog.html" />
+    <link rel="prev" title="Analysis and findings" href="analysis.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All of the <code class="docutils literal notranslate"><span class="pre">caproj</span></code> modules outlined below were developed for use in an interactive enviroment, such as that of a Jupyter notebook.</p>
+<p>Please note that no testing is in place for any of the modules outlined here. Therefore, if you wish to use functions or classes contained in any of these modules, expect your mileage may vary.</p>
+</div>
+<div class="contents local topic" id="modules">
+<p class="topic-title">Modules</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#caproj-datagen" id="id1">caproj.datagen</a></p></li>
+<li><p><a class="reference internal" href="#caproj-scale" id="id2">caproj.scale</a></p></li>
+<li><p><a class="reference internal" href="#caproj-model" id="id3">caproj.model</a></p></li>
+<li><p><a class="reference internal" href="#caproj-visualize" id="id4">caproj.visualize</a></p></li>
+<li><p><a class="reference internal" href="#caproj-cluster" id="id5">caproj.cluster</a></p></li>
+<li><p><a class="reference internal" href="#caproj-autoencoder" id="id6">caproj.autoencoder</a></p></li>
+<li><p><a class="reference internal" href="#caproj-utils" id="id7">caproj.utils</a></p></li>
+<li><p><a class="reference internal" href="#caproj-trees" id="id8">caproj.trees</a></p></li>
+</ul>
+</div>
+<span class="target" id="module-caproj.datagen"></span><div class="section" id="caproj-datagen">
+<h2><a class="toc-backref" href="#modules">caproj.datagen</a><a class="headerlink" href="#caproj-datagen" title="Permalink to this headline">¶</a></h2>
+<p>This module contains functions for generating the interval metrics used in modeling
+for each unique capital project</p>
+<p><strong>Module variables:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.datagen.endstate_columns" title="caproj.datagen.endstate_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">endstate_columns</span></code></a></p></td>
+<td><p>List of column names containing info for each project’s end-state</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.datagen.endstate_column_rename_dict" title="caproj.datagen.endstate_column_rename_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">endstate_column_rename_dict</span></code></a></p></td>
+<td><p>Dictionary for mapping members of <code class="docutils literal notranslate"><span class="pre">endstate_columns</span></code> to new column names</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.datagen.info_columns" title="caproj.datagen.info_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info_columns</span></code></a></p></td>
+<td><p>List of column names containing descriptive info for each project</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.datagen.info_column_rename_dict" title="caproj.datagen.info_column_rename_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info_column_rename_dict</span></code></a></p></td>
+<td><p>Dictionary for mapping members of <code class="docutils literal notranslate"><span class="pre">info_columns</span></code> to new column names</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Module functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.datagen.print_record_project_count" title="caproj.datagen.print_record_project_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_record_project_count</span></code></a>(dataframe[, dataset])</p></td>
+<td><p>Prints summary of records and unique projects in dataframe</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.datagen.generate_interval_data" title="caproj.datagen.generate_interval_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_interval_data</span></code></a>(data[, …])</p></td>
+<td><p>Generates a project analysis dataset for the specified interval</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.datagen.print_interval_dict" title="caproj.datagen.print_interval_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_interval_dict</span></code></a>([datadict_dir, …])</p></td>
+<td><p>Prints summary of data dictionary for the generate_interval_data output</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="caproj.datagen.add_change_features">
+<code class="sig-prename descclassname">caproj.datagen.</code><code class="sig-name descname">add_change_features</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.datagen.add_change_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates interval change metrics for each PID and appends the dataset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> – pd.DataFrame containing joined project interval data output
+from the join_data_endstate() function</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Copy of input pd.DataFrame with the new metrics appended as
+additional columns</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="caproj.datagen.endstate_column_rename_dict">
+<code class="sig-prename descclassname">caproj.datagen.</code><code class="sig-name descname">endstate_column_rename_dict</code><em class="property"> = {'Budget_Forecast': 'Budget_End', 'Change_Years': 'Final_Change_Years', 'Current_Phase': 'Phase_End', 'Date_Reported_As_Of': 'Final_Change_Date', 'Forecast_Completion': 'Schedule_End', 'PID_Index': 'Number_Changes'}</em><a class="headerlink" href="#caproj.datagen.endstate_column_rename_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary for mapping members of <code class="docutils literal notranslate"><span class="pre">endstate_columns</span></code> to new column names</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="caproj.datagen.endstate_columns">
+<code class="sig-prename descclassname">caproj.datagen.</code><code class="sig-name descname">endstate_columns</code><em class="property"> = ['Date_Reported_As_Of', 'Change_Years', 'PID', 'Current_Phase', 'Budget_Forecast', 'Forecast_Completion', 'PID_Index']</em><a class="headerlink" href="#caproj.datagen.endstate_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of column names containing info for each project’s end-state</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.datagen.ensure_datetime_and_sort">
+<code class="sig-prename descclassname">caproj.datagen.</code><code class="sig-name descname">ensure_datetime_and_sort</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.datagen.ensure_datetime_and_sort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensures datetime columns are formatted correctly and changes are sorted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> – pd.DataFrame of the cleaned capital projects change records data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Original pd.DataFrame with datetime columns formatted and records
+sorted</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.datagen.extract_project_details">
+<code class="sig-prename descclassname">caproj.datagen.</code><code class="sig-name descname">extract_project_details</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">copy_columns</span><span class="o">=</span><span class="default_value">['PID', 'Project_Name', 'Description', 'Category', 'Borough', 'Managing_Agency', 'Client_Agency', 'Current_Phase', 'Current_Project_Years', 'Current_Project_Year', 'Design_Start', 'Original_Budget', 'Original_Schedule']</span></em>, <em class="sig-param"><span class="n">column_rename_dict</span><span class="o">=</span><span class="default_value">{'Current_Phase': 'Phase_Start', 'Original_Budget': 'Budget_Start', 'Original_Schedule': 'Schedule_Start'}</span></em>, <em class="sig-param"><span class="n">use_record</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">record_index</span><span class="o">=</span><span class="default_value">'PID_Index'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.datagen.extract_project_details" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a dataframe with project details for each unique PID</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – The cleaned capital projects change records data</p></li>
+<li><p><strong>copy_columns</strong> (<em>list</em><em>, </em><em>optional</em>) – list of the names of columns that should be copied
+containing primary information about each project,
+defaults to info_columns</p></li>
+<li><p><strong>column_rename_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) – dict of column name mappings to rename copied
+columns, defaults to info_column_rename_dict</p></li>
+<li><p><strong>use_record</strong> (<em>int</em><em>, </em><em>optional</em>) – integer record_index value to use as the basis the
+resulting project info, defaults to 0 (indicating that
+the first chronological record for each project will be used)</p></li>
+<li><p><strong>record_index</strong> (<em>str</em><em>, </em><em>optional</em>) – indicates the column name to use for the
+record_index referenced use_record, defaults to “PID_Index”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dataframe containing the primary project details for each
+unique PID, and the PID is set as the index</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.datagen.find_max_record_indices">
+<code class="sig-prename descclassname">caproj.datagen.</code><code class="sig-name descname">find_max_record_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">record_index</span><span class="o">=</span><span class="default_value">'PID_Index'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.datagen.find_max_record_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a list of Record_ID values of the max record ID for each PID</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – pd.DataFrame containing the cleaned capital project change
+records</p></li>
+<li><p><strong>record_index</strong> – string name of column containing PID ordinal
+indices (defaul record_index=’PID_Index’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of max Record_ID values for each PID</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.datagen.generate_interval_data">
+<code class="sig-prename descclassname">caproj.datagen.</code><code class="sig-name descname">generate_interval_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">change_year_interval</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">inclusive_stop</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">to_csv</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">save_dir</span><span class="o">=</span><span class="default_value">'../data/interim/'</span></em>, <em class="sig-param"><span class="n">custom_filename</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">return_df</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.datagen.generate_interval_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a project analysis dataset for the specified interval</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you specify <code class="docutils literal notranslate"><span class="pre">to_csv=True</span></code>, the default bahavior will be to
+save the resulting dataframe as:</p>
+<p><code class="docutils literal notranslate"><span class="pre">../data/interim/NYC_capital_projects_{predict_interval}yr.csv</span></code></p>
+<p>or if <code class="docutils literal notranslate"><span class="pre">change_year_interval=None</span></code>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">../data/interim/NYC_capital_projects_all.csv</span></code></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">save_dir</span></code> and <code class="docutils literal notranslate"><span class="pre">custom_filename</span></code> arguments allow you to change
+this <code class="docutils literal notranslate"><span class="pre">to_csv</span></code> behavior, however using them is not recommended
+for the sake of file naming consistency in this project.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – pd.DataFrame of the cleaned capital projects change
+records data</p></li>
+<li><p><strong>change_year_interval</strong> – integer or None representing the maximum year
+from which to include changes for each
+project,  if None, then all years’ worth of
+changes included (default
+change_year_interval=None)</p></li>
+<li><p><strong>inclusive_stop</strong> – boolean, indicating whether projects to be included
+in the subset dataframe need to be older than the
+change_year_interval year or can be
+equal-to-or-older-than the change_year_interval year
+If True, &gt;= is used for subsetting, if False &gt; is
+used (default inclusive_stop=True)</p></li>
+<li><p><strong>to_csv</strong> – boolean, indicating whether or not the resulting dataframe
+should be saved to disk (default to_csv=False)</p></li>
+<li><p><strong>save_path</strong> – string or None, indicating the path to which the
+resulting dataframe should be saved to .csv, if None
+the dataframe is not saved, just returned (default
+save_path=None)</p></li>
+<li><p><strong>custom_filename</strong> – string or None, indicating whether to name the
+resulting .csv file something other than the
+name ‘NYC_capital_projects_{interval}yr.csv’
+(default custom_filename=None)</p></li>
+<li><p><strong>verbose</strong> – integer, default verbose=1 prints the number of project
+remaining in the resulting dataframe, otherwise that
+information is not printed</p></li>
+<li><p><strong>return_df</strong> – boolean, determines whether the resulting pd.DataFrame
+object is returned (default return_df=True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pd.DataFrame containing the summary change data for each unique
+project matching the specified change_year_interval</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="caproj.datagen.info_column_rename_dict">
+<code class="sig-prename descclassname">caproj.datagen.</code><code class="sig-name descname">info_column_rename_dict</code><em class="property"> = {'Current_Phase': 'Phase_Start', 'Original_Budget': 'Budget_Start', 'Original_Schedule': 'Schedule_Start'}</em><a class="headerlink" href="#caproj.datagen.info_column_rename_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary for mapping members of <code class="docutils literal notranslate"><span class="pre">info_columns</span></code> to new column names</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="caproj.datagen.info_columns">
+<code class="sig-prename descclassname">caproj.datagen.</code><code class="sig-name descname">info_columns</code><em class="property"> = ['PID', 'Project_Name', 'Description', 'Category', 'Borough', 'Managing_Agency', 'Client_Agency', 'Current_Phase', 'Current_Project_Years', 'Current_Project_Year', 'Design_Start', 'Original_Budget', 'Original_Schedule']</em><a class="headerlink" href="#caproj.datagen.info_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of column names containing descriptive info for each project</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.datagen.join_data_endstate">
+<code class="sig-prename descclassname">caproj.datagen.</code><code class="sig-name descname">join_data_endstate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_details</span></em>, <em class="sig-param"><span class="n">df_endstate</span></em>, <em class="sig-param"><span class="n">how</span><span class="o">=</span><span class="default_value">'inner'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.datagen.join_data_endstate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates dataframe joining the df_details and df_endstate dataframes by PID</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_details</strong> – pd.DataFrame output from the extract_project_details()
+function</p></li>
+<li><p><strong>df_endstate</strong> – pd.DataFrame output from the project_interval_endstate()
+function</p></li>
+<li><p><strong>how</strong> – string passed to the pd.merge method indicating the type
+of join to perform (default how=’inner’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pd.DataFrame containing the join results, the index is reset</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.datagen.print_interval_dict">
+<code class="sig-prename descclassname">caproj.datagen.</code><code class="sig-name descname">print_interval_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">datadict_dir</span><span class="o">=</span><span class="default_value">'../references/data_dicts/'</span></em>, <em class="sig-param"><span class="n">datadict_filename</span><span class="o">=</span><span class="default_value">'data_dict_interval.csv'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.datagen.print_interval_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints summary of data dictionary for the generate_interval_data output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>datadict_dir</strong> – optional string indicating directory location of
+target data dictionary (default
+<code class="docutils literal notranslate"><span class="pre">../references/data_dicts/</span></code>)</p></li>
+<li><p><strong>datadict_filename</strong> – optional string indicating filename of target
+data dict (default <code class="docutils literal notranslate"><span class="pre">data_dict_interval.csv</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>No objects are returned, printed output only</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.datagen.print_record_project_count">
+<code class="sig-prename descclassname">caproj.datagen.</code><code class="sig-name descname">print_record_project_count</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataframe</span></em>, <em class="sig-param"><span class="n">dataset</span><span class="o">=</span><span class="default_value">'full'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.datagen.print_record_project_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints summary of records and unique projects in dataframe</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe</strong> – pd.DataFrame object for the version of the NYC capital
+projects data you wish to summarize</p></li>
+<li><p><strong>dataset</strong> – string, accepts ‘full’, ‘all’, ‘training’, or ‘test’
+(default ‘full’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>prints to standard output, no objects returned</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.datagen.project_interval_endstate">
+<code class="sig-prename descclassname">caproj.datagen.</code><code class="sig-name descname">project_interval_endstate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">keep_columns</span><span class="o">=</span><span class="default_value">['Date_Reported_As_Of', 'Change_Years', 'PID', 'Current_Phase', 'Budget_Forecast', 'Forecast_Completion', 'PID_Index']</span></em>, <em class="sig-param"><span class="n">column_rename_dict</span><span class="o">=</span><span class="default_value">{'Budget_Forecast': 'Budget_End', 'Change_Years': 'Final_Change_Years', 'Current_Phase': 'Phase_End', 'Date_Reported_As_Of': 'Final_Change_Date', 'Forecast_Completion': 'Schedule_End', 'PID_Index': 'Number_Changes'}</span></em>, <em class="sig-param"><span class="n">change_year_interval</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">record_index</span><span class="o">=</span><span class="default_value">'PID_Index'</span></em>, <em class="sig-param"><span class="n">change_col</span><span class="o">=</span><span class="default_value">'Change_Year'</span></em>, <em class="sig-param"><span class="n">project_age_col</span><span class="o">=</span><span class="default_value">'Current_Project_Year'</span></em>, <em class="sig-param"><span class="n">inclusive_stop</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.datagen.project_interval_endstate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a dataframe of endstate data for each unique PID given the
+specified analysis interval</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – pd.DataFrame of the cleaned capital projects change records data</p></li>
+<li><p><strong>keep_columns</strong> – list of column names for columns that should be kept
+as part of the resulting dataframe (default
+keep_columns=endstate_columns module variable)</p></li>
+<li><p><strong>column_rename_dict</strong> – dict mapping existing column names to the new
+names to which they should be named (default
+column_rename_dict=endstate_column_rename_dict
+module variable)</p></li>
+<li><p><strong>change_year_interval</strong> – integer or None representing the maximum year
+from which to include changes for each
+project,  if None, then all years’ worth of
+changes included (default
+change_year_interval=None)</p></li>
+<li><p><strong>record_index</strong> – string name of column containing PID ordinal
+indices (defaul record_index=’PID_Index’)</p></li>
+<li><p><strong>change_col</strong> – string, name of column containing change year indicators
+(default change_col=’Change_Year’)</p></li>
+<li><p><strong>project_age_col</strong> – string, name of column containing current age of
+each project at the time the dataset was compiled
+(default project_age_col=’Current_Project_Year’)</p></li>
+<li><p><strong>inclusive_stop</strong> – boolean, indicating whether projects to be included
+in the subset dataframe need to be older than the
+change_year_interval year or can be
+equal-to-or-older-than the change_year_interval year
+If True, &gt;= is used for subsetting, if False &gt; is
+used (default inclusive_stop=True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pd.DataFrame containing endstate data for each unique project,
+the index is set to the PID</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.datagen.subset_project_changes">
+<code class="sig-prename descclassname">caproj.datagen.</code><code class="sig-name descname">subset_project_changes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">change_year_interval</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">change_col</span><span class="o">=</span><span class="default_value">'Change_Year'</span></em>, <em class="sig-param"><span class="n">project_age_col</span><span class="o">=</span><span class="default_value">'Current_Project_Year'</span></em>, <em class="sig-param"><span class="n">inclusive_stop</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.datagen.subset_project_changes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a subsetted dataframe with only the change records that occur
+in or before the specified max interval year</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – pd.DataFrame of the cleaned capital projects change records data</p></li>
+<li><p><strong>change_year_interval</strong> – integer representing the maximum year from which
+to include changes for each project (default
+change_year_interval=3)</p></li>
+<li><p><strong>change_col</strong> – string, name of column containing change year indicators
+(default change_col=’Change_Year’)</p></li>
+<li><p><strong>project_age_col</strong> – string, name of column containing current age of
+each project at the time the dataset was compiled
+(default project_age_col=’Current_Project_Year’)</p></li>
+<li><p><strong>inclusive_stop</strong> – boolean, indicating whether projects to be included
+in the subset dataframe need to be older than the
+change_year_interval year or can be
+equal-to-or-older-than the change_year_interval year
+If True, &gt;= is used for subsetting, if False &gt; is
+used (default inclusive_stop=True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pd.DataFrame of the subsetted data, the index is set to each
+record’s ‘Record_ID’ value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-caproj.scale"></span><div class="section" id="caproj-scale">
+<h2><a class="toc-backref" href="#modules">caproj.scale</a><a class="headerlink" href="#caproj-scale" title="Permalink to this headline">¶</a></h2>
+<p>This module contains functions for scaling features of an X features design
+matrix and for encoding categorical variables</p>
+<p><strong>Module functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.scale.encode_categories" title="caproj.scale.encode_categories"><code class="xref py py-obj docutils literal notranslate"><span class="pre">encode_categories</span></code></a>(data, colname[, one_hot, …])</p></td>
+<td><p>Encodes categorical variable column and appends values to dataframe</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.scale.scale_features" title="caproj.scale.scale_features"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_features</span></code></a>(train_df, val_df[, …])</p></td>
+<td><p>Scales val_df features based on train_df and returns scaled dataframe</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.scale.sigmoid" title="caproj.scale.sigmoid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sigmoid</span></code></a>(x)</p></td>
+<td><p>Efficient numpy sigmoid transformation of dataframe, array, or matrix</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.scale.log_plus_one" title="caproj.scale.log_plus_one"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_plus_one</span></code></a>(x)</p></td>
+<td><p>Adds 1 to input data and then applies Log transformation to those values</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="caproj.scale.encode_categories">
+<code class="sig-prename descclassname">caproj.scale.</code><code class="sig-name descname">encode_categories</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">colname</span></em>, <em class="sig-param"><span class="n">one_hot</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">drop_cat</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cat_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">drop_original_col</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">append_colname</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.scale.encode_categories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encodes categorical variable column and appends values to dataframe</p>
+<p>This function offers the option to either one-hot-encode (0,1) or
+LabelEncode (as consecutive integers (0, n)) categorical values
+by setting one_hot to either True or False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – The pd.dataframe object containing the column you wish to
+encode</p></li>
+<li><p><strong>colname</strong> – string indicating name of column you wish to encode</p></li>
+<li><p><strong>one_hot</strong> – boolean indicating whether you with to one-hot-encode
+the categories. If False, the values are simply encoded to
+a set of consecutive integers. (default)</p></li>
+<li><p><strong>drop_cat</strong> – None or category value you wish to drop from your
+one-hot-encoded variable columns. If None and
+one_hot=True, no variable columns are dropped. If
+one_hot=False, any category value passed drop_cat
+will ensure that value is sorted to the last place
+position in the resulting encoded integer values
+(default drop_cat=None)</p></li>
+<li><p><strong>cat_list</strong> – None or list specifying the full set of category values
+contained in your target column. The benefit of
+providing your own list is that it allows you to provide
+a custom ordering of categories to the encoder. If None,
+the categories will default to alphabetical order.
+(default cat_list=None)</p></li>
+<li><p><strong>drop_original_col</strong> – Boolean indicating whether the original
+category column specified by colname will be
+dropped from the resulting dataframe</p></li>
+<li><p><strong>append_colname</strong> – None or string, indicating what should be appended
+to one hot encoded column names. This is useful
+in instances where multiple columns have
+identical category names within them or, a
+category name matches an existing column.
+None will result in no string being added.
+(default append_colname=None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pd.DataFrame of the original input dataframe with the additional
+encoded category column(s) appended to it.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.scale.log_plus_one">
+<code class="sig-prename descclassname">caproj.scale.</code><code class="sig-name descname">log_plus_one</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.scale.log_plus_one" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds 1 to input data and then applies Log transformation to those values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – data to undergo transformation (datatypes accepted include,
+pandas DataFrames and Series, numpy matrices and arrays, or
+single int or float values x)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The transformed dataframe, series, array, or value depending on
+the type of original input x object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.scale.scale_features">
+<code class="sig-prename descclassname">caproj.scale.</code><code class="sig-name descname">scale_features</code><span class="sig-paren">(</span><em class="sig-param">train_df</em>, <em class="sig-param">val_df</em>, <em class="sig-param">exclude_scale_cols=[]</em>, <em class="sig-param">scaler=&lt;class 'sklearn.preprocessing._data.RobustScaler'&gt;</em>, <em class="sig-param">scale_before_func=None</em>, <em class="sig-param">scale_after_func=None</em>, <em class="sig-param">reapply_scaler=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.scale.scale_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scales val_df features based on train_df and returns scaled dataframe</p>
+<p>Accepts various sklearn scalers and allows you to specify features you do
+not want affected by scaling by using the exclude_scale_cols parameter.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Be certain to reset the index of your accompanying y_train and y_test
+dataframes, or you will risk running into potential indexing errors
+while working with your scaled X dataframes</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_df</strong> – The training data</p></li>
+<li><p><strong>val_df</strong> – Your test/validation data</p></li>
+<li><p><strong>exclude_scale_cols</strong> – Optional list containing names of columns we
+do not wish to scale, default=[]</p></li>
+<li><p><strong>scaler</strong> – The sklearn scaler method used to fit the data (i.e.
+StandardScaler, MinMaxScaler, RobustScaler, etc.),
+default=RobustScaler</p></li>
+<li><p><strong>scale_before_func</strong> – Optional function (i.e. np.log, np.sigmoid, or
+custom function) to be applied to train and val
+dfs prior to the scaler fitting and scaling
+val_df, default=None</p></li>
+<li><p><strong>scale_after_func</strong> – Optional function (i.e. np.log, np.sigmoid, or
+custom function) to be applied to val_df after the
+scaler has scaled the datafrme</p></li>
+<li><p><strong>reapply_scaler</strong> – Boolean, if set to True, the scaler is fitted a
+second time after the scale_after_func is applied
+(useful if using MinMaxScaler and you wish to
+maintain a 0 to 1 scale after applying a secondary
+transformation to the data), default is
+reapply_scaler=False</p></li>
+<li><p><strong>kwargs</strong> – Any additional arguments are passed as parameters to the
+selected scaler (for instance feature_range=(-1,1) would be
+an appropriate argument if scaler is set to MinMaxScaler)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a feature-scaled version of the val_df dataframe, and a list of
+fitted sklearn scaler objects that were used to scale values (for
+later use in case original values need to be restored), list will
+either be of length 1 or 2 depending on whether reapply_scaler was
+set to True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.scale.sigmoid">
+<code class="sig-prename descclassname">caproj.scale.</code><code class="sig-name descname">sigmoid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.scale.sigmoid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Efficient numpy sigmoid transformation of dataframe, array, or matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – data to undergo transformation (datatypes accepted include,
+pandas DataFrames and Series, numpy matrices and arrays, or
+single int or float values x)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The transformed dataframe, series, array, or value depending on
+the type of original input x object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-caproj.model"></span><div class="section" id="caproj-model">
+<h2><a class="toc-backref" href="#modules">caproj.model</a><a class="headerlink" href="#caproj-model" title="Permalink to this headline">¶</a></h2>
+<p>This module contains functions for generating fitted models and summarizing the results</p>
+<p><strong>Module functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.model.generate_model_dict" title="caproj.model.generate_model_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_model_dict</span></code></a>(model, model_descr, …)</p></td>
+<td><p>Fits the specified model type and generates a dictionary of results</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.model.print_model_results" title="caproj.model.print_model_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_model_results</span></code></a>(model_dict[, score])</p></td>
+<td><p>Prints a model results summary from the model dictionary generated using the generate_model_dict() function</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="caproj.model.generate_model_dict">
+<code class="sig-prename descclassname">caproj.model.</code><code class="sig-name descname">generate_model_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">model_descr</span></em>, <em class="sig-param"><span class="n">X_train</span></em>, <em class="sig-param"><span class="n">X_test</span></em>, <em class="sig-param"><span class="n">y_train</span></em>, <em class="sig-param"><span class="n">y_test</span></em>, <em class="sig-param"><span class="n">multioutput</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">predictions</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">scores</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">model_api</span><span class="o">=</span><span class="default_value">'sklearn'</span></em>, <em class="sig-param"><span class="n">sm_formulas</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_stored</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.model.generate_model_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the specified model type and generates a dictionary of results</p>
+<p>This function works for fitting and generating predictions for
+sklearn, keras, and statsmodels models. PyGam models typically also
+work by specifying the ‘sklearn’ model_api. For statsmodels models, only those
+that depend on the statsmodels.formula.api work.</p>
+<p>The returned output dictionary follows this structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="n">model_descr_string</span>
+    <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="n">fitted</span> <span class="n">model</span> <span class="nb">object</span>
+    <span class="s1">&#39;y_variables&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">y1_varname_string</span><span class="p">,</span> <span class="n">y2_varname_string</span><span class="p">]</span>
+    <span class="s1">&#39;formulas&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">y1_formula_string</span><span class="p">,</span> <span class="n">y2_formula_string</span><span class="p">]</span>
+                <span class="n">empty</span> <span class="nb">list</span> <span class="k">if</span> <span class="n">statsmodel</span> <span class="n">api</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">used</span>
+    <span class="s1">&#39;y_values&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;train&#39;</span><span class="p">:</span> <span class="n">y_train</span> <span class="n">array</span><span class="p">,</span>
+        <span class="s1">&#39;test&#39;</span><span class="p">:</span> <span class="n">y_test</span> <span class="n">array</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="s1">&#39;predictions&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;train&#39;</span><span class="p">:</span> <span class="n">train_predictions</span> <span class="n">array</span><span class="p">,</span>
+        <span class="s1">&#39;test&#39;</span><span class="p">:</span> <span class="n">test_predictions</span> <span class="n">array</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;train&#39;</span><span class="p">:</span> <span class="n">training</span> <span class="n">r2_score</span> <span class="n">array</span><span class="p">,</span>
+        <span class="s1">&#39;test&#39;</span><span class="p">:</span> <span class="n">test</span> <span class="n">r2_score</span> <span class="n">array</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – the uninitialized sklearn, pygam, or statsmodels regression
+model object, or a previously compiled keras model</p></li>
+<li><p><strong>model_descr</strong> – a brief string describing the model (cannot exceed 80
+characters)</p></li>
+<li><p><strong>X_test</strong><strong>, </strong><strong>y_train</strong><strong>, </strong><strong>y_test</strong> (<em>X_train</em><em>,</em>) – the datasets on which to fit and
+evaluate the model</p></li>
+<li><p><strong>multioutput</strong> – Boolean, if True and sklearn model_api, will attempt
+fitting a single multioutput model, if False or ‘statsmodel’
+model_api fits separate models for each output</p></li>
+<li><p><strong>verbose</strong> – if True, prints resulting fitted model object (default=False)</p></li>
+<li><p><strong>predictions</strong> – if True the dict stores <code class="docutils literal notranslate"><span class="pre">model.predict()</span></code> predictions for
+both the <code class="docutils literal notranslate"><span class="pre">X_train</span></code> and <code class="docutils literal notranslate"><span class="pre">X_test</span></code> input dataframes</p></li>
+<li><p><strong>scores</strong> – if True, metrics scores are calculated and stored in the
+resulting dict for both the train and test predictions</p></li>
+<li><p><strong>model_api</strong> – specifies the api-type required for the input model, options
+include ‘sklearn’, ‘keras’, or ‘statsmodels’ (default=’sklearn’)</p></li>
+<li><p><strong>sm_formulas</strong> – list of statsmodels formulas defining model for each output y
+(include only endogenous variables, such as <code class="docutils literal notranslate"><span class="pre">x1</span> <span class="pre">+</span> <span class="pre">x2</span> <span class="pre">+</span> <span class="pre">x3</span></code>
+instead of <code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">~</span> <span class="pre">x1</span> <span class="pre">+</span> <span class="pre">x2</span> <span class="pre">+</span> <span class="pre">x3</span></code>), default is None</p></li>
+<li><p><strong>y_stored</strong> – boolean, determines whether the true y values are stored in the
+resulting dictionary. It is convenient to keep these stored
+alongside the predictions for easier evaluation later (default
+is y_stored=True)</p></li>
+<li><p><strong>kwargs</strong> – are optional arguments that pass directly to the model object
+at time of initialization, or in the case of the ‘keras’ model
+api, they pass to the <code class="docutils literal notranslate"><span class="pre">keras.mdoel.fit()</span></code> method</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns a dictionary object containing the resulting fitted model
+object, resulting predictions, and train and test scores (if specified
+as True)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.model.print_model_results">
+<code class="sig-prename descclassname">caproj.model.</code><code class="sig-name descname">print_model_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model_dict</span></em>, <em class="sig-param"><span class="n">score</span><span class="o">=</span><span class="default_value">'both'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.model.print_model_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints a model results summary from the model dictionary generated
+using the generate_model_dict() function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_dict</strong> – dict, output dictionary from the generate_model_dict()
+function</p></li>
+<li><p><strong>accuracy</strong> – None, ‘both’, ‘test’, or ‘train’ parameters accepted,
+identifies which results to print for this particular metric</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>nothing is returned, this function just prints summary output</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-caproj.visualize"></span><div class="section" id="caproj-visualize">
+<h2><a class="toc-backref" href="#modules">caproj.visualize</a><a class="headerlink" href="#caproj-visualize" title="Permalink to this headline">¶</a></h2>
+<p>This module contains functions for visualizing data and model results</p>
+<p><strong>Module functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.visualize.plot_value_counts" title="caproj.visualize.plot_value_counts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_value_counts</span></code></a>(value_counts[, figsize, color])</p></td>
+<td><p>Generates barplot from pandas value_counts series</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.visualize.plot_barplot" title="caproj.visualize.plot_barplot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_barplot</span></code></a>(value_counts, title[, height, …])</p></td>
+<td><p>Generates a horizontal barplot from a pandas value_counts series</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.visualize.plot_hist_comps" title="caproj.visualize.plot_hist_comps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_hist_comps</span></code></a>(df, metric_1, metric_2[, …])</p></td>
+<td><p>Plots side-by-side histograms for comparison with log yscale option</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.visualize.plot_line" title="caproj.visualize.plot_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_line</span></code></a>(x_vals, y_vals, title, x_label, …)</p></td>
+<td><p>Generates line plot given input x, y values</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.visualize.plot_2d_embed_scatter" title="caproj.visualize.plot_2d_embed_scatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_2d_embed_scatter</span></code></a>(data1, data2, title, …)</p></td>
+<td><p>Plots 2D scatterplot of dimension-reduced embeddings for train and test</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.visualize.plot_true_pred" title="caproj.visualize.plot_true_pred"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_true_pred</span></code></a>([model_dict, dataset, …])</p></td>
+<td><p>Plots model prediction results directly from model_dict or input arrays</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.visualize.plot_bdgt_sched_scaled" title="caproj.visualize.plot_bdgt_sched_scaled"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_bdgt_sched_scaled</span></code></a>(X, X_scaled, scale_descr)</p></td>
+<td><p>Plots original vs scaled versions of budget and schedule input data</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.visualize.plot_change_trend" title="caproj.visualize.plot_change_trend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_change_trend</span></code></a>(trend_data, pid_data, pid)</p></td>
+<td><p>Plots 4 subplots showing project budget and duration forecast change trend</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.visualize.plot_gam_by_predictor" title="caproj.visualize.plot_gam_by_predictor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_gam_by_predictor</span></code></a>(model_dict, …[, …])</p></td>
+<td><p>Calculates and plots the partial dependence and 95% CIs for a GAM model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.visualize.plot_coefficients" title="caproj.visualize.plot_coefficients"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_coefficients</span></code></a>(model_dict[, subplots, …])</p></td>
+<td><p>Plots coefficients from statsmodels linear regression model</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.visualize.load_img_to_numpy" title="caproj.visualize.load_img_to_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_img_to_numpy</span></code></a>(filepath)</p></td>
+<td><p>Loads an image from file, converts it to np.array and returns the array</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.visualize.plot_jpg" title="caproj.visualize.plot_jpg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_jpg</span></code></a>(filepath, title[, figsize])</p></td>
+<td><p>Plots a jpeg image from file</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="caproj.visualize.load_img_to_numpy">
+<code class="sig-prename descclassname">caproj.visualize.</code><code class="sig-name descname">load_img_to_numpy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filepath</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.visualize.load_img_to_numpy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads an image from file, converts it to np.array and returns the array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filepath</strong> (<em>str</em>) – path to image file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy representation of image</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.visualize.plot_2d_embed_scatter">
+<code class="sig-prename descclassname">caproj.visualize.</code><code class="sig-name descname">plot_2d_embed_scatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data1</span></em>, <em class="sig-param"><span class="n">data2</span></em>, <em class="sig-param"><span class="n">title</span></em>, <em class="sig-param"><span class="n">xlabel</span></em>, <em class="sig-param"><span class="n">ylabel</span></em>, <em class="sig-param"><span class="n">data1_name</span><span class="o">=</span><span class="default_value">'training obs'</span></em>, <em class="sig-param"><span class="n">data2_name</span><span class="o">=</span><span class="default_value">'TEST obs'</span></em>, <em class="sig-param"><span class="n">height</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">point_size</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.visualize.plot_2d_embed_scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots 2D scatterplot of dimension-reduced embeddings for train and test</p>
+<p>2D matplotlib scatterplot, no objects are returned.</p>
+<dl class="simple">
+<dt>NOTE: This function assumes the data inputs are 2D np.array objects of</dt><dd><p>share (n, 2), and that two separate sets of encoded embeddings
+are going to be plotted together (i.e. the train and the test
+observations). 2D pd.DataFrame objects can be passed, and are
+converted to np.array within the plotting function.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data1</strong> – np.array 2D containing 2 encoded dimensions</p></li>
+<li><p><strong>data2</strong> – a second np.array 2D containing 2 encoded dimensions</p></li>
+<li><p><strong>title</strong> – str, text used for plot title</p></li>
+<li><p><strong>xlabel</strong> – string representing the label for the x axis</p></li>
+<li><p><strong>ylabel</strong> – string representing the label for the y axis</p></li>
+<li><p><strong>data1_name</strong> – string representing the name of the first dataset,
+this will be the label given to those points in the
+plot’s legend (default ‘training obs’)</p></li>
+<li><p><strong>data2_name</strong> – string representing the name of the first dataset,
+this will be the label given to those points in the
+plot’s legend (default ‘TEST obs’)</p></li>
+<li><p><strong>height</strong> – integer that determines the hieght of the plot
+(default is 5)</p></li>
+<li><p><strong>point_size</strong> – integer or None, default of None will revert to
+matplotlib scatter default, integer entered will
+override the default marker size</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.visualize.plot_barplot">
+<code class="sig-prename descclassname">caproj.visualize.</code><code class="sig-name descname">plot_barplot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value_counts</span></em>, <em class="sig-param"><span class="n">title</span></em>, <em class="sig-param"><span class="n">height</span><span class="o">=</span><span class="default_value">6</span></em>, <em class="sig-param"><span class="n">varname</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">'k'</span></em>, <em class="sig-param"><span class="n">label_space</span><span class="o">=</span><span class="default_value">0.01</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.visualize.plot_barplot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a horizontal barplot from a pandas value_counts series</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value_counts</strong> – pd.Series object generated by pandas value_counts()
+method</p></li>
+<li><p><strong>title</strong> – string, the printed title of the plot</p></li>
+<li><p><strong>height</strong> – integer, the desired height of the plot (default is 6)</p></li>
+<li><p><strong>varname</strong> – string or None, text to print for plot’s y-axis title</p></li>
+<li><p><strong>color</strong> – string, the matplotlib color name for the color you would
+like for the plotted bars (default is ‘k’ or black)</p></li>
+<li><p><strong>label_space</strong> – float, a coefficient used to space the count label
+an appropriate distance from the plotted bar
+(default is 0.01)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a matplotlib plot. No objects are returned</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.visualize.plot_bdgt_sched_scaled">
+<code class="sig-prename descclassname">caproj.visualize.</code><code class="sig-name descname">plot_bdgt_sched_scaled</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">X_scaled</span></em>, <em class="sig-param"><span class="n">scale_descr</span></em>, <em class="sig-param"><span class="n">X_test</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">X_test_scaled</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bdgt_col</span><span class="o">=</span><span class="default_value">'Budget_Start'</span></em>, <em class="sig-param"><span class="n">sched_col</span><span class="o">=</span><span class="default_value">'Duration_Start'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.visualize.plot_bdgt_sched_scaled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots original vs scaled versions of budget and schedule input data</p>
+<p>Generates 1x2 subplotted scatterplots, no objects returned</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> – Dataframe or 2D array with original budget and schedule train data</p></li>
+<li><p><strong>X_scaled</strong> – Dataframe or 2D array with scaled budget and schedule train data</p></li>
+<li><p><strong>scale_descr</strong> – Short string description of scaling transformation used
+to title scaled data plot (e.g. ‘Sigmoid Standardized’)</p></li>
+<li><p><strong>X_test</strong> – Optional, Dataframe or 2D array with original test data, which
+will plot test data as overlay with training data (default is
+X_test=None, which does not plot any overlay)</p></li>
+<li><p><strong>X_test_scaled</strong> – Optional, Dataframe or 2D array with original test data,
+which plots overlay similar to X_test (default is
+X_test_scaled=None)</p></li>
+<li><p><strong>bdgt_col</strong> – string name of budget values column for input dataframes
+(default bdgt_col=’Budget_Start’)</p></li>
+<li><p><strong>sched_col</strong> – string name of budget values column for input dataframes
+(default bdgt_col=’Duration_Start’)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.visualize.plot_change_trend">
+<code class="sig-prename descclassname">caproj.visualize.</code><code class="sig-name descname">plot_change_trend</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">trend_data</span></em>, <em class="sig-param"><span class="n">pid_data</span></em>, <em class="sig-param"><span class="n">pid</span></em>, <em class="sig-param"><span class="n">interval</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.visualize.plot_change_trend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots 4 subplots showing project budget and duration forecast change trend</p>
+<p>Generates image of 4 subplots, no objects are returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trend_data</strong> – pd.DataFrame, the cleaned dataset of all project change
+records (i.e. ‘Capital_Projects_clean.csv’ dataframe)</p></li>
+<li><p><strong>pid_data</strong> – pd.DataFrame, the prediction_interval dataframe produced
+using this project’s data generator function
+(i.e. ‘NYC_Capital_Projects_3yr.csv’ dataframe)</p></li>
+<li><p><strong>pid</strong> – integer, the PID for the project you wish to plot</p></li>
+<li><p><strong>interval</strong> – integer or None, indicating the max Change_Year you wish
+to plot, if None all change records are plotted for the
+specified pid (default, interval=None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.visualize.plot_coefficients">
+<code class="sig-prename descclassname">caproj.visualize.</code><code class="sig-name descname">plot_coefficients</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model_dict</span></em>, <em class="sig-param"><span class="n">subplots</span><span class="o">=</span><span class="default_value">1, 2</span></em>, <em class="sig-param"><span class="n">fig_height</span><span class="o">=</span><span class="default_value">8</span></em>, <em class="sig-param"><span class="n">suptitle_spacing</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.visualize.plot_coefficients" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots coefficients from statsmodels linear regression model</p>
+<p>Generates a plotted series of subplots illustrating estimated coefficients
+and 95% CIs. No objects are returned</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_dict</strong> (<em>dict</em>) – model dictionary object from generate model dict function,
+containing fitted Statsmodels linear regression model objects
+(NOTE: this function is compatible with statsmodels models
+only)</p></li>
+<li><p><strong>subplots</strong> (<em>tuple</em>) – to plot each of the 2 predicted y variables, provides the
+dimension of subplots for the figure
+(NOTE: currently this function is only configured to plot 2
+columns of subplots, therefore no other value other than two is
+accepted for the subplots width dimension), defaults to (1, 2)</p></li>
+<li><p><strong>fig_height</strong> (<em>int</em><em> or </em><em>float</em>) – this value is passed directly to the
+<code class="docutils literal notranslate"><span class="pre">figsize</span></code> parameter of <code class="docutils literal notranslate"><span class="pre">plt.subplots()</span></code> and determines the
+overall height of your plot, defaults to 8</p></li>
+<li><p><strong>suptitle_spacing</strong> (<em>float</em>) – this value is passed to the ‘y’
+parameter for <code class="docutils literal notranslate"><span class="pre">plt.suptitle()</span></code>, defaults to 1.10</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.visualize.plot_gam_by_predictor">
+<code class="sig-prename descclassname">caproj.visualize.</code><code class="sig-name descname">plot_gam_by_predictor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model_dict</span></em>, <em class="sig-param"><span class="n">model_index</span></em>, <em class="sig-param"><span class="n">X_data</span></em>, <em class="sig-param"><span class="n">y_data</span></em>, <em class="sig-param"><span class="n">dataset</span><span class="o">=</span><span class="default_value">'train'</span></em>, <em class="sig-param"><span class="n">suptitle_y</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.visualize.plot_gam_by_predictor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates and plots the partial dependence and 95% CIs for a GAM model</p>
+<p>Plots a set of subplots for each predictor contained in your X data. No objects
+are returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_dict</strong> – model dictionary containing the fitted PyGAM models
+you wish to plot</p></li>
+<li><p><strong>model_index</strong> – integer indicating the index of the model stored
+in yur model_dict that you wish to plot</p></li>
+<li><p><strong>X_data</strong> – pd.DataFrame containing the matching predictor set you
+wish to plot beneath your predictor contribution lines</p></li>
+<li><p><strong>y_data</strong> – pd.DataFrame containing the matching outcome set you
+wish to plot beneath your predictor contribution lines</p></li>
+<li><p><strong>dataset</strong> – string, ‘train’ or ‘test’ indicating the type of
+X and y data you have entered for the X_data and
+y_data arguments (default=’train)</p></li>
+<li><p><strong>suptitle</strong> – float &gt; 1.00 indicating the spacing required to
+prevent your plot from overlapping your title text
+(default=1.04)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.visualize.plot_hist_comps">
+<code class="sig-prename descclassname">caproj.visualize.</code><code class="sig-name descname">plot_hist_comps</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">metric_1</span></em>, <em class="sig-param"><span class="n">metric_2</span></em>, <em class="sig-param"><span class="n">y_log</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">bins</span><span class="o">=</span><span class="default_value">20</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.visualize.plot_hist_comps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots side-by-side histograms for comparison with log yscale option</p>
+<p>Plots 2 subplots, no objects are returned</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – pd.DataFrame object containing the data you wish to plot</p></li>
+<li><p><strong>metric_1</strong> – string, name of column containing data for the first plot</p></li>
+<li><p><strong>metric_2</strong> – string, name of column containing data for second plot</p></li>
+<li><p><strong>y_log</strong> – boolean, indicating whether the y-axis should be plotted
+with a log scale (default False)</p></li>
+<li><p><strong>bins</strong> – integer, the number of bins to use for the histogram
+(default 20)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.visualize.plot_jpg">
+<code class="sig-prename descclassname">caproj.visualize.</code><code class="sig-name descname">plot_jpg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filepath</span></em>, <em class="sig-param"><span class="n">title</span></em>, <em class="sig-param"><span class="n">figsize</span><span class="o">=</span><span class="default_value">16, 12</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.visualize.plot_jpg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a jpeg image from file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> (<em>str</em>) – path to file for plotting</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – plot title text</p></li>
+<li><p><strong>figsize</strong> (<em>tuple</em>) – dimensions of resulting plot, defaults to (16, 12)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.visualize.plot_line">
+<code class="sig-prename descclassname">caproj.visualize.</code><code class="sig-name descname">plot_line</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_vals</span></em>, <em class="sig-param"><span class="n">y_vals</span></em>, <em class="sig-param"><span class="n">title</span></em>, <em class="sig-param"><span class="n">x_label</span></em>, <em class="sig-param"><span class="n">y_label</span></em>, <em class="sig-param"><span class="n">height</span><span class="o">=</span><span class="default_value">3.5</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.visualize.plot_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates line plot given input x, y values</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.visualize.plot_true_pred">
+<code class="sig-prename descclassname">caproj.visualize.</code><code class="sig-name descname">plot_true_pred</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dataset</span><span class="o">=</span><span class="default_value">'train'</span></em>, <em class="sig-param"><span class="n">y_true</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_pred</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_descr</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y1_label</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y2_label</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.visualize.plot_true_pred" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots model prediction results directly from model_dict or input arrays</p>
+<p>Generates 5 subplots, (1) true values with predicted values overlay,
+each y variable on its own axis, (2) output variable 1 true vs. predicted
+on each axis,(3) output variable 2 true vs. predicted on each axis
+(4) output variable 1 true vs. residuals, (5) output variable 2 true
+vs. residuals (no objects are returned)</p>
+<p>This plotting function only really requires that a model_dict from the
+<code class="docutils literal notranslate"><span class="pre">generate_model_dict()</span></code> function be used as input. However, through use of
+the y_true, y_pred, model_descr, and y1 and y2 label parameters, predictions
+stored in a shape (n,2) array can be plotted directly wihtout the use of
+a model_dict</p>
+<dl class="simple">
+<dt>NOTE: This plotting function requires y to consist of 2 output variables.</dt><dd><p>Therefore, it will not work with y data not of shape=(n, 2).</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_dict</strong> – dictionary or None, if model results from the
+generate_model_dict func is used, function defaults to
+data from that dict for plot, if None plot expects y_true,
+y_pred, model_descr, and y1/y2 label inputs for plotting</p></li>
+<li><p><strong>dataset</strong> – string, ‘train’ or ‘test’, indicates whether to plot training or
+test results if using model_dict as data source, and labels
+plots accordingly if y_pred and y_true inputs are used (default
+is ‘train’)</p></li>
+<li><p><strong>y_pred</strong> (<em>y_true</em><em>,</em>) – None or pd.DataFrame and np.array shape=(n,2) data sources
+accepted and used for plotting if model_dict=None
+(default for both is None)</p></li>
+<li><p><strong>model_descr</strong> – None or string of max length 80 used to describe model in
+title. If None, model_descr defaults to description in
+model_dict, if string is entered, that string overrides the
+description in model_dict, if using y_true/y_test as data
+source model_descr must be specified as a string (default
+is None)</p></li>
+<li><p><strong>y2_label</strong> (<em>y1_label</em><em>,</em>) – None or string of max length 40 used to describe
+the 2 output y variables being plotted. These values
+appear along the plot axes and in the titles of
+subplots. If None, the y_variables names from the
+model_dict are used. If strings are entered, those
+strings are used to override the model_dict values.
+If using y_true/y_test as data source, these values
+must be specified (default is None for both label)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.visualize.plot_value_counts">
+<code class="sig-prename descclassname">caproj.visualize.</code><code class="sig-name descname">plot_value_counts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value_counts</span></em>, <em class="sig-param"><span class="n">figsize</span><span class="o">=</span><span class="default_value">9, 3</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">'tab:blue'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.visualize.plot_value_counts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates barplot from pandas value_counts series</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value_counts</strong> (<em>DataFrame</em>) – pandas DataFrame generated using the pandas <code class="docutils literal notranslate"><span class="pre">value_counts</span></code>
+method</p></li>
+<li><p><strong>figsize</strong> (<em>tuple</em><em>, </em><em>optional</em>) – dimensions of resulting plot, defaults to (9, 3)</p></li>
+<li><p><strong>color</strong> (<em>str</em><em>, </em><em>optional</em>) – color of resulting plotted bars, defaults to “tab:blue”</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-caproj.cluster"></span><div class="section" id="caproj-cluster">
+<h2><a class="toc-backref" href="#modules">caproj.cluster</a><a class="headerlink" href="#caproj-cluster" title="Permalink to this headline">¶</a></h2>
+<p>This module contains functions for visualizing data and model results</p>
+<p><strong>Module classes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.cluster.UMAP_embedder" title="caproj.cluster.UMAP_embedder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UMAP_embedder</span></code></a>(scaler, final_cols, …)</p></td>
+<td><p>Class methods for generating UMAP embedding and HDBSCAN clusters</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Module functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.cluster.silplot" title="caproj.cluster.silplot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">silplot</span></code></a>(X, cluster_labels, clusterer[, …])</p></td>
+<td><p>Generates silhouette subplot of kmeans clusters alongside PCA n=2</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.cluster.display_gapstat_with_errbars" title="caproj.cluster.display_gapstat_with_errbars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">display_gapstat_with_errbars</span></code></a>(gap_df[, height])</p></td>
+<td><p>Generates plots of gap stats with error bars for each number of clusters</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.cluster.fit_neighbors" title="caproj.cluster.fit_neighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit_neighbors</span></code></a>(data, min_samples)</p></td>
+<td><p>Fits n nearest neighbors based on min samples and returns distances</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.cluster.plot_epsilon" title="caproj.cluster.plot_epsilon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_epsilon</span></code></a>(distances, min_samples[, height])</p></td>
+<td><p>Plot epsilon by index sorted by increasing distance</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.cluster.silscore_dbscan" title="caproj.cluster.silscore_dbscan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">silscore_dbscan</span></code></a>(data, labels, clustered_bool)</p></td>
+<td><p>Generates sil score ommitting observations not assigned to any cluster by dbscan</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.cluster.fit_dbscan" title="caproj.cluster.fit_dbscan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit_dbscan</span></code></a>(data, min_samples, eps)</p></td>
+<td><p>Fits dbscan and returns dictionary of results including model, labels, indices</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.cluster.print_dbscan_results" title="caproj.cluster.print_dbscan_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_dbscan_results</span></code></a>(dbscan_dict)</p></td>
+<td><p>Prints summary results of fitted DBSCAN results dictionary</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.cluster.plot_dendrogram" title="caproj.cluster.plot_dendrogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_dendrogram</span></code></a>(linkage_data, method_name[, …])</p></td>
+<td><p>Plots a dendrogram given a set of input hierarchy linkage data</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.cluster.plot_cluster_hist" title="caproj.cluster.plot_cluster_hist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_cluster_hist</span></code></a>(data, title, metric[, …])</p></td>
+<td><p>Requires melted dataframe as input and plots histograms by cluster</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.cluster.plot_umap_scatter" title="caproj.cluster.plot_umap_scatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_umap_scatter</span></code></a>(x, y, color, title, scale_var)</p></td>
+<td><p>plots scatterplot with color scale</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.cluster.plot_category_scatter" title="caproj.cluster.plot_category_scatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_category_scatter</span></code></a>(data, x_col, y_col, …)</p></td>
+<td><p>plots scatterplot with categories colors</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="caproj.cluster.UMAP_embedder">
+<em class="property">class </em><code class="sig-prename descclassname">caproj.cluster.</code><code class="sig-name descname">UMAP_embedder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">scaler</span></em>, <em class="sig-param"><span class="n">final_cols</span></em>, <em class="sig-param"><span class="n">mapper_dict</span></em>, <em class="sig-param"><span class="n">clusterer</span></em>, <em class="sig-param"><span class="n">bert_embedding</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.UMAP_embedder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class methods for generating UMAP embedding and HDBSCAN clusters</p>
+<dl class="py method">
+<dt id="caproj.cluster.UMAP_embedder.get_clustering">
+<code class="sig-name descname">get_clustering</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">attributes_2D_mapping</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.UMAP_embedder.get_clustering" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns HDBSCAN cluster labels</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="caproj.cluster.UMAP_embedder.get_full_df">
+<code class="sig-name descname">get_full_df</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">dimensions</span><span class="o">=</span><span class="default_value">'all'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.UMAP_embedder.get_full_df" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns UMAP full dataframe</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="caproj.cluster.UMAP_embedder.get_mapping_attributes">
+<code class="sig-name descname">get_mapping_attributes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">return_extra</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dimensions</span><span class="o">=</span><span class="default_value">'all'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.UMAP_embedder.get_mapping_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>if return extra = True, returns 3 objects:</dt><dd><ol class="arabic simple" start="0">
+<li><p>mapping</p></li>
+<li><p>columns needed to be added to harmonize with entire data</p></li>
+<li><p>dummified df before adding columns of [1]</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="caproj.cluster.UMAP_embedder.get_mapping_description">
+<code class="sig-name descname">get_mapping_description</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">dimensions</span><span class="o">=</span><span class="default_value">'all'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.UMAP_embedder.get_mapping_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns UMAP final dataframe</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.cluster.display_gapstat_with_errbars">
+<code class="sig-prename descclassname">caproj.cluster.</code><code class="sig-name descname">display_gapstat_with_errbars</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gap_df</span></em>, <em class="sig-param"><span class="n">height</span><span class="o">=</span><span class="default_value">4</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.display_gapstat_with_errbars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates plots of gap stats with error bars for each number of clusters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gap_df</strong> (<em>DataFrame</em>) – dataframe attribute of a fitted <code class="docutils literal notranslate"><span class="pre">gap_statistic.OptimalK</span></code> object
+for plotting (i.e. <code class="docutils literal notranslate"><span class="pre">OptimalK.gap_df</span></code>)</p></li>
+<li><p><strong>height</strong> (<em>int</em><em>, </em><em>optional</em>) – hieght of the resulting plot, defaults to 4</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.cluster.fit_dbscan">
+<code class="sig-prename descclassname">caproj.cluster.</code><code class="sig-name descname">fit_dbscan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">min_samples</span></em>, <em class="sig-param"><span class="n">eps</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.fit_dbscan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits dbscan and returns dictionary of results including model, labels, indices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array-like</em>) – original data to be fitted using <code class="docutils literal notranslate"><span class="pre">sklearn.cluster.DBSCAN</span></code></p></li>
+<li><p><strong>min_samples</strong> (<em>int</em>) – The number of samples (or total weight) in a neighborhood for
+a point to be considered as a core point. This includes the point itself.</p></li>
+<li><p><strong>eps</strong> (<em>int</em><em> or </em><em>float</em>) – The maximum distance between two samples for one to be considered as
+in the neighborhood of the other. This is not a maximum bound on the
+distances of points within a cluster. This is the most important DBSCAN
+parameter to choose appropriately for your data set and distance function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary of results and important characteristics of the fitted
+DBSCAN algorithm (see NOTE below)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p>NOTE: Dictionary returned includes the following items:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">DBSCAN</span><span class="p">(</span><span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span> <span class="n">min_samples</span><span class="o">=</span><span class="n">min_samples</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+    <span class="s2">&quot;n_clusters&quot;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">([</span><span class="n">i</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">labels_</span><span class="p">)]),</span>
+    <span class="s2">&quot;labels&quot;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">labels_</span><span class="p">,</span>
+    <span class="s2">&quot;core_sample_indices&quot;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">core_sample_indices_</span><span class="p">,</span>
+    <span class="s2">&quot;clustered_bool&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">i</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">],</span>
+    <span class="s2">&quot;cluster_counts&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(),</span>
+    <span class="s2">&quot;sil_score&quot;</span><span class="p">:</span> <span class="n">silscore_dbscan</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">clustered_bool</span><span class="p">),</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.cluster.fit_neighbors">
+<code class="sig-prename descclassname">caproj.cluster.</code><code class="sig-name descname">fit_neighbors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">min_samples</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.fit_neighbors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits n nearest neighbors based on min samples and returns distances</p>
+<p>This is a simple implementation of the <code class="docutils literal notranslate"><span class="pre">sklearn.neighbors.NearestNeighbors</span></code>
+and returns the distance results from that object’s <code class="docutils literal notranslate"><span class="pre">fitted_neighbors</span></code> method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>dataframe</em><em> or </em><em>array</em>) – data on which to perform nearest neighbors algorithm</p></li>
+<li><p><strong>min_samples</strong> (<em>int</em>) – number of neighbors to use by default for kneighbors queries</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array representing the lengths to points</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.cluster.make_spider">
+<code class="sig-prename descclassname">caproj.cluster.</code><code class="sig-name descname">make_spider</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean_peaks_per_cluster</span></em>, <em class="sig-param"><span class="n">row</span></em>, <em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">color</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.make_spider" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate spider plot showing attributes of a single cluster</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.cluster.plot_category_scatter">
+<code class="sig-prename descclassname">caproj.cluster.</code><code class="sig-name descname">plot_category_scatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">x_col</span></em>, <em class="sig-param"><span class="n">y_col</span></em>, <em class="sig-param"><span class="n">cat_col</span></em>, <em class="sig-param"><span class="n">title</span></em>, <em class="sig-param"><span class="n">colormap</span><span class="o">=</span><span class="default_value">'Paired'</span></em>, <em class="sig-param"><span class="n">xlabel</span><span class="o">=</span><span class="default_value">'1st dimension'</span></em>, <em class="sig-param"><span class="n">ylabel</span><span class="o">=</span><span class="default_value">'2nd dimension'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.plot_category_scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>plots scatterplot with categories colors</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.cluster.plot_cluster_hist">
+<code class="sig-prename descclassname">caproj.cluster.</code><code class="sig-name descname">plot_cluster_hist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">title</span></em>, <em class="sig-param"><span class="n">metric</span></em>, <em class="sig-param"><span class="n">cluster_col</span><span class="o">=</span><span class="default_value">'cluster'</span></em>, <em class="sig-param"><span class="n">val_col</span><span class="o">=</span><span class="default_value">'Standardized Metric Value'</span></em>, <em class="sig-param"><span class="n">metric_col</span><span class="o">=</span><span class="default_value">'Metric'</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">'Paired'</span></em>, <em class="sig-param"><span class="n">bins</span><span class="o">=</span><span class="default_value">6</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.plot_cluster_hist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Requires melted dataframe as input and plots histograms by cluster</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.cluster.plot_dendrogram">
+<code class="sig-prename descclassname">caproj.cluster.</code><code class="sig-name descname">plot_dendrogram</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">linkage_data</span></em>, <em class="sig-param"><span class="n">method_name</span></em>, <em class="sig-param"><span class="n">yticks</span><span class="o">=</span><span class="default_value">16</span></em>, <em class="sig-param"><span class="n">ytick_interval</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">height</span><span class="o">=</span><span class="default_value">4.5</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.plot_dendrogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a dendrogram given a set of input hierarchy linkage data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>linkage_data</strong> – np.array output from scipy.cluster.hierarchy, which
+should have been applied to a distance matrix to
+convert it to linkage data</p></li>
+<li><p><strong>method_name</strong> – string describing the linkage method used, should
+be fewer than 30 characters</p></li>
+<li><p><strong>yticks</strong> – integer, the number of desired y tick lavels for the
+resulting plot</p></li>
+<li><p><strong>ytick_interval</strong> – integer, the desired interval for the resulting
+y ticks</p></li>
+<li><p><strong>height</strong> – float, the desired height of the resulting plot</p></li>
+</ul>
+</dd>
+</dl>
+<p>return: plots dendrogram, no objects are returned</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.cluster.plot_epsilon">
+<code class="sig-prename descclassname">caproj.cluster.</code><code class="sig-name descname">plot_epsilon</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">distances</span></em>, <em class="sig-param"><span class="n">min_samples</span></em>, <em class="sig-param"><span class="n">height</span><span class="o">=</span><span class="default_value">5</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.plot_epsilon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot epsilon by index sorted by increasing distance</p>
+<p>Generates a line plot of epsilon with observations sorted by increasing distances</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>distances</strong> (<em>array</em>) – distances generated by <a class="reference internal" href="#caproj.cluster.fit_neighbors" title="caproj.cluster.fit_neighbors"><code class="xref py py-func docutils literal notranslate"><span class="pre">fit_neighbors()</span></code></a></p></li>
+<li><p><strong>min_samples</strong> (<em>int</em>) – number of neighbors used to generate distances</p></li>
+<li><p><strong>height</strong> (<em>int</em><em>, </em><em>optional</em>) – height of plot, defaults to 5</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.cluster.plot_spider_clusters">
+<code class="sig-prename descclassname">caproj.cluster.</code><code class="sig-name descname">plot_spider_clusters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">title</span></em>, <em class="sig-param"><span class="n">mean_peaks_per_cluster</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.plot_spider_clusters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate spider plot subplots for all input clusters</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.cluster.plot_umap_scatter">
+<code class="sig-prename descclassname">caproj.cluster.</code><code class="sig-name descname">plot_umap_scatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">color</span></em>, <em class="sig-param"><span class="n">title</span></em>, <em class="sig-param"><span class="n">scale_var</span></em>, <em class="sig-param"><span class="n">colormap</span><span class="o">=</span><span class="default_value">'Reds'</span></em>, <em class="sig-param"><span class="n">xlabel</span><span class="o">=</span><span class="default_value">'1st dimension'</span></em>, <em class="sig-param"><span class="n">ylabel</span><span class="o">=</span><span class="default_value">'2nd dimension'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.plot_umap_scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>plots scatterplot with color scale</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.cluster.print_dbscan_results">
+<code class="sig-prename descclassname">caproj.cluster.</code><code class="sig-name descname">print_dbscan_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dbscan_dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.print_dbscan_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints summary results of fitted DBSCAN results dictionary</p>
+<p>Provides printed summary and plotted value counts by cluster</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dbscan_dict</strong> (<em>dict</em>) – returned output dictionary from <code class="xref py py-func docutils literal notranslate"><span class="pre">fit_dbscan`()</span></code> function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.cluster.silplot">
+<code class="sig-prename descclassname">caproj.cluster.</code><code class="sig-name descname">silplot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">cluster_labels</span></em>, <em class="sig-param"><span class="n">clusterer</span></em>, <em class="sig-param"><span class="n">pointlabels</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">height</span><span class="o">=</span><span class="default_value">6</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.silplot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates silhouette subplot of kmeans clusters alongside PCA n=2</p>
+<p>Two side-by-side subplots are generated showing (1) the silhouette plot of
+the clusterer’s results and (2) the PCA 2-dimensional reduction of the
+input data, color-coded by cluster.</p>
+<dl>
+<dt>Source: The majority of the code from this function was provided as a</dt><dd><p>helper function from the CS109b staff in HW2</p>
+<p>The original code authored by the cs109b teaching staff
+is modified from:
+<a class="reference external" href="http://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_silhouette_analysis.html">http://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_silhouette_analysis.html</a></p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>pandas.DataFrame</em>) – original mutli-dimensional data values against which you are plotting</p></li>
+<li><p><strong>cluster_labels</strong> (<em>list</em><em> or </em><em>array</em>) – list of labels for each observation in <code class="docutils literal notranslate"><span class="pre">X</span></code></p></li>
+<li><p><strong>clusterer</strong> (<em>sklearn.cluster.KMeans object</em>) – fitted sklearn kmeans clustering object</p></li>
+<li><p><strong>pointlabels</strong> (<em>list</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – list of labels for each point, defaults to None</p></li>
+<li><p><strong>height</strong> (<em>int</em><em>, </em><em>optional</em>) – height of resulting subplots, defaults to 6</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.cluster.silscore_dbscan">
+<code class="sig-prename descclassname">caproj.cluster.</code><code class="sig-name descname">silscore_dbscan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">labels</span></em>, <em class="sig-param"><span class="n">clustered_bool</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.cluster.silscore_dbscan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates sil score ommitting observations not assigned to any cluster by dbscan</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array</em><em> or </em><em>dataframe</em>) – original data used for dbscan clustering</p></li>
+<li><p><strong>labels</strong> (<em>array</em>) – cluster label for each observation in <code class="docutils literal notranslate"><span class="pre">data</span></code></p></li>
+<li><p><strong>clustered_bool</strong> (<em>list</em><em> or </em><em>1-d array</em>) – boolean value for each observation indicated whether it had
+been clustered by dbscan</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>silhouette score</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-caproj.autoencoder"></span><div class="section" id="caproj-autoencoder">
+<h2><a class="toc-backref" href="#modules">caproj.autoencoder</a><a class="headerlink" href="#caproj-autoencoder" title="Permalink to this headline">¶</a></h2>
+<p>This module contains functions for visualizing data and model results</p>
+<p><strong>Module variables:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.autoencoder.random_seed" title="caproj.autoencoder.random_seed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_seed</span></code></a></p></td>
+<td><p>Import and set seed for reproducible results</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Module functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.autoencoder.build_dense_ae_architecture" title="caproj.autoencoder.build_dense_ae_architecture"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_dense_ae_architecture</span></code></a>(input_dim, …)</p></td>
+<td><p>Builds and compiles a tensorflow.keras dense autoencoder network</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.autoencoder.plot_history" title="caproj.autoencoder.plot_history"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_history</span></code></a>(history, title[, val_name, …])</p></td>
+<td><p>Plot training and validation loss using keras history object</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="caproj.autoencoder.build_dense_ae_architecture">
+<code class="sig-prename descclassname">caproj.autoencoder.</code><code class="sig-name descname">build_dense_ae_architecture</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_dim</span></em>, <em class="sig-param"><span class="n">encoding_dim</span></em>, <em class="sig-param"><span class="n">droprate</span></em>, <em class="sig-param"><span class="n">learning_rate</span></em>, <em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.autoencoder.build_dense_ae_architecture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds and compiles a tensorflow.keras dense autoencoder network</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This network architecture was designed for the specific purpose of
+encoding a dataset of 1D embeddings. Therefore, the input dimension
+must be 1D with a length that equals the number of values in any
+single observation’s embedding</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_dim</strong> – integer, the length of each embedding (must all be of
+the same length)</p></li>
+<li><p><strong>encoding_dim</strong> – integer, the desired bottleneck dimension for the
+encoder network</p></li>
+<li><p><strong>droprate</strong> – float &gt;0 &lt;1, this is passed to the rate argument for
+the dropout layers between each dense layer</p></li>
+<li><p><strong>learning_rate</strong> – float, the desired learning rate for the Adam
+optimizer used while compiling the model</p></li>
+<li><p><strong>name</strong> – string, the desired name of the resulting network</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple of 3 tf.keras model object, [0] full autoencoder model,
+[1] encoder model, [2] decoder model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.autoencoder.plot_history">
+<code class="sig-prename descclassname">caproj.autoencoder.</code><code class="sig-name descname">plot_history</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">history</span></em>, <em class="sig-param"><span class="n">title</span></em>, <em class="sig-param"><span class="n">val_name</span><span class="o">=</span><span class="default_value">'validation'</span></em>, <em class="sig-param"><span class="n">loss_type</span><span class="o">=</span><span class="default_value">'MSE'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.autoencoder.plot_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot training and validation loss using keras history object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>history</strong> – keras training history object or dict. If a dict is
+used, it must have two keys named ‘loss’ and ‘val_loss’
+for which the corresponding values must be lists or
+arrays with float values</p></li>
+<li><p><strong>title</strong> – string, the title of the resulting plot</p></li>
+<li><p><strong>val_name</strong> – string, the name for the val_loss line in the plot
+legend (default ‘validation’)</p></li>
+<li><p><strong>loss_type</strong> – string, the loss type name to be printed as the
+y axis label (default ‘MSE’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a line plot illustrating model training history, no
+objects are returned</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="caproj.autoencoder.random_seed">
+<code class="sig-prename descclassname">caproj.autoencoder.</code><code class="sig-name descname">random_seed</code><em class="property"> = 109</em><a class="headerlink" href="#caproj.autoencoder.random_seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import and set seed for reproducible results</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.autoencoder.seed">
+<code class="sig-prename descclassname">caproj.autoencoder.</code><code class="sig-name descname">seed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.autoencoder.seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reseed a legacy MT19937 BitGenerator</p>
+<p class="rubric">Notes</p>
+<p>This is a convenience, legacy function.</p>
+<p>The best practice is to <strong>not</strong> reseed a BitGenerator, rather to
+recreate a new one. This method is here for legacy reasons.
+This example demonstrates best practice.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="n">MT19937</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="n">RandomState</span><span class="p">,</span> <span class="n">SeedSequence</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rs</span> <span class="o">=</span> <span class="n">RandomState</span><span class="p">(</span><span class="n">MT19937</span><span class="p">(</span><span class="n">SeedSequence</span><span class="p">(</span><span class="mi">123456789</span><span class="p">)))</span>
+<span class="go"># Later, you want to restart the stream</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rs</span> <span class="o">=</span> <span class="n">RandomState</span><span class="p">(</span><span class="n">MT19937</span><span class="p">(</span><span class="n">SeedSequence</span><span class="p">(</span><span class="mi">987654321</span><span class="p">)))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<span class="target" id="module-caproj.utils"></span><div class="section" id="caproj-utils">
+<h2><a class="toc-backref" href="#modules">caproj.utils</a><a class="headerlink" href="#caproj-utils" title="Permalink to this headline">¶</a></h2>
+<p>This module contains utlility functions for performaing HDBSCAN and UMAP analyses</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Documentation is currently incomplete for each function in this module.</p>
+</div>
+<p><strong>Module functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.utils.predict_ensemble" title="caproj.utils.predict_ensemble"><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict_ensemble</span></code></a>(ensemble, X)</p></td>
+<td><p>Run data through each classifier in ensemble list to get predicted probabilities</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.utils.adjusted_classes" title="caproj.utils.adjusted_classes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">adjusted_classes</span></code></a>(y_scores, t)</p></td>
+<td><p>Adjust class predictions based on the prediction threshold (t)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.utils.print_report" title="caproj.utils.print_report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_report</span></code></a>(m, X_valid, y_valid[, t, …])</p></td>
+<td><p>Print a comprehensive classification report on both validation and training set</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.utils.draw_umap" title="caproj.utils.draw_umap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_umap</span></code></a>(data[, n_neighbors, min_dist, c, …])</p></td>
+<td><p>Generate plot of UMAP algorithm results based on specified arguments</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.utils.cluster_hdbscan" title="caproj.utils.cluster_hdbscan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cluster_hdbscan</span></code></a>(clusterable_embedding, …)</p></td>
+<td><p>Generate plot of HDBSCAN algorithm results based on specified arguments</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="caproj.utils.adjusted_classes">
+<code class="sig-prename descclassname">caproj.utils.</code><code class="sig-name descname">adjusted_classes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_scores</span></em>, <em class="sig-param"><span class="n">t</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.utils.adjusted_classes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjust class predictions based on the prediction threshold (t)</p>
+<ul class="simple">
+<li><p>Will only work for binary classification problems.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.utils.cluster_hdbscan">
+<code class="sig-prename descclassname">caproj.utils.</code><code class="sig-name descname">cluster_hdbscan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clusterable_embedding</span></em>, <em class="sig-param"><span class="n">min_cluster_size</span></em>, <em class="sig-param"><span class="n">viz_embedding_list</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.utils.cluster_hdbscan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate plot of HDBSCAN algorithm results based on specified arguments</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.utils.draw_umap">
+<code class="sig-prename descclassname">caproj.utils.</code><code class="sig-name descname">draw_umap</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">n_neighbors</span><span class="o">=</span><span class="default_value">15</span></em>, <em class="sig-param"><span class="n">min_dist</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">c</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">n_components</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">metric</span><span class="o">=</span><span class="default_value">'euclidean'</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">use_plotly</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.utils.draw_umap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate plot of UMAP algorithm results based on specified arguments</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.utils.predict_ensemble">
+<code class="sig-prename descclassname">caproj.utils.</code><code class="sig-name descname">predict_ensemble</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ensemble</span></em>, <em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.utils.predict_ensemble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run data through each classifier in ensemble list to get predicted probabilities</p>
+<ul class="simple">
+<li><p>Those are then averaged out across all classifiers.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.utils.print_report">
+<code class="sig-prename descclassname">caproj.utils.</code><code class="sig-name descname">print_report</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">X_valid</span></em>, <em class="sig-param"><span class="n">y_valid</span></em>, <em class="sig-param"><span class="n">t</span><span class="o">=</span><span class="default_value">0.5</span></em>, <em class="sig-param"><span class="n">X_train</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_train</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">show_output</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.utils.print_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print a comprehensive classification report on both validation and training set</p>
+<ul class="simple">
+<li><p>The metrics returned are AUC, F1, Precision, Recall and Confusion Matrix.</p></li>
+<li><p>It accepts both single classifiers and ensembles.</p></li>
+<li><p>Results are dependent on probability threshold applied to individual predictions.</p></li>
+</ul>
+</dd></dl>
+
+</div>
+<span class="target" id="module-caproj.trees"></span><div class="section" id="caproj-trees">
+<h2><a class="toc-backref" href="#modules">caproj.trees</a><a class="headerlink" href="#caproj-trees" title="Permalink to this headline">¶</a></h2>
+<p>This module contains functions for generating and analyzing trees and
+tree ensemble models and visualizing the model results</p>
+<p><strong>Module variables:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.trees.depths" title="caproj.trees.depths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">depths</span></code></a></p></td>
+<td><p>sets default depths for comparison in cross validation</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.trees.cv" title="caproj.trees.cv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cv</span></code></a></p></td>
+<td><p>sets cross-validation kfold parameter</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Module functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.trees.generate_adaboost_staged_scores" title="caproj.trees.generate_adaboost_staged_scores"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_adaboost_staged_scores</span></code></a>(model_dict, …)</p></td>
+<td><p>Generates adaboost staged scores in order to find ideal number of iterations</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.trees.plot_adaboost_staged_scores" title="caproj.trees.plot_adaboost_staged_scores"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_adaboost_staged_scores</span></code></a>(model_dict, …)</p></td>
+<td><p>Plots the adaboost staged scores for each y variable’s predictions and iteration</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.trees.calc_meanstd_logistic" title="caproj.trees.calc_meanstd_logistic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_meanstd_logistic</span></code></a>(X_tr, y_tr, X_te, y_te)</p></td>
+<td><p>Fits and generates tree classifier results, iterated for each input depth</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.trees.calc_meanstd_regression" title="caproj.trees.calc_meanstd_regression"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_meanstd_regression</span></code></a>(X_tr, y_tr, X_te, y_te)</p></td>
+<td><p>Fits and generates tree regressor results, iterated for each input depth</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.trees.plot_me" title="caproj.trees.plot_me"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_me</span></code></a>(result)</p></td>
+<td><p>plot the best depth finder for decision tree model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#caproj.trees.calculate" title="caproj.trees.calculate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate</span></code></a>(data_train, data_test, categories, …)</p></td>
+<td><p>Calculate decision tree results using a particular set of X features</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#caproj.trees.calc_models" title="caproj.trees.calc_models"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_models</span></code></a>(data_train, data_test, …[, …])</p></td>
+<td><p>Iterate over all combinations of attributes to return lists of resulting models</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="caproj.trees.calc_meanstd_logistic">
+<code class="sig-prename descclassname">caproj.trees.</code><code class="sig-name descname">calc_meanstd_logistic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X_tr</span></em>, <em class="sig-param"><span class="n">y_tr</span></em>, <em class="sig-param"><span class="n">X_te</span></em>, <em class="sig-param"><span class="n">y_te</span></em>, <em class="sig-param"><span class="n">depths</span><span class="p">:</span> <span class="n">list</span> <span class="o">=</span> <span class="default_value">[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]</span></em>, <em class="sig-param"><span class="n">cv</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">5</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.trees.calc_meanstd_logistic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits and generates tree classifier results, iterated for each input depth</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X_tr</strong> (<em>array-like</em>) – Training data X values</p></li>
+<li><p><strong>y_tr</strong> (<em>array-like</em>) – Training data y values</p></li>
+<li><p><strong>X_te</strong> (<em>array-like</em>) – Test data X values</p></li>
+<li><p><strong>y_te</strong> (<em>array-like</em>) – Test data y values</p></li>
+<li><p><strong>depths</strong> (<em>list</em><em>, </em><em>optional</em>) – List of depths for each iterated decision tree classifier,
+defaults to depths</p></li>
+<li><p><strong>cv</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of k-folds used for cross-validation, defaults to cv</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Five arrays are returned (1) mean cross-validation scores for each
+iteration, (2) standard deviation of each cross-validation score, (3)
+each training observation’s ROC AUC score, (4) each test observation’s
+ROC AUC score, (5) each fitted classifier’s model object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.trees.calc_meanstd_regression">
+<code class="sig-prename descclassname">caproj.trees.</code><code class="sig-name descname">calc_meanstd_regression</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X_tr</span></em>, <em class="sig-param"><span class="n">y_tr</span></em>, <em class="sig-param"><span class="n">X_te</span></em>, <em class="sig-param"><span class="n">y_te</span></em>, <em class="sig-param"><span class="n">depths</span><span class="p">:</span> <span class="n">list</span> <span class="o">=</span> <span class="default_value">[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]</span></em>, <em class="sig-param"><span class="n">cv</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">5</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.trees.calc_meanstd_regression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits and generates tree regressor results, iterated for each input depth</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X_tr</strong> (<em>array-like</em>) – Training data X values</p></li>
+<li><p><strong>y_tr</strong> (<em>array-like</em>) – Training data y values</p></li>
+<li><p><strong>X_te</strong> (<em>array-like</em>) – Test data X values</p></li>
+<li><p><strong>y_te</strong> (<em>array-like</em>) – Test data y values</p></li>
+<li><p><strong>depths</strong> (<em>list</em><em>, </em><em>optional</em>) – List of depths for each iterated decision tree regressor,
+defaults to depths</p></li>
+<li><p><strong>cv</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of k-folds used for cross-validation, defaults to cv</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Five arrays are returned (1) mean cross-validation scores for each
+iteration, (2) standard deviation of each cross-validation score, (3)
+each training observation’s <span class="math notranslate nohighlight">\(R^2\)</span> score, (4) each test observation’s
+<span class="math notranslate nohighlight">\(R^2\)</span> score, (5) each fitted regressors’s model object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.trees.calc_models">
+<code class="sig-prename descclassname">caproj.trees.</code><code class="sig-name descname">calc_models</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data_train</span></em>, <em class="sig-param"><span class="n">data_test</span></em>, <em class="sig-param"><span class="n">categories</span></em>, <em class="sig-param"><span class="n">nondescr_attrbutes</span></em>, <em class="sig-param"><span class="n">descr_attributes</span></em>, <em class="sig-param"><span class="n">responses_list</span></em>, <em class="sig-param"><span class="n">logistic</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.trees.calc_models" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over all combinations of attributes to return lists of resulting models</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_train</strong> (<em>array-like</em>) – Training dataset</p></li>
+<li><p><strong>data_test</strong> (<em>array-like</em>) – Test dataset</p></li>
+<li><p><strong>categories</strong> (<em>list</em>) – List of project categories as they appear in the data</p></li>
+<li><p><strong>nondescr_attrbutes</strong> (<em>list</em>) – Column names of all features not consisting of those
+engineered from project descriptions</p></li>
+<li><p><strong>descr_attributes</strong> (<em>list</em>) – Column names of features engineered using project
+descriptions</p></li>
+<li><p><strong>responses_list</strong> (<em>list</em>) – Column names of model responses (i.e. each different
+y variable)</p></li>
+<li><p><strong>logistic</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indicates whether to use decision tree classifier
+(i.e. <code class="docutils literal notranslate"><span class="pre">logistic=True</span></code>) or regressor (i.e. <code class="docutils literal notranslate"><span class="pre">logistic=False</span></code>),
+defaults to True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Two list objects containing (1) lists of dictionaries of model results and
+(2) lists of fitted model dictionaries for each iterated model</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.trees.calculate">
+<code class="sig-prename descclassname">caproj.trees.</code><code class="sig-name descname">calculate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data_train</span></em>, <em class="sig-param"><span class="n">data_test</span></em>, <em class="sig-param"><span class="n">categories</span></em>, <em class="sig-param"><span class="n">attributes</span><span class="p">:</span> <span class="n">list</span></em>, <em class="sig-param"><span class="n">responses_list</span><span class="p">:</span> <span class="n">list</span></em>, <em class="sig-param"><span class="n">logistic</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.trees.calculate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate decision tree results using a particular set of X features</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_train</strong> (<em>array-like</em>) – Training dataset</p></li>
+<li><p><strong>data_test</strong> (<em>array-like</em>) – Test dataset</p></li>
+<li><p><strong>categories</strong> (<em>list</em>) – List of project categories as they appear in the data</p></li>
+<li><p><strong>attributes</strong> (<em>list</em>) – Column names of feature columns (i.e. each different
+X variable under consideration)</p></li>
+<li><p><strong>responses_list</strong> (<em>list</em>) – Column names of model responses (i.e. each different
+y variable)</p></li>
+<li><p><strong>logistic</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indicates whether to use decision tree classifier
+(i.e. <code class="docutils literal notranslate"><span class="pre">logistic=True</span></code>) or regressor (i.e. <code class="docutils literal notranslate"><span class="pre">logistic=False</span></code>),
+defaults to True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Two lists containing (1) dictionaries of model results and
+(2) fitted model dictionaries, one dictionary for each response
+variable</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="caproj.trees.cv">
+<code class="sig-prename descclassname">caproj.trees.</code><code class="sig-name descname">cv</code><em class="property"> = 5</em><a class="headerlink" href="#caproj.trees.cv" title="Permalink to this definition">¶</a></dt>
+<dd><p>sets cross-validation kfold parameter</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="caproj.trees.depths">
+<code class="sig-prename descclassname">caproj.trees.</code><code class="sig-name descname">depths</code><em class="property"> = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]</em><a class="headerlink" href="#caproj.trees.depths" title="Permalink to this definition">¶</a></dt>
+<dd><p>sets default depths for comparison in cross validation</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.trees.generate_adaboost_staged_scores">
+<code class="sig-prename descclassname">caproj.trees.</code><code class="sig-name descname">generate_adaboost_staged_scores</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model_dict</span></em>, <em class="sig-param"><span class="n">X_train</span></em>, <em class="sig-param"><span class="n">X_test</span></em>, <em class="sig-param"><span class="n">y_train</span></em>, <em class="sig-param"><span class="n">y_test</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.trees.generate_adaboost_staged_scores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates adaboost staged scores in order to find ideal number of iterations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_dict</strong> (<em>dict</em>) – Output fitted model dictionary generated using
+<a class="reference internal" href="#caproj.model.generate_model_dict" title="caproj.model.generate_model_dict"><code class="xref py py-func docutils literal notranslate"><span class="pre">caproj.model.generate_model_dict()</span></code></a></p></li>
+<li><p><strong>X_train</strong> (<em>array-like</em>) – Training data X values</p></li>
+<li><p><strong>X_test</strong> (<em>array-like</em>) – Test data X values</p></li>
+<li><p><strong>y_train</strong> (<em>array-like</em>) – Training data y values</p></li>
+<li><p><strong>y_test</strong> (<em>array-like</em>) – Test data y values</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple of 2D numpy arrays for adaboost staged scores at each iteration and
+each response variable, one array for training scores and one for test</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.trees.plot_adaboost_staged_scores">
+<code class="sig-prename descclassname">caproj.trees.</code><code class="sig-name descname">plot_adaboost_staged_scores</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model_dict</span></em>, <em class="sig-param"><span class="n">X_train</span></em>, <em class="sig-param"><span class="n">X_test</span></em>, <em class="sig-param"><span class="n">y_train</span></em>, <em class="sig-param"><span class="n">y_test</span></em>, <em class="sig-param"><span class="n">height</span><span class="o">=</span><span class="default_value">4</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.trees.plot_adaboost_staged_scores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the adaboost staged scores for each y variable’s predictions and iteration</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_dict</strong> (<em>dict</em>) – Output fitted model dictionary generated using
+<a class="reference internal" href="#caproj.model.generate_model_dict" title="caproj.model.generate_model_dict"><code class="xref py py-func docutils literal notranslate"><span class="pre">caproj.model.generate_model_dict()</span></code></a></p></li>
+<li><p><strong>X_train</strong> (<em>array-like</em>) – Training data X values</p></li>
+<li><p><strong>X_test</strong> (<em>array-like</em>) – Test data X values</p></li>
+<li><p><strong>y_train</strong> (<em>array-like</em>) – Training data y values</p></li>
+<li><p><strong>y_test</strong> (<em>array-like</em>) – Test data y values</p></li>
+<li><p><strong>height</strong> (<em>int</em><em>, </em><em>optional</em>) – Height dimension of resulting plot, defaults to 4</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="caproj.trees.plot_me">
+<code class="sig-prename descclassname">caproj.trees.</code><code class="sig-name descname">plot_me</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">result</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caproj.trees.plot_me" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot the best depth finder for decision tree model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>result</strong> (<em>dict</em>) – Dictionary returned from the <a class="reference internal" href="#caproj.trees.calculate" title="caproj.trees.calculate"><code class="xref py py-func docutils literal notranslate"><span class="pre">calculate()</span></code></a> function</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="analysis.html" title="Previous document">Analysis and findings</a>
+        </li>
+        <li>
+          <a href="changelog.html" title="Next document">Changelog</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/logo.png" alt="Logo"/>
+    
+    <h1 class="logo logo-name">NYC Capital Projects</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Predicting budget and schedule outcomes for NYC capital projects</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=sedelmeyer&repo=nyc-capital-projects&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">NYC Capital Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis and findings</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#caproj-datagen">caproj.datagen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caproj-scale">caproj.scale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caproj-model">caproj.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caproj-visualize">caproj.visualize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caproj-cluster">caproj.cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caproj-autoencoder">caproj.autoencoder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caproj-utils">caproj.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caproj-trees">caproj.trees</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="analysis.html" title="previous chapter">Analysis and findings</a></li>
+      <li>Next: <a href="changelog.html" title="next chapter">Changelog</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Michael Sedelmeyer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/modules.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/sedelmeyer/nyc-capital-projects" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

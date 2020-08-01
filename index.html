@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predicting outcomes for NYC capital projects &#8212; NYC Capital Projects 1.0.1.dev31+g88fbd44 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="canonical" href="https://sedelmeyer.github.io/nyc-capital-projects/index.html" />
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="NYC Capital Projects" href="readme.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="predicting-outcomes-for-nyc-capital-projects">
+<h1>Predicting outcomes for NYC capital projects<a class="headerlink" href="#predicting-outcomes-for-nyc-capital-projects" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="an-investigation-into-feature-engineering-and-modeling-project-change-data-for-large-scale-capital-projects">
+<h2>An investigation into feature engineering and modeling project-change data for large-scale capital projects.<a class="headerlink" href="#an-investigation-into-feature-engineering-and-modeling-project-change-data-for-large-scale-capital-projects" title="Permalink to this headline">¶</a></h2>
+<a class="reference external image-reference" href="https://github.com/sedelmeyer/nyc-capital-projects/actions"><img alt="https://github.com/sedelmeyer/nyc-capital-projects/workflows/build/badge.svg?branch=master" src="https://github.com/sedelmeyer/nyc-capital-projects/workflows/build/badge.svg?branch=master" /></a>
+<a class="reference external image-reference" href="https://github.com/sedelmeyer/cc-pydata/blob/master/LICENSE"><img alt="https://img.shields.io/badge/License-MIT-black.svg" src="https://img.shields.io/badge/License-MIT-black.svg" /></a>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="readme.html">NYC Capital Projects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#summary">Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#research-question">Research question</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#analysis-and-outcomes">Analysis and outcomes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#source-code-api-documentation">Source code API documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#replicating-this-analysis">Replicating this analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#adding-to-this-project">Adding to this project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#questions-or-issues-related-to-this-project">Questions or issues related to this project</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis and findings</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="analysis.html#about-this-project">About this project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.html#summary-of-initial-findings">Summary of initial findings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#caproj-datagen">caproj.datagen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#caproj-scale">caproj.scale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#caproj-model">caproj.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#caproj-visualize">caproj.visualize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#caproj-cluster">caproj.cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#caproj-autoencoder">caproj.autoencoder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#caproj-utils">caproj.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#caproj-trees">caproj.trees</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#future-releases">Future releases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#v2-0-0-2020-08-01">v2.0.0 (2020-08-01)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#v1-0-0-2020-05-17">v1.0.0 (2020-05-17)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          <a href="readme.html" title="Next document">NYC Capital Projects</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="#">
+    <img class="logo" src="_static/logo.png" alt="Logo"/>
+    
+    <h1 class="logo logo-name">NYC Capital Projects</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Predicting budget and schedule outcomes for NYC capital projects</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=sedelmeyer&repo=nyc-capital-projects&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="readme.html">NYC Capital Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis and findings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="readme.html" title="next chapter">NYC Capital Projects</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Michael Sedelmeyer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/sedelmeyer/nyc-capital-projects" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
