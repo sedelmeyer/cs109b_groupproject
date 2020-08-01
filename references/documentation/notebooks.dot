@@ -6,7 +6,7 @@ digraph {
         01 [label = "01_generate_data_splits"]
         02 [label = "02_bert_embedded_descriptions"]
         03 [label = "03_kmeans_attribute_features"]
-        04 [label = "04_pca_autencoder_features"]
+        04 [label = "04_pca_autoencoder_features"]
         05 [label = "05_umap_hdbscan_features"]
         06 [label = "06_merge_final_features"]
         07 [label = "07_baseline_linear_models"]
