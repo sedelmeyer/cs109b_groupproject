@@ -17,6 +17,7 @@ v2.0.1 (2020-08-01)
 * Add all author names to ``docs/conf.py`` and ``setup.py``
 * Remove unused notebook-generated outputs from each respective notebook
 * Commit ``notebook/05_umap_hdbscan_features.ipynb`` output feature data to version control due to notebook errors preventing successful output
+* Move ``notebook/11_FINAL_REPORT.ipynb`` decision tree diagram output to ``docs/_static/figures/`` for use in future documentation enhancements
 
 v2.0.0 (2020-08-01)
 -------------------
