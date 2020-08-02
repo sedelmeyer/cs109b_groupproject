@@ -34,7 +34,7 @@ setup(
         ),
         re.sub(":[a-z]+:`~?(.*?)`", r"``\1``", read("CHANGELOG.rst")),
     ),
-    author="Michael Sedelmeyer",
+    author="An Hoang, Mark McDonald, and Michael Sedelmeyer",
     author_email="20605812+sedelmeyer@users.noreply.github.com",
     url="https://github.com/sedelmeyer/nyc-capital-projects",
     packages=find_packages("src"),
