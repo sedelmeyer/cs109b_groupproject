@@ -43,13 +43,21 @@
 <div class="admonition-todo admonition" id="id2">
 <p class="admonition-title">Todo</p>
 <ul class="simple">
-<li><p>Remove unused notebook output files</p></li>
 <li><p>Convert notebook <code class="docutils literal notranslate"><span class="pre">00_FINAL_REPORT.ipnb</span></code> findings to <code class="docutils literal notranslate"><span class="pre">.rst</span></code> format for online Sphinx rendering</p></li>
 <li><p>Generate dependency workflow schematic, illustrating DAG of notebook inputs and outputs</p></li>
 <li><p>Fix notebook <code class="docutils literal notranslate"><span class="pre">05_umap_hdbscan_features.ipynb</span></code> data generation functionality</p></li>
 <li><p>Improve <code class="docutils literal notranslate"><span class="pre">caproj.utils</span></code> API documentation</p></li>
 </ul>
 </div>
+</div>
+<div class="section" id="v2-0-1-2020-08-01">
+<h2>v2.0.1 (2020-08-01)<a class="headerlink" href="#v2-0-1-2020-08-01" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Add all author names to <code class="docutils literal notranslate"><span class="pre">docs/conf.py</span></code> and <code class="docutils literal notranslate"><span class="pre">setup.py</span></code></p></li>
+<li><p>Remove unused notebook-generated outputs from each respective notebook</p></li>
+<li><p>Commit <code class="docutils literal notranslate"><span class="pre">notebook/05_umap_hdbscan_features.ipynb</span></code> output feature data to version control due to notebook errors preventing successful output</p></li>
+<li><p>Move <code class="docutils literal notranslate"><span class="pre">notebook/11_FINAL_REPORT.ipynb</span></code> decision tree diagram output to <code class="docutils literal notranslate"><span class="pre">docs/_static/figures/</span></code> for use in future documentation enhancements</p></li>
+</ul>
 </div>
 <div class="section" id="v2-0-0-2020-08-01">
 <h2>v2.0.0 (2020-08-01)<a class="headerlink" href="#v2-0-0-2020-08-01" title="Permalink to this headline">¶</a></h2>
@@ -122,6 +130,7 @@
 <li class="toctree-l1"><a class="reference internal" href="modules.html">API Reference</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#future-releases">Future releases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-0-1-2020-08-01">v2.0.1 (2020-08-01)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v2-0-0-2020-08-01">v2.0.0 (2020-08-01)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v1-0-0-2020-05-17">v1.0.0 (2020-05-17)</a></li>
 </ul>
@@ -159,7 +168,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020, Michael Sedelmeyer.
+      &copy;2020, An Hoang, Mark McDonald, and Michael Sedelmeyer.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
