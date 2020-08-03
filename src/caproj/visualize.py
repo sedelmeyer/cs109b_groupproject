@@ -82,7 +82,13 @@ def plot_value_counts(value_counts, figsize=(9, 3), color="tab:blue"):
 
 
 def plot_barplot(
-    value_counts, title, height=6, varname=None, color="k", label_space=0.01
+    value_counts,
+    title,
+    height=6,
+    varname=None,
+    color="k",
+    label_space=0.01,
+    savepath=None,
 ):
     """Generates a horizontal barplot from a pandas value_counts series
 
@@ -96,6 +102,8 @@ def plot_barplot(
     :param label_space: float, a coefficient used to space the count label
                         an appropriate distance from the plotted bar
                         (default is 0.01)
+    :param savepath: string or None, filepath at which to save generated plot, if None,
+                     no file will be saved (default is None)
     :return: a matplotlib plot. No objects are returned
     """
     fig, ax = plt.subplots(figsize=(12, height))
@@ -125,10 +133,15 @@ def plot_barplot(
 
     plt.grid(":", alpha=0.5)
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 
-def plot_hist_comps(df, metric_1, metric_2, y_log=False, bins=20):
+def plot_hist_comps(
+    df, metric_1, metric_2, y_log=False, bins=20, savepath=None
+):
     """Plots side-by-side histograms for comparison with log yscale option
 
     Plots 2 subplots, no objects are returned
