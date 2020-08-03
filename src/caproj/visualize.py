@@ -8,6 +8,7 @@ This module contains functions for visualizing data and model results
 
 .. autosummary::
 
+   save_plot
    plot_value_counts
    plot_barplot
    plot_hist_comps
@@ -30,6 +31,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from sklearn.metrics import r2_score
+
+
+def save_plot(plt_object, savepath=None):
+    """Save a matplotlib plot to file
+
+    :param plt_object: matplotlib.pyplot plot object
+    :param savepath: string or None, specifies filepath at which to save the
+                     matplotlib plot. If None, nothing is saved. (Default is
+                     None)
+    :return: No objects are returned
+    """
+    if savepath:
+        plt_object.savefig(savepath)
+    else:
+        pass
 
 
 def plot_value_counts(value_counts, figsize=(9, 3), color="tab:blue"):
