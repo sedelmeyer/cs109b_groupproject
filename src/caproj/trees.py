@@ -36,6 +36,7 @@ from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from tqdm.notebook import tqdm
 
 from .model import generate_model_dict
+from .visualize import save_plot
 
 depths = list(range(1, 21))
 """sets default depths for comparison in cross validation"""
@@ -96,7 +97,7 @@ def generate_adaboost_staged_scores(
 
 
 def plot_adaboost_staged_scores(
-    model_dict, X_train, X_test, y_train, y_test, height=4
+    model_dict, X_train, X_test, y_train, y_test, height=4, savepath=None,
 ):
     """Plots the adaboost staged scores for each y variable's predictions and iteration
 
@@ -113,6 +114,9 @@ def plot_adaboost_staged_scores(
     :type y_test: array-like
     :param height: Height dimension of resulting plot, defaults to 4
     :type height: int, optional
+    :param savepath: filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
+    :type savepath: str or None
     """
     # generate staged_scores
     training_scores, test_scores = generate_adaboost_staged_scores(
@@ -181,6 +185,9 @@ def plot_adaboost_staged_scores(
     ax.legend(fontsize=12, edgecolor="k")
 
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 
@@ -306,11 +313,14 @@ def calc_meanstd_regression(
     return cvmeans, cvstds, train_scores, test_scores, models
 
 
-def plot_me(result):
+def plot_me(result, savepath=None):
     """plot the best depth finder for decision tree model
 
     :param result: Dictionary returned from the :func:`calculate` function
     :type result: dict
+    :param savepath: filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
+    :type savepath: str or None
     """
     depths = list(range(1, 21))
 
@@ -324,46 +334,59 @@ def plot_me(result):
 
     print(f"Model Optmized for: {result.get('responses')}")
 
-    fig, ax = plt.subplots(ncols=len(responses), figsize=(15, 6))
+    fig, ax = plt.subplots(ncols=len(responses), figsize=(12, 7))
 
     for i, (a, response) in enumerate(zip(np.ravel(ax), responses)):
 
         best_depth = result.get("best_depth")
         best_score = test_scores[best_depth - 1]
 
-        a.set_xlabel("Maximum Tree Depth")
+        a.set_xlabel("Maximum tree depth", fontsize=14)
 
         attrs_title = "\n".join(attributes)
         title = f"Model: {model_type}\nResp: {response}\nAttrs: {attrs_title}"
 
         a.set_title(
-            f"{title}\nBest test {score_type.capitalize()} score: {best_score} "
+            f"{title}\nBest test {score_type.upper()} score: {best_score} "
             f"at depth {best_depth}",
-            fontsize=10,
+            fontsize=16,
         )
-        a.set_ylabel(f"{score_type.capitalize()} Score")
+        a.set_ylabel(f"{score_type.upper()} score", fontsize=14)
         a.set_xticks(depths)
 
         # Plot model train scores
         a.plot(
             x,
             train_scores,
-            "b-",
-            marker="o",
-            label=f"Model Train {score_type.capitalize()} Score",
+            "k--",
+            # marker="o",
+            label=f"Model training {score_type.upper()} score",
         )
 
         # Plot model test scores
         a.plot(
             x,
             test_scores,
-            "o-",
-            marker=".",
-            label=f"Model Test {score_type.capitalize()} Score",
+            "k-",
+            marker="o",
+            label=f"Model TEST {score_type.upper()} score",
         )
 
         if i == len(responses) - 1:
-            a.legend(bbox_to_anchor=(1, 1), loc="upper left", ncol=1)
+            a.legend(
+                fontsize=12,
+                loc="center left",
+                bbox_to_anchor=(1, 0.5),
+                frameon=False,
+            )
+            # a.legend(bbox_to_anchor=(1, 1), loc="upper left", ncol=1)
+
+    plt.grid(":", alpha=0.5)
+    plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
+    plt.show()
 
 
 def _define_train_and_test(
