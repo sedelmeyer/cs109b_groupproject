@@ -421,7 +421,7 @@ def plot_true_pred(
     ax.grid(":", alpha=0.4)
     plt.tight_layout()
 
-    savepath_1 = savepath.replace(".jpg", "_1.jpg") if savepath else None
+    savepath_1 = savepath.replace(".jpg", "-1.jpg") if savepath else None
     save_plot(plt_object=plt, savepath=savepath_1)
 
     plt.show()
@@ -448,7 +448,7 @@ def plot_true_pred(
 
     plt.tight_layout()
 
-    savepath_2 = savepath.replace(".jpg", "_2.jpg") if savepath else None
+    savepath_2 = savepath.replace(".jpg", "-2.jpg") if savepath else None
     save_plot(plt_object=plt, savepath=savepath_2)
 
     plt.show()
@@ -467,7 +467,7 @@ def plot_true_pred(
 
     plt.tight_layout()
 
-    savepath_3 = savepath.replace(".jpg", "_3.jpg") if savepath else None
+    savepath_3 = savepath.replace(".jpg", "-3.jpg") if savepath else None
     save_plot(plt_object=plt, savepath=savepath_3)
 
     plt.show()
