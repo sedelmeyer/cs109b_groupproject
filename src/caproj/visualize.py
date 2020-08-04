@@ -8,22 +8,24 @@ This module contains functions for visualizing data and model results
 
 .. autosummary::
 
-   save_plot
-   plot_value_counts
-   plot_barplot
-   plot_hist_comps
-   plot_line
+   load_img_to_numpy
    plot_2d_embed_scatter
-   plot_true_pred
+   plot_barplot
    plot_bdgt_sched_scaled
    plot_change_trend
-   plot_gam_by_predictor
    plot_coefficients
-   load_img_to_numpy
+   plot_gam_by_predictor
+   plot_hist_comps
    plot_jpg
+   plot_line
+   plot_true_pred
+   plot_value_counts
+   save_plot
+   set_savepath
 
 """
 
+import os
 from PIL import Image
 
 import pandas as pd
@@ -31,6 +33,35 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from sklearn.metrics import r2_score
+
+
+def set_savepath(dirpath, filename, overwrite=False):
+    """Set filepath for use as the ``savepath`` input for ``caproj`` plotting functions
+
+    This function is intended for use in an interactive environment such as a Jupyter
+    notebook, where it might be beneficial to set an ``overwrite==False`` global
+    variable when the desire is to not overwrite existing plots, and to ``True``
+    when the desire is to overwrite plots.
+
+    The benefit of this approach is that there will be no need to modify individual
+    lines of code where savepath values might be set throughout the notebook.
+
+    :param dirpath: directory path where plots are to be saved
+    :type dirpath: str
+    :param filename: name of file to be generated, this file name should include the
+                     correct extension so matplotlib knows what type of image file to
+                     generate such as ``filename.jpg`` or ``filename.png``
+    :type filename: str
+    :param overwrite: boolean indicating whether to return the resulting filepath name
+                      (if set to True) or to return None (if set to False), which
+                      would prevent :func:save_plot from saving an actual image file,
+                      defaults to False
+    :type overwrite: bool, optional
+    :return: Returns either the resulting filepath string or None
+    :rtype: str or None
+    """
+    savepath = os.path.join(dirpath, filename) if overwrite else None
+    return savepath
 
 
 def save_plot(plt_object, savepath=None):
