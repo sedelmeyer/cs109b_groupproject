@@ -14,17 +14,17 @@ This module contains functions for visualizing data and model results
 
 .. autosummary::
 
-   silplot
    display_gapstat_with_errbars
-   fit_neighbors
-   plot_epsilon
-   silscore_dbscan
    fit_dbscan
-   print_dbscan_results
-   plot_dendrogram
-   plot_cluster_hist
-   plot_umap_scatter
+   fit_neighbors
    plot_category_scatter
+   plot_cluster_hist
+   plot_dendrogram
+   plot_epsilon
+   plot_umap_scatter
+   print_dbscan_results
+   silplot
+   silscore_dbscan
 
 """
 
