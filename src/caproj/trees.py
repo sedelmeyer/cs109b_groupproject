@@ -643,6 +643,49 @@ def _flatten(T):
         return _flatten(T[0]) + _flatten(T[1:])
 
 
+def _make_adaboost_dataframe(model_dicts):
+    # Create a dataframe from the model_dicts to allow filtering on the models created
+    descriptions = []
+    train_scores_bud = []
+    train_scores_sch = []
+    test_scores_bud = []
+    test_scores_sch = []
+    max_depths = []
+    staged_scores_train = []
+    staged_scores_test = []
+    lrs = []
+    n_estimators = []
+
+    for m in model_dicts:
+        descriptions.append(m["description"])
+        train_scores_bud.append(m["score"]["train"][0])
+        train_scores_sch.append(m["score"]["train"][1])
+        test_scores_bud.append(m["score"]["test"][0])
+        test_scores_sch.append(m["score"]["test"][1])
+        max_depths.append(m["max_depth"])
+        lrs.append(m["learning_rate"])
+        n_estimators.append(m["n_estimators"])
+        staged_scores_train.append(m["staged_scores_train"])
+        staged_scores_test.append(m["staged_scores_test"])
+
+    results = pd.DataFrame.from_dict(
+        {
+            "description": descriptions,
+            "train_score_bud": train_scores_bud,
+            "train_score_sch": train_scores_sch,
+            "test_score_bud": test_scores_bud,
+            "test_score_sch": test_scores_sch,
+            "max_depth": max_depths,
+            "lr": lrs,
+            "n_estimators": n_estimators,
+            "staged_scores_train": staged_scores_train,
+            "staged_scores_test": staged_scores_test,
+        }
+    )
+
+    return results
+
+
 def iterate_adaboost_models(
     data_train,
     data_test,
@@ -774,4 +817,6 @@ def iterate_adaboost_models(
                         )
                         model_dicts.append(model_dict)
 
-    return model_dicts
+    results = _make_adaboost_dataframe(model_dicts)
+
+    return results, model_dicts
