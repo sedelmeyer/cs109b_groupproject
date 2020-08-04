@@ -35,11 +35,11 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import r2_score
 
 
-def set_savepath(dirpath, filename, overwrite=False):
+def set_savepath(dirpath, filename, return_path=False):
     """Set filepath for use as the ``savepath`` input for ``caproj`` plotting functions
 
     This function is intended for use in an interactive environment such as a Jupyter
-    notebook, where it might be beneficial to set an ``overwrite==False`` global
+    notebook, where it might be beneficial to set an ``return_path==False`` global
     variable when the desire is to not overwrite existing plots, and to ``True``
     when the desire is to overwrite plots.
 
@@ -52,15 +52,15 @@ def set_savepath(dirpath, filename, overwrite=False):
                      correct extension so matplotlib knows what type of image file to
                      generate such as ``filename.jpg`` or ``filename.png``
     :type filename: str
-    :param overwrite: boolean indicating whether to return the resulting filepath name
-                      (if set to True) or to return None (if set to False), which
+    :param return_path: boolean indicating whether to return the resulting filepath
+                      name (if set to True) or to return None (if set to False), which
                       would prevent :func:save_plot from saving an actual image file,
                       defaults to False
-    :type overwrite: bool, optional
+    :type return_path: bool, optional
     :return: Returns either the resulting filepath string or None
     :rtype: str or None
     """
-    savepath = os.path.join(dirpath, filename) if overwrite else None
+    savepath = os.path.join(dirpath, filename) if return_path else None
     return savepath
 
 
