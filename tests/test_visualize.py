@@ -30,23 +30,23 @@ class TestPlots(unittest.TestCase):
             caproj.visualize.save_plot(plt_object=plt, savepath=None)
             pass
 
-    def test_set_savepath_overwrite_true(self):
-        """Ensure set_savepath generates filepath when overwrite set to True"""
+    def test_set_savepath_return_path_true(self):
+        """Ensure set_savepath generates filepath when return_path set to True"""
         dirpath = "testdir/test"
         filename = "testfile.jpg"
-        overwrite = True
+        return_path = True
         savepath = caproj.visualize.set_savepath(
-            dirpath=dirpath, filename=filename, overwrite=overwrite
+            dirpath=dirpath, filename=filename, return_path=return_path
         )
         filepath = os.path.join(dirpath, filename)
         self.assertEqual(filepath, savepath)
 
-    def test_set_savepath_overwrite_false(self):
-        """Ensure set_savepath returns None when overwrite set to False"""
+    def test_set_savepath_return_path_false(self):
+        """Ensure set_savepath returns None when return_path set to False"""
         dirpath = "testdir/test"
         filename = "testfile.jpg"
-        overwrite = False
+        return_path = False
         savepath = caproj.visualize.set_savepath(
-            dirpath=dirpath, filename=filename, overwrite=overwrite
+            dirpath=dirpath, filename=filename, return_path=return_path
         )
         self.assertEqual(None, savepath)
