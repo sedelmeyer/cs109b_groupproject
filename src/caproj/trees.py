@@ -628,3 +628,14 @@ def calc_models(
                 model_dicts += model_dict
 
     return results_all, model_dicts
+
+
+def _flatten(T):
+    """Handles attributes list and flattens if required
+    """
+    if type(T) != tuple:
+        return (T,)
+    if len(T) == 0:
+        return ()
+    else:
+        return _flatten(T[0]) + _flatten(T[1:])
