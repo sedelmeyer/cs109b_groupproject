@@ -18,7 +18,7 @@ tree ensemble models and visualizing the model results
 
    generate_adaboost_staged_scores
    plot_adaboost_staged_scores
-   calc_meanstd_logistic
+   calc_meanstd_classifier
    calc_meanstd_regression
    plot_me
    calculate
@@ -191,7 +191,7 @@ def plot_adaboost_staged_scores(
     plt.show()
 
 
-def calc_meanstd_logistic(
+def calc_meanstd_classifier(
     X_tr, y_tr, X_te, y_te, depths: list = depths, cv: int = cv
 ):
     """Fits and generates tree classifier results, iterated for each input depth
@@ -347,9 +347,9 @@ def plot_me(result, savepath=None):
         title = f"Model: {model_type}\nResp: {response}\nAttrs: {attrs_title}"
 
         a.set_title(
-            f"{title}\nBest test {score_type.upper()} score: {best_score} "
+            f"{title}\nBest TEST {score_type.upper()} score: {best_score} "
             f"at depth {best_depth}",
-            fontsize=16,
+            fontsize=15,
         )
         a.set_ylabel(f"{score_type.upper()} score", fontsize=14)
         a.set_xticks(depths)
@@ -360,7 +360,7 @@ def plot_me(result, savepath=None):
             train_scores,
             "k--",
             # marker="o",
-            label=f"Model training {score_type.upper()} score",
+            label=f"Training {score_type.upper()} score",
         )
 
         # Plot model test scores
@@ -369,7 +369,7 @@ def plot_me(result, savepath=None):
             test_scores,
             "k-",
             marker="o",
-            label=f"Model TEST {score_type.upper()} score",
+            label=f"TEST {score_type.upper()} score",
         )
 
         if i == len(responses) - 1:
@@ -390,7 +390,7 @@ def plot_me(result, savepath=None):
 
 
 def _define_train_and_test(
-    data_train, data_test, attributes, response, logistic
+    data_train, data_test, attributes, response, classifier
 ) -> (pd.DataFrame, pd.DataFrame):
     """Return x and y data for train and test sets
     """
@@ -400,7 +400,7 @@ def _define_train_and_test(
     X_te = data_test[attributes]
     y_te = data_test[response]
 
-    if logistic:
+    if classifier:
         y_tr = (y_tr > 0) * 1
         y_te = (y_te > 0) * 1
 
@@ -444,7 +444,7 @@ def calculate(
     categories,
     attributes: list,
     responses_list: list,
-    logistic=True,
+    classifier=True,
 ):
     """Calculate decision tree results using a particular set of X features
 
@@ -460,30 +460,30 @@ def calculate(
     :param responses_list: Column names of model responses (i.e. each different
             y variable)
     :type responses_list: list
-    :param logistic: Indicates whether to use decision tree classifier
-            (i.e. ``logistic=True``) or regressor (i.e. ``logistic=False``),
+    :param classifier: Indicates whether to use decision tree classifier
+            (i.e. ``classifier=True``) or regressor (i.e. ``classifier=False``),
             defaults to True
-    :type logistic: bool, optional
+    :type classifier: bool, optional
     :return: Two lists containing (1) dictionaries of model results and
             (2) fitted model dictionaries, one dictionary for each response
             variable
     :rtype: tuple
     """
-    if logistic:
-        model_type = "Logistic"
+    if classifier:
+        model_type = "Classifier"
         score_type = "auc"
-        calc = calc_meanstd_logistic
+        calc = calc_meanstd_classifier
     else:
         model_type = "Regression"
         score_type = "r2"
         calc = calc_meanstd_regression
 
-    # remove multi-output responses, if not using logistic regression
+    # remove multi-output responses, if not using classifier regression
     responses = []
     for r in responses_list:
         if type(r) == str:
             r = [r]
-        if len(r) > 1 and not logistic:
+        if len(r) > 1 and not classifier:
             continue
         responses.append(r)
 
@@ -499,7 +499,7 @@ def calculate(
             data_test,
             attrs,
             ["Budget_Change_Ratio", "Schedule_Change_Ratio"],
-            logistic=logistic,
+            classifier=classifier,
         )
 
         cvmeans, cvstds, train_scores, test_scores, models = calc(
@@ -539,14 +539,14 @@ def calculate(
         model_dict.append(
             generate_model_dict(
                 model=DecisionTreeClassifier
-                if logistic
+                if classifier
                 else DecisionTreeRegressor,
                 model_descr=desc,
                 X_train=X_tr,
                 X_test=X_te,
                 y_train=y_tr,
                 y_test=y_te,
-                multioutput=logistic,
+                multioutput=classifier,
                 verbose=False,
                 predictions=True,
                 scores=True,
@@ -568,7 +568,7 @@ def calc_models(
     nondescr_attrbutes,
     descr_attributes,
     responses_list,
-    logistic=True,
+    classifier=True,
 ):
     """Iterate over all combinations of attributes to return lists of resulting models
 
@@ -587,10 +587,10 @@ def calc_models(
     :param responses_list: Column names of model responses (i.e. each different
             y variable)
     :type responses_list: list
-    :param logistic: Indicates whether to use decision tree classifier
-            (i.e. ``logistic=True``) or regressor (i.e. ``logistic=False``),
+    :param classifier: Indicates whether to use decision tree classifier
+            (i.e. ``classifier=True``) or regressor (i.e. ``classifier=False``),
             defaults to True
-    :type logistic: bool, optional
+    :type classifier: bool, optional
     :return: Two list objects containing (1) lists of dictionaries of model results and
             (2) lists of fitted model dictionaries for each iterated model
     :rtype: tuple
@@ -598,7 +598,7 @@ def calc_models(
     results_all = []
     model_dicts = []
 
-    print(f"Using {'LOGISTIC' if logistic else 'REGRESSION'} models")
+    print(f"Using {'CLASSIFIER' if classifier else 'REGRESSION'} models")
     for i in tqdm(range(1, len(nondescr_attrbutes))):
         alist = list(itertools.combinations(nondescr_attrbutes, i))
         for a in tqdm(alist, leave=False):
@@ -609,7 +609,7 @@ def calc_models(
                 categories,
                 attributes=a,
                 responses_list=responses_list,
-                logistic=logistic,
+                classifier=classifier,
             )
             results_all += results
             model_dicts += model_dict
@@ -620,7 +620,7 @@ def calc_models(
                     categories,
                     attributes=a + [d_emb],
                     responses_list=responses_list,
-                    logistic=logistic,
+                    classifier=classifier,
                 )
                 results_all += results
                 model_dicts += model_dict
