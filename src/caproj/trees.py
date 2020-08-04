@@ -21,8 +21,9 @@ tree ensemble models and visualizing the model results
    calc_meanstd_classifier
    calc_meanstd_regression
    plot_tree_depth_finder
-   calculate
-   calc_models
+   calculate_trees
+   iterate_tree_models
+   iterate_adaboost_models
 
 """
 import itertools
@@ -30,6 +31,7 @@ import itertools
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from sklearn.ensemble import AdaBoostRegressor
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import cross_val_score
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
@@ -440,7 +442,7 @@ def _expand_attributes(attrs, categories):
     return attrs
 
 
-def calculate(
+def calculate_trees(
     data_train,
     data_test,
     categories,
@@ -563,7 +565,7 @@ def calculate(
     return results, model_dict
 
 
-def calc_models(
+def iterate_tree_models(
     data_train,
     data_test,
     categories,
@@ -605,7 +607,7 @@ def calc_models(
         alist = list(itertools.combinations(nondescr_attrbutes, i))
         for a in tqdm(alist, leave=False):
             a = list(a)
-            results, model_dict = calculate(
+            results, model_dict = calculate_trees(
                 data_train,
                 data_test,
                 categories,
@@ -616,7 +618,7 @@ def calc_models(
             results_all += results
             model_dicts += model_dict
             for d_emb in tqdm(descr_attributes, leave=False):
-                results, model_dict = calculate(
+                results, model_dict = calculate_trees(
                     data_train,
                     data_test,
                     categories,
@@ -639,3 +641,137 @@ def _flatten(T):
         return ()
     else:
         return _flatten(T[0]) + _flatten(T[1:])
+
+
+def iterate_adaboost_models(
+    data_train,
+    data_test,
+    model_descr: str,
+    max_depths: list,
+    learning_rate: float,
+    estimators: list,
+    random_state: int,
+    nondescr_attrbutes: list,
+    descr_attributes: list,
+    responses: list,
+):
+
+    model_dicts = []
+
+    print("Using ADABoost REGRESSION models")
+    for n_estimators in tqdm(estimators, desc="n_estimators"):
+        for max_depth in tqdm(max_depths, desc="max_depths", leave=False):
+            for i in tqdm(
+                range(1, len(nondescr_attrbutes)),
+                desc="nondesc attributes",
+                leave=False,
+            ):
+                alist = list(itertools.combinations(nondescr_attrbutes, i))
+                alist = [_flatten(a) for a in alist]
+
+                for a in tqdm(
+                    alist, desc="nondesc attributes combinations", leave=False
+                ):
+                    a = list(a)
+
+                    model_dict = generate_model_dict(
+                        AdaBoostRegressor,
+                        model_descr,
+                        data_train[a],
+                        data_test[a],
+                        data_train[responses],
+                        data_test[responses],
+                        multioutput=False,
+                        verbose=False,
+                        predictions=True,
+                        scores=True,
+                        model_api="sklearn",
+                        # these parameters below will be passed as *kwargs,
+                        # which means they will feed directly to the model object
+                        # when it is initialized
+                        base_estimator=DecisionTreeRegressor(
+                            max_depth=max_depth, random_state=random_state
+                        ),
+                        learning_rate=learning_rate,
+                        n_estimators=n_estimators,
+                        random_state=random_state,
+                    )
+
+                    (
+                        staged_scores_train,
+                        staged_scores_test,
+                    ) = generate_adaboost_staged_scores(
+                        model_dict,
+                        data_train[a],
+                        data_test[a],
+                        data_train[responses],
+                        data_test[responses],
+                    )
+
+                    model_dict.update(
+                        {
+                            "staged_scores_train": staged_scores_train,
+                            "staged_scores_test": staged_scores_test,
+                            "max_depth": max_depth,
+                            "learning_rate": learning_rate,
+                            "n_estimators": n_estimators,
+                            "attributes": a,
+                            "responses": responses,
+                            "random_state": random_state,
+                        }
+                    )
+                    model_dicts.append(model_dict)
+
+                    for d_emb in tqdm(
+                        descr_attributes, desc="descriptions", leave=False
+                    ):
+
+                        model_dict = generate_model_dict(
+                            AdaBoostRegressor,
+                            model_descr,
+                            data_train[a + d_emb],
+                            data_test[a + d_emb],
+                            data_train[responses],
+                            data_test[responses],
+                            multioutput=False,
+                            verbose=False,
+                            predictions=True,
+                            scores=True,
+                            model_api="sklearn",
+                            # these parameters below will be passed as *kwargs,
+                            # which means they will feed directly to the model object
+                            # when it is initialized
+                            base_estimator=DecisionTreeRegressor(
+                                max_depth=max_depth, random_state=random_state
+                            ),
+                            learning_rate=learning_rate,
+                            n_estimators=n_estimators,
+                            random_state=random_state,
+                        )
+
+                        (
+                            staged_scores_train,
+                            staged_scores_test,
+                        ) = generate_adaboost_staged_scores(
+                            model_dict,
+                            data_train[a + d_emb],
+                            data_test[a + d_emb],
+                            data_train[responses],
+                            data_test[responses],
+                        )
+
+                        model_dict.update(
+                            {
+                                "staged_scores_train": staged_scores_train,
+                                "staged_scores_test": staged_scores_test,
+                                "max_depth": max_depth,
+                                "learning_rate": learning_rate,
+                                "n_estimators": n_estimators,
+                                "attributes": a + d_emb,
+                                "responses": responses,
+                                "random_state": random_state,
+                            }
+                        )
+                        model_dicts.append(model_dict)
+
+    return model_dicts
