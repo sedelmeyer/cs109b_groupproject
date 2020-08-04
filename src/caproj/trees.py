@@ -118,7 +118,7 @@ def plot_adaboost_staged_scores(
     :type height: int, optional
     :param savepath: filepath at which to save generated plot,
                      if None, no file will be saved, defaults to None
-    :type savepath: str or None
+    :type savepath: str or None, optional
     """
     # generate staged_scores
     training_scores, test_scores = generate_adaboost_staged_scores(
@@ -820,3 +820,70 @@ def iterate_adaboost_models(
     results = _make_adaboost_dataframe(model_dicts)
 
     return results, model_dicts
+
+
+def plot_adaboost_scores_scatter(
+    results, model_parameter, min_axis=None, savepath=None
+):
+    """Generate plot of adaboost iterated model scores colored by parameter category
+
+    :param results: results dataframe outputted by :func:`iterate_adaboost_models`
+    :type results: dataframe
+    :param model_parameter: name of results dataframe column containing parameter
+                            by which to color code the scatterplot
+    :type model_parameter: str
+    :param min_axis: minimum x- and y-axis values at which to truncate plot, if
+                     None all values are shown, defaults to None
+    :type min_axis: float or None, optional
+    :param savepath: filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
+    :type savepath: str or None, optional
+    """
+    if min_axis:
+        results = results.copy()[
+            (results.test_score_bud > -abs(min_axis))
+            & (results.test_score_sch > -abs(min_axis))
+        ]
+    else:
+        results = results.copy()
+
+    plt.figure(figsize=(7.75, 6))
+
+    shapes = ["o", "s", "D", "^", "v"]
+
+    for label, shape in zip(
+        sorted(list(set(results[model_parameter]))), shapes
+    ):
+        sct_data = results[results[model_parameter] == label]
+        plt.scatter(
+            sct_data.test_score_sch,
+            sct_data.test_score_bud,
+            s=100,
+            alpha=0.3,
+            marker=shape,
+            edgecolor="k",
+            label=label,
+        )
+
+    plt.legend()
+    plt.legend(
+        title="{}".format(model_parameter),
+        fontsize=14,
+        title_fontsize=14,
+        loc="center left",
+        bbox_to_anchor=(1, 0.5),
+        frameon=False,
+    )
+    plt.title(
+        "AdaBoost model scores by {}".format(model_parameter), fontsize=18
+    )
+    plt.axhline(c="gray")
+    plt.axvline(c="gray")
+    plt.xlabel("Schedule Change Ratio model $R^2$ scores", fontsize=14)
+    plt.ylabel("Budget Change Ratio model $R^2$ scores", fontsize=14)
+    plt.grid(":", alpha=0.5)
+    plt.tight_layout()
+
+    save_plot(plt, savepath)
+
+    plt.show()
