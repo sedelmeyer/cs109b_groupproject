@@ -20,7 +20,7 @@ tree ensemble models and visualizing the model results
    plot_adaboost_staged_scores
    calc_meanstd_classifier
    calc_meanstd_regression
-   plot_me
+   plot_tree_depth_finder
    calculate
    calc_models
 
@@ -313,11 +313,13 @@ def calc_meanstd_regression(
     return cvmeans, cvstds, train_scores, test_scores, models
 
 
-def plot_me(result, savepath=None):
+def plot_tree_depth_finder(result, height=5, savepath=None):
     """plot the best depth finder for decision tree model
 
     :param result: Dictionary returned from the :func:`calculate` function
     :type result: dict
+    :param height: Height dimension of resulting plot, defaults to 4
+    :type height: int, optional
     :param savepath: filepath at which to save generated plot,
                      if None, no file will be saved, defaults to None
     :type savepath: str or None
@@ -332,9 +334,9 @@ def plot_me(result, savepath=None):
     test_scores = result.get("test_scores")
     x = result.get("depths")
 
-    print(f"Model Optmized for: {result.get('responses')}")
+    # print(f"Model Optmized for: {result.get('responses')}")
 
-    fig, ax = plt.subplots(ncols=len(responses), figsize=(12, 7))
+    fig, ax = plt.subplots(ncols=len(responses), figsize=(12, height))
 
     for i, (a, response) in enumerate(zip(np.ravel(ax), responses)):
 
@@ -349,7 +351,7 @@ def plot_me(result, savepath=None):
         a.set_title(
             f"{title}\nBest TEST {score_type.upper()} score: {best_score} "
             f"at depth {best_depth}",
-            fontsize=15,
+            fontsize=14,
         )
         a.set_ylabel(f"{score_type.upper()} score", fontsize=14)
         a.set_xticks(depths)
