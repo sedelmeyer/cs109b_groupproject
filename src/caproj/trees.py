@@ -16,14 +16,15 @@ tree ensemble models and visualizing the model results
 
 .. autosummary::
 
-   generate_adaboost_staged_scores
-   plot_adaboost_staged_scores
    calc_meanstd_classifier
    calc_meanstd_regression
-   plot_tree_depth_finder
    calculate_trees
-   iterate_tree_models
+   generate_adaboost_staged_scores
    iterate_adaboost_models
+   iterate_tree_models
+   plot_adaboost_scores_scatter
+   plot_adaboost_staged_scores
+   plot_tree_depth_finder
 
 """
 import itertools
@@ -698,7 +699,42 @@ def iterate_adaboost_models(
     descr_attributes: list,
     responses: list,
 ):
+    """[summary]
 
+    :param data_train: training dataset
+    :type data_train: array-like
+    :param data_test: test dataset
+    :type data_test: array like
+    :param model_descr: descriptive title for the model
+    :type model_descr: str
+    :param max_depths: max depths over which to iterate the models
+    :type max_depths: list of integers
+    :param learning_rate: learning rate parameter for the AdaBoost model
+    :type learning_rate: float
+    :param estimators: numbers of estimators over which to iterate the models
+    :type estimators: list of intergers
+    :param random_state: random state from which to generate the models
+    :type random_state: int
+    :param nondescr_attrbutes: names of training features not derived from BERT
+                               embedded project descriptions
+    :type nondescr_attrbutes: list of stings or list of lists of strings
+    :param descr_attributes: names of training features derived from BERT
+                             embedded project descriptions
+    :type descr_attributes: list of stings or list of lists of strings
+    :param responses: [description]
+    :type responses: list
+    :return: A tuple containing (1) a dataframe containing model results and (2)
+             a dictonary of model dictionaries containing all iterated models.
+    :rtype: tuple
+
+    .. note::
+
+       For training features meant to be paired such as 2-dimensional encodings or
+       interaction terms, those features should be added as a sub-list
+       when added to the ``nondescr_attributes`` or ``descr_attributes`` input
+       parameters.
+
+    """
     model_dicts = []
 
     print("Using ADABoost REGRESSION models")
@@ -849,7 +885,7 @@ def plot_adaboost_scores_scatter(
 
     plt.figure(figsize=(7.75, 6))
 
-    shapes = ["o", "s", "D", "^", "v"]
+    shapes = ["o", "s", "D", "^", "v", "X"]
 
     for label, shape in zip(
         sorted(list(set(results[model_parameter]))), shapes
