@@ -799,9 +799,9 @@ def plot_gam_by_predictor(
     :param dataset: string, 'train' or 'test' indicating the type of
                     X and y data you have entered for the X_data and
                     y_data arguments (default='train)
-    :param suptitle: float > 1.00 indicating the spacing required to
+    :param suptitle: float indicating the spacing required to
                      prevent your plot from overlapping your title text
-                     (default=1.04)
+                     (default=1)
     :param savepath: string or None, filepath at which to save generated plot,
                      if None, no file will be saved, defaults to None
     """
@@ -900,7 +900,7 @@ def plot_coefficients(
                 overall height of your plot, defaults to 8
     :type fig_height: int or float
     :param suptitle_spacing: this value is passed to the 'y'
-                parameter for ``plt.suptitle()``, defaults to 1.10
+                parameter for ``plt.suptitle()``, defaults to 1
     :type suptitle_spacing: float
     :param savepath: filepath at which to save generated plot,
                      if None, no file will be saved, defaults to None
