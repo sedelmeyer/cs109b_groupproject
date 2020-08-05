@@ -1,3 +1,6 @@
+BERT Pre-trained Model Citations
+================================
+
 The pre-trained BERT model contained in this directory was downloaded from:
 
 * https://storage.googleapis.com/bert_models/2020_02_20/uncased_L-2_H-128_A-2.zip
@@ -19,4 +22,4 @@ For clarity of attribution and for additional information, here is the citation 
 
 And, more information regarding BERT itself can be found in the original paper:
 
-- Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina. (2018). "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding". `arXiv preprint arXiv:1810.04805 <https://arxiv.org/abs/1810.04805>`_.
+* Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina. (2018). "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding". `arXiv preprint arXiv:1810.04805 <https://arxiv.org/abs/1810.04805>`_.
