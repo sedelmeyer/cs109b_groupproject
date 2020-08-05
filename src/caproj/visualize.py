@@ -35,7 +35,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import r2_score
 
 
-def set_savepath(dirpath, filename, return_path=False):
+def set_savepath(dirpath, filename, return_path):
     """Set filepath for use as the ``savepath`` input for ``caproj`` plotting functions
 
     This function is intended for use in an interactive environment such as a Jupyter
@@ -54,9 +54,8 @@ def set_savepath(dirpath, filename, return_path=False):
     :type filename: str
     :param return_path: boolean indicating whether to return the resulting filepath
                       name (if set to True) or to return None (if set to False), which
-                      would prevent :func:save_plot from saving an actual image file,
-                      defaults to False
-    :type return_path: bool, optional
+                      would prevent :func:save_plot from saving an actual image file
+    :type return_path: bool
     :return: Returns either the resulting filepath string or None
     :rtype: str or None
     """
