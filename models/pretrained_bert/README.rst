@@ -15,7 +15,7 @@ Please note that the original authors released this pre-trained BERT model under
 
 For clarity of attribution and for additional information, here is the citation for the authors' original article referencing this pre-trained model:
 
-* Turc, Iulia and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina. (2019). "Well-Read Students Learn Better: On the Importance of Pre-training Compact Models".`arXiv preprint arXiv:1908.08962v2 <https://arxiv.org/abs/1908.08962>`_.
+* Turc, Iulia and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina. (2019). "Well-Read Students Learn Better: On the Importance of Pre-training Compact Models". `arXiv preprint arXiv:1908.08962v2 <https://arxiv.org/abs/1908.08962>`_.
 
 And, more information regarding BERT itself can be found in the original paper:
 
