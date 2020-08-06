@@ -1,7 +1,7 @@
 2. About the data
 =================
 
-.. contents:: Contents
+.. contents:: In this section
   :local:
   :depth: 2
   :backlinks: top
