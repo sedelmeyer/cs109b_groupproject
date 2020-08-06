@@ -3,12 +3,16 @@
 
 The notebooks used to generate the findings in this section can be `found here on GitHub <https://github.com/sedelmeyer/nyc-capital-projects/blob/master/notebooks/00_eda_and_clean_data.ipynb>`_.
 
-.. contents:: Contents
+.. contents:: In this section
   :local:
   :depth: 2
   :backlinks: top
 
+Project counts by attribute
+---------------------------
+
 To give a better sense of the nature of the data contained in this dataset, it is likely useful to provide some visual representations of the types of projects available.
+
 
 .. figure:: ../../docs/_static/figures/01-projects-by-cat-barplot.jpg
   :align: center
@@ -45,6 +49,9 @@ As can be seen in the horizontal barplots above, there were several categorical 
 
 Additionally, in the final plot above, we can easily see illustrated supporting evidence for why 3 years was an ideal interval to select for our predictive analysis.
 
+Distribution of project change data
+-----------------------------------
+
 Now for a scatter matrix illustrating the correlative relationships of all quantitative variables in our dataset.
 
 .. figure:: ../../docs/_static/figures/06-features-scatter-matrix.jpg
@@ -78,6 +85,9 @@ As can be seen scatterplots above, many of the quantitative variables are heavil
 As was highlighted in our analysis of the scatter matrix above, our core quantitative features related to budget and schedule are heavily shewed with extreme outliers. In addition, there are extreme difference in the scale of the values measured by each metric (i.e. budget is measured in hundreds of millions of dollars, while schedule is measured in thousands of days). These side-by-side histograms illustrate the severity of this problem.
 
 These findings tell us that we will need to take great care in both scaling as well as transforming our quantitative predictors to mitigate these issues, particularly for classes of models where this will pose a major issue. 
+
+Project change trends
+---------------------
 
 Now let's looks at the change trends for some specific projects in our dataset.
 
