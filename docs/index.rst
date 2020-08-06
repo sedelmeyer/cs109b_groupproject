@@ -17,7 +17,7 @@ An investigation into feature engineering and modeling project-change data for l
    :maxdepth: 2
 
    readme
-   analysis/00-introduction
+   analysis/00-intro
    analysis/01-data
    modules
    changelog
