@@ -6,10 +6,22 @@ Future releases
 
 .. todo::
 
-    * Convert notebook ``00_FINAL_REPORT.ipnb`` findings to ``.rst`` format for online Sphinx rendering
-    * Generate dependency workflow schematic, illustrating DAG of notebook inputs and outputs
     * Fix notebook ``05_umap_hdbscan_features.ipynb`` data generation functionality
     * Improve ``caproj.utils`` API documentation
+
+v2.1.0 (2020-08-XX)
+-------------------
+
+.. todo::
+
+   * Publish project final report as Sphinx-generated webpages
+
+* Add ``AdaBoost`` iteration and plotting functions to ``caproj.trees`` and refactor ``notebook/11_FINAL_REPORT.ipynb``
+* Refactor plotting functions in ``caproj`` and ``notebook/11_FINAL_REPORT.ipynb`` to save generated plots to ``docs/_static/figures``
+* Remove unused imports from all notebooks
+* Fix links to online notebooks in ``notebook/11_FINAL_REPORT.ipynb`` markdown 
+* Add data dictionary describing final merged feature data
+* Add citations for BERT pre-trained model used in analysis
 
 v2.0.1 (2020-08-01)
 -------------------
