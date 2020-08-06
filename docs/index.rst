@@ -19,6 +19,7 @@ An investigation into feature engineering and modeling project-change data for l
    readme
    analysis/00-intro
    analysis/01-data
+   analysis/02-eda
    modules
    changelog
 
