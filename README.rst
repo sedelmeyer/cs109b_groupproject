@@ -20,9 +20,9 @@ Summary
 
 This analysis is built upon one initially completed as a group project for `CS109B: Advanced Topics In Data Science`_, a course offered by Harvard University's John A. Paulson School of Engineering and Applied Sciences (SEAS). The authors of that original project are:
 
-- `An Hoang <https://github.com/hoangthienan95>`_
-- `Mark McDonald <https://github.com/mcdomx>`_
-- `Mike Sedelmeyer <https://github.com/sedelmeyer>`_
+* `An Hoang <https://github.com/hoangthienan95>`_
+* `Mark McDonald <https://github.com/mcdomx>`_
+* `Mike Sedelmeyer <https://github.com/sedelmeyer>`_
 
 The original version of this project can be found by viewing release version v1.0.0 on GitHub at: https://github.com/sedelmeyer/nyc-capital-projects/tree/v1.0.0. 
 
@@ -36,9 +36,9 @@ Research question
 
 After initial exploration and cleansing of the available data, modeling efforts in this analysis focus on the following research question:
 
-  * Given `the available New York City Capital Projects change data <datasource_>`_, can we create a model that can accurately predict 3-year change in forecasted project budget and 3-year change in forecasted project duration using only the data available at the start of the project as our predictors?
+* Given `the available New York City Capital Projects change data <datasource_>`_, can we create a model that can accurately predict 3-year change in forecasted project budget and 3-year change in forecasted project duration using only the data available at the start of the project as our predictors?
 
-  * In other words, using historical project data, can we predict how much the forecasted budget and duration of any given capital project run by the City of New York will deviate from it's original budgeted estimates by the end of year-3 for the project?
+* In other words, using historical project data, can we predict how much the forecasted budget and duration of any given capital project run by the City of New York will deviate from it's original budgeted estimates by the end of year-3 for the project?
 
 The significance of a model that can accurately address this question means, given any new project, project managers and city administrators would have another tool at their disposal for objectively identifying potential budget and schedule risk at the start of a new city-run capital project. Such a tool can help to overcome common planning fallacies and optimism biases to help to mitigate cost and and schedule overruns.
 
