@@ -8,21 +8,24 @@ This module contains functions for visualizing data and model results
 
 .. autosummary::
 
-   plot_value_counts
-   plot_barplot
-   plot_hist_comps
-   plot_line
+   load_img_to_numpy
    plot_2d_embed_scatter
-   plot_true_pred
+   plot_barplot
    plot_bdgt_sched_scaled
    plot_change_trend
-   plot_gam_by_predictor
    plot_coefficients
-   load_img_to_numpy
+   plot_gam_by_predictor
+   plot_hist_comps
    plot_jpg
+   plot_line
+   plot_true_pred
+   plot_value_counts
+   save_plot
+   set_savepath
 
 """
 
+import os
 from PIL import Image
 
 import pandas as pd
@@ -30,6 +33,49 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from sklearn.metrics import r2_score
+
+
+def set_savepath(dirpath, filename, return_path):
+    """Set filepath for use as the ``savepath`` input for ``caproj`` plotting functions
+
+    This function is intended for use in an interactive environment such as a Jupyter
+    notebook, where it might be beneficial to set an ``return_path==False`` global
+    variable when the desire is to not overwrite existing plots, and to ``True``
+    when the desire is to overwrite plots.
+
+    The benefit of this approach is that there will be no need to modify individual
+    lines of code where savepath values might be set throughout the notebook.
+
+    :param dirpath: directory path where plots are to be saved
+    :type dirpath: str
+    :param filename: name of file to be generated, this file name should include the
+                     correct extension so matplotlib knows what type of image file to
+                     generate such as ``filename.jpg`` or ``filename.png``
+    :type filename: str
+    :param return_path: boolean indicating whether to return the resulting filepath
+                      name (if set to True) or to return None (if set to False), which
+                      would prevent :func:save_plot from saving an actual image file
+    :type return_path: bool
+    :return: Returns either the resulting filepath string or None
+    :rtype: str or None
+    """
+    savepath = os.path.join(dirpath, filename) if return_path else None
+    return savepath
+
+
+def save_plot(plt_object, savepath=None):
+    """Save a matplotlib plot to file
+
+    :param plt_object: matplotlib.pyplot plot object
+    :param savepath: string or None, specifies filepath at which to save the
+                     matplotlib plot. If None, nothing is saved. (Default is
+                     None)
+    :return: No objects are returned
+    """
+    if savepath:
+        plt_object.savefig(savepath)
+    else:
+        pass
 
 
 def plot_value_counts(value_counts, figsize=(9, 3), color="tab:blue"):
@@ -66,7 +112,13 @@ def plot_value_counts(value_counts, figsize=(9, 3), color="tab:blue"):
 
 
 def plot_barplot(
-    value_counts, title, height=6, varname=None, color="k", label_space=0.01
+    value_counts,
+    title,
+    height=6,
+    varname=None,
+    color="k",
+    label_space=0.01,
+    savepath=None,
 ):
     """Generates a horizontal barplot from a pandas value_counts series
 
@@ -80,7 +132,8 @@ def plot_barplot(
     :param label_space: float, a coefficient used to space the count label
                         an appropriate distance from the plotted bar
                         (default is 0.01)
-    :return: a matplotlib plot. No objects are returned
+    :param savepath: string or None, filepath at which to save generated plot, if None,
+                     no file will be saved (default is None)
     """
     fig, ax = plt.subplots(figsize=(12, height))
 
@@ -109,10 +162,15 @@ def plot_barplot(
 
     plt.grid(":", alpha=0.5)
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 
-def plot_hist_comps(df, metric_1, metric_2, y_log=False, bins=20):
+def plot_hist_comps(
+    df, metric_1, metric_2, y_log=False, bins=20, savepath=None
+):
     """Plots side-by-side histograms for comparison with log yscale option
 
     Plots 2 subplots, no objects are returned
@@ -124,6 +182,8 @@ def plot_hist_comps(df, metric_1, metric_2, y_log=False, bins=20):
                   with a log scale (default False)
     :param bins: integer, the number of bins to use for the histogram
                  (default 20)
+    :param savepath: string or None, filepath at which to save generated plot, if None,
+                     no file will be saved (default is None)
     """
     metrics_list = [metric_1, metric_2]
     metrics_str = [metric.replace("_", " ").upper() for metric in metrics_list]
@@ -162,11 +222,25 @@ def plot_hist_comps(df, metric_1, metric_2, y_log=False, bins=20):
                 ax.set_ylabel("frequency (log scale)", fontsize=12)
 
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 
-def plot_line(x_vals, y_vals, title, x_label, y_label, height=3.5):
+def plot_line(
+    x_vals, y_vals, title, x_label, y_label, height=3.5, savepath=None
+):
     """Generates line plot given input x, y values
+
+    :param x_vals: array or list, x values for plotting
+    :param y_vals: array or list, y values for plotting
+    :param title: string, plot title
+    :param x_label: string, x axis variable label
+    :param y_label: string, y axis variable label
+    :param height: numeric, height of generated plot, defaults to 3.5
+    :param savepath: string or None, filepath at which to save generated plot, if None,
+                     no file will be saved, defaults to None
     """
     fig, ax = plt.subplots(figsize=(12, height))
 
@@ -182,6 +256,9 @@ def plot_line(x_vals, y_vals, title, x_label, y_label, height=3.5):
     plt.yticks(fontsize=14)
     plt.grid(":", alpha=0.4)
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 
@@ -195,6 +272,7 @@ def plot_2d_embed_scatter(
     data2_name="TEST obs",
     height=5,
     point_size=None,
+    savepath=None,
 ):
     """Plots 2D scatterplot of dimension-reduced embeddings for train and test
 
@@ -222,6 +300,8 @@ def plot_2d_embed_scatter(
     :param point_size: integer or None, default of None will revert to
                        matplotlib scatter default, integer entered will
                        override the default marker size
+    :param savepath: string or None, filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
     """
 
     # if y inputs are pandas dataframes, convert to numpy array
@@ -243,6 +323,9 @@ def plot_2d_embed_scatter(
     plt.grid(":", alpha=0.4)
     plt.legend(fontsize=14, edgecolor="k")
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 
@@ -254,6 +337,7 @@ def plot_true_pred(
     model_descr=None,
     y1_label=None,
     y2_label=None,
+    savepath=None,
 ):
     """Plots model prediction results directly from model_dict or input arrays
 
@@ -297,6 +381,8 @@ def plot_true_pred(
                                strings are used to override the model_dict values.
                                If using y_true/y_test as data source, these values
                                must be specified (default is None for both label)
+    :param savepath: string or None, filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
     """
     # create placeholder var_labels list for easier handling of conditionals
     var_labels = [None, None]
@@ -364,6 +450,10 @@ def plot_true_pred(
 
     ax.grid(":", alpha=0.4)
     plt.tight_layout()
+
+    savepath_1 = savepath.replace(".jpg", "-1.jpg") if savepath else None
+    save_plot(plt_object=plt, savepath=savepath_1)
+
     plt.show()
 
     # GENERATE SUBPLOTS 2 AND 3
@@ -387,6 +477,10 @@ def plot_true_pred(
         ax.grid(":", alpha=0.4)
 
     plt.tight_layout()
+
+    savepath_2 = savepath.replace(".jpg", "-2.jpg") if savepath else None
+    save_plot(plt_object=plt, savepath=savepath_2)
+
     plt.show()
 
     # GENERATE SUBPLOTS 4 AND 5
@@ -402,6 +496,10 @@ def plot_true_pred(
         ax.grid(":", alpha=0.4)
 
     plt.tight_layout()
+
+    savepath_3 = savepath.replace(".jpg", "-3.jpg") if savepath else None
+    save_plot(plt_object=plt, savepath=savepath_3)
+
     plt.show()
 
 
@@ -413,6 +511,7 @@ def plot_bdgt_sched_scaled(
     X_test_scaled=None,
     bdgt_col="Budget_Start",
     sched_col="Duration_Start",
+    savepath=None,
 ):
     """Plots original vs scaled versions of budget and schedule input data
 
@@ -432,6 +531,8 @@ def plot_bdgt_sched_scaled(
                      (default bdgt_col='Budget_Start')
     :param sched_col: string name of budget values column for input dataframes
                       (default bdgt_col='Duration_Start')
+    :param savepath: string or None, filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
     """
     corr = np.corrcoef(X.T)[0, 1]
     corr_scaled = np.corrcoef(X_scaled.T)[0, 1]
@@ -500,10 +601,13 @@ def plot_bdgt_sched_scaled(
 
     ax[0].legend(fontsize=12, edgecolor="k", loc=4)
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 
-def plot_change_trend(trend_data, pid_data, pid, interval=None):
+def plot_change_trend(trend_data, pid_data, pid, interval=None, savepath=None):
     """Plots 4 subplots showing project budget and duration forecast change trend
 
     Generates image of 4 subplots, no objects are returned.
@@ -517,6 +621,8 @@ def plot_change_trend(trend_data, pid_data, pid, interval=None):
     :param interval: integer or None, indicating the max Change_Year you wish
                      to plot, if None all change records are plotted for the
                      specified pid (default, interval=None)
+    :param savepath: string or None, filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
     """
     # sets default for converting datetimes in matplotlib
     from pandas.plotting import register_matplotlib_converters
@@ -661,11 +767,20 @@ def plot_change_trend(trend_data, pid_data, pid, interval=None):
         set_date_axis(a, years, years_fmt)
 
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 
 def plot_gam_by_predictor(
-    model_dict, model_index, X_data, y_data, dataset="train", suptitle_y=1
+    model_dict,
+    model_index,
+    X_data,
+    y_data,
+    dataset="train",
+    suptitle_y=1,
+    savepath=None,
 ):
     """Calculates and plots the partial dependence and 95% CIs for a GAM model
 
@@ -683,9 +798,11 @@ def plot_gam_by_predictor(
     :param dataset: string, 'train' or 'test' indicating the type of
                     X and y data you have entered for the X_data and
                     y_data arguments (default='train)
-    :param suptitle: float > 1.00 indicating the spacing required to
+    :param suptitle: float indicating the spacing required to
                      prevent your plot from overlapping your title text
-                     (default=1.04)
+                     (default=1)
+    :param savepath: string or None, filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
     """
     # reset indices to prevent index match errors
     X_data = X_data.copy().reset_index(drop=True)
@@ -752,11 +869,14 @@ def plot_gam_by_predictor(
         )
 
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 
 def plot_coefficients(
-    model_dict, subplots=(1, 2), fig_height=8, suptitle_spacing=1
+    model_dict, subplots=(1, 2), fig_height=8, suptitle_spacing=1, savepath=None
 ):
     """Plots coefficients from statsmodels linear regression model
 
@@ -779,8 +899,11 @@ def plot_coefficients(
                 overall height of your plot, defaults to 8
     :type fig_height: int or float
     :param suptitle_spacing: this value is passed to the 'y'
-                parameter for ``plt.suptitle()``, defaults to 1.10
+                parameter for ``plt.suptitle()``, defaults to 1
     :type suptitle_spacing: float
+    :param savepath: filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
+    :type savepath: str or None
     """
     # plot comparison of model coefficients
 
@@ -843,6 +966,9 @@ def plot_coefficients(
 
     plt.xticks(fontsize=12)
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 

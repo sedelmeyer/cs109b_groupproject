@@ -1,0 +1,54 @@
+name,description,dtype
+PID,The project identification number,int64
+Project_Name,The name of the project,object
+Description,A brief written description of the project,object
+Category,"The type of project (i.e. bridges, roadways, schools, etc.)",object
+Borough,The primary borough location for the project,object
+Managing_Agency,The primary managing agency for the project,object
+Client_Agency,The primary client agency for the project,object
+Phase_Start,The project phase at the time of the first change record recorded,object
+Current_Project_Years,The number of years since (in decimal form) the Design_Start date (i.e. the age of the project when the dataset was compiled),float64
+Current_Project_Year,The number of years since (in integer form) the Design_Start date,int64
+Design_Start,The date at which the design phase of the project began,datetime64
+Budget_Start,The original forecasted budget (in USD) for the project,float64
+Schedule_Start,The original forecasted end date for the project,datetime64
+Final_Change_Date,The date of the project’s final change record within the time interval being investigated,datetime64
+Final_Change_Years,The number of years since (in decimal form) the Design_Start date when the Final_Change_Date was recorded,float64
+Phase_End,The project phase at the time of the last change record recorded within the interval period,object
+Budget_End,The final forecasted budget (in USD) for the project at the time of the last change record within the interval period,float64
+Schedule_End,The final forecasted end date for the project at the time of the last change record within the interval period,datetime64
+Number_Changes,The total number of change records for the project observed during the interval period,int64
+Duration_Start,The original forecasted duration (in days) of the project at the time of the earliest available observation,int64
+Duration_End,The final forecasted duration (in days) of the project at the time of the last change record within the interval period,int64
+Schedule_Change,The total forecasted duration change (in days) observed during the interval period: Duration_End -Duration_Start,int64
+Budget_Change,The total forecasted budget change (in USD) observed during the interval period: Budget_End - Budget_Start,float64
+Schedule_Change_Ratio,Change metric: Schedule Change / Duration_Start,float64
+Budget_Change_Ratio,Change metric: Budget_Change / Budget_Start,float64
+Budget_Abs_Per_Error,Change metric: (Budget_Start – Budget_End) / Budget_End,float64
+Budget_Rel_Per_Error,Change metric: (Budget_Start – Budget_End) / Budget_Start,float64
+Duration_End_Ratio,Change metric: Duration_End / Duration_Start,float64
+Budget_End_Ratio,Change metric: Budget_End / Budget_Start,float64
+Duration_Ratio_Inv,Change metric: (Duration_Start / Duration_End) - 1 ,float64
+Budget_Ratio_Inv,Change metric: (Budget_Start / Budget_End) - 1 ,float64
+Category_Old,The original Category values for each project prior to consolidating categories,object
+Bridges,The one-hot-encoded Bridges project Category,int64
+Ferries,The one-hot-encoded Ferries project Category,int64
+Industrial_Development,The one-hot-encoded Industrial_Development project Category,int64
+Parks,The one-hot-encoded Parks project Category,int64
+Sanitation,The one-hot-encoded Sanitation project Category,int64
+Schools,The one-hot-encoded Schools project Category,int64
+Sewers,The one-hot-encoded Sewers project Category,int64
+Streets_and_Roadways,The one-hot-encoded Streets_and_Roadways project Category,int64
+Wastewater_Treatment,The one-hot-encoded Wastewater_Treatment project Category,int64
+Water_Supply,The one-hot-encoded Water_Supply project Category,int64
+Category_Code,The Category values label-encoded as integers rather than one-hot-encoded,int64
+umap_descr_2D_embed_1,The first of two dimensions for the dimension-reduced BERT embeddings using the UMAP algorithm,float64
+umap_descr_2D_embed_2,The second of two dimensions for the dimension-reduced BERT embeddings using the UMAP algorithm,float64
+umap_attributes_2D_embed_1,The first of two dimensions for the dimension-reduced BERT embeddings plus the initial project attributes using the UMAP algorithm,float64
+umap_attributes_2D_embed_2,The second of two dimensions for the dimension-reduced BERT embeddings plus the initial project attributes using the UMAP algorithm,float64
+attribute_clustering_label,The unsupervised clustering labels for each project using UMAP followed by HDSCAN on all initial project attributes,int64
+ae_descr_embed_1,The first of two dimensions for the dimension-reduced BERT embeddings using the encoded space of a dense autoencoder network,float64
+ae_descr_embed_2,The second of two dimensions for the dimension-reduced BERT embeddings using the encoded space of a dense autoencoder network,float64
+pca_descr_embed_1,The first of two dimensions for the dimension-reduced BERT embeddings using principal component analysis (PCA),float64
+pca_descr_embed_2,The second of two dimensions for the dimension-reduced BERT embeddings using principal component analysis (PCA),float64
+attribute_km3_label,The unsupervised clustering labels for each project using K-means of k=3 on all initial project attributes,int64

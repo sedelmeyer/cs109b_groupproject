@@ -29,6 +29,8 @@ from tensorflow.keras.optimizers import Adam
 import numpy as np
 import matplotlib.pyplot as plt
 
+from .visualize import save_plot
+
 random_seed = 109
 """Import and set seed for reproducible results"""
 
@@ -117,7 +119,9 @@ def build_dense_ae_architecture(
     return ae, encoder, decoder
 
 
-def plot_history(history, title, val_name="validation", loss_type="MSE"):
+def plot_history(
+    history, title, val_name="validation", loss_type="MSE", savepath=None
+):
     """Plot training and validation loss using keras history object
 
     :param history: keras training history object or dict. If a dict is
@@ -131,6 +135,8 @@ def plot_history(history, title, val_name="validation", loss_type="MSE"):
                       y axis label (default 'MSE')
     :return: a line plot illustrating model training history, no
              objects are returned
+    :param savepath: string or None, filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
     """
     if type(history) == dict:
         n_epochs = len(history["loss"])
@@ -165,4 +171,7 @@ def plot_history(history, title, val_name="validation", loss_type="MSE"):
 
     plt.legend(fontsize=14)
     plt.tight_layout()
+
+    save_plot(plt, savepath=savepath)
+
     plt.show()

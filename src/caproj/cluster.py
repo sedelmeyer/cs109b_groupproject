@@ -14,17 +14,17 @@ This module contains functions for visualizing data and model results
 
 .. autosummary::
 
-   silplot
    display_gapstat_with_errbars
-   fit_neighbors
-   plot_epsilon
-   silscore_dbscan
    fit_dbscan
-   print_dbscan_results
-   plot_dendrogram
-   plot_cluster_hist
-   plot_umap_scatter
+   fit_neighbors
    plot_category_scatter
+   plot_cluster_hist
+   plot_dendrogram
+   plot_epsilon
+   plot_umap_scatter
+   print_dbscan_results
+   silplot
+   silscore_dbscan
 
 """
 
@@ -41,10 +41,12 @@ from sklearn.cluster import DBSCAN
 from sklearn.neighbors import NearestNeighbors
 from sklearn.metrics import silhouette_samples, silhouette_score
 
-from .visualize import plot_value_counts
+from .visualize import plot_value_counts, save_plot
 
 
-def silplot(X, cluster_labels, clusterer, pointlabels=None, height=6):
+def silplot(
+    X, cluster_labels, clusterer, pointlabels=None, height=6, savepath=None
+):
     """Generates silhouette subplot of kmeans clusters alongside PCA n=2
 
     Two side-by-side subplots are generated showing (1) the silhouette plot of
@@ -68,6 +70,8 @@ def silplot(X, cluster_labels, clusterer, pointlabels=None, height=6):
     :type pointlabels: list or None, optional
     :param height: height of resulting subplots, defaults to 6
     :type height: int, optional
+    :param savepath: string or None, filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
     """
     n_clusters = clusterer.n_clusters
 
@@ -171,8 +175,8 @@ def silplot(X, cluster_labels, clusterer, pointlabels=None, height=6):
         )
 
     ax2.set_title("PCA-based visualization of the clustered data", fontsize=14)
-    ax2.set_xlabel("PC1", fontsize=12)
-    ax2.set_ylabel("PC2", fontsize=12)
+    ax2.set_xlabel("principal component 1", fontsize=12)
+    ax2.set_ylabel("principal component 2", fontsize=12)
     ax2.grid(":", alpha=0.5)
 
     plt.suptitle(
@@ -184,10 +188,13 @@ def silplot(X, cluster_labels, clusterer, pointlabels=None, height=6):
     )
 
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 
-def display_gapstat_with_errbars(gap_df, height=4):
+def display_gapstat_with_errbars(gap_df, height=4, savepath=None):
     """Generates plots of gap stats with error bars for each number of clusters
 
     :param gap_df: dataframe attribute of a fitted ``gap_statistic.OptimalK`` object
@@ -195,6 +202,9 @@ def display_gapstat_with_errbars(gap_df, height=4):
     :type gap_df: DataFrame
     :param height: hieght of the resulting plot, defaults to 4
     :type height: int, optional
+    :param savepath: filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
+    :type savepath: str or None
     """
     gaps = gap_df["gap_value"].values
     diffs = gap_df["diff"]
@@ -217,11 +227,14 @@ def display_gapstat_with_errbars(gap_df, height=4):
         color="k",
     )
 
-    plt.xlabel("Number of Clusters", fontsize=16)
-    plt.ylabel("Gap Statistic", fontsize=16)
+    plt.xlabel(r"number of clusters $K$", fontsize=16)
+    plt.ylabel("gap statistic", fontsize=16)
     plt.tick_params(labelsize=14)
     plt.grid(":", alpha=0.4)
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 
@@ -247,7 +260,7 @@ def fit_neighbors(data, min_samples):
     return distances
 
 
-def plot_epsilon(distances, min_samples, height=5):
+def plot_epsilon(distances, min_samples, height=5, savepath=None):
     """Plot epsilon by index sorted by increasing distance
 
     Generates a line plot of epsilon with observations sorted by increasing distances
@@ -258,6 +271,9 @@ def plot_epsilon(distances, min_samples, height=5):
     :type min_samples: int
     :param height: height of plot, defaults to 5
     :type height: int, optional
+    :param savepath: filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
+    :type savepath: str or None
     """
     fig, ax = plt.subplots(figsize=(12, height))
 
@@ -273,6 +289,9 @@ def plot_epsilon(distances, min_samples, height=5):
     plt.tick_params(right=True, labelright=True, labelsize=14)
     plt.grid(":", alpha=0.4)
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 
@@ -343,13 +362,16 @@ def fit_dbscan(data, min_samples, eps):
     return dbscan_dict
 
 
-def print_dbscan_results(dbscan_dict):
+def print_dbscan_results(dbscan_dict, savepath=None):
     """Prints summary results of fitted DBSCAN results dictionary
 
     Provides printed summary and plotted value counts by cluster
 
     :param dbscan_dict: returned output dictionary from :func:`fit_dbscan`` function
     :type dbscan_dict: dict
+    :param savepath: filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
+    :type savepath: str or None
     """
     eps = dbscan_dict["model"].eps
     min_samples = dbscan_dict["model"].min_samples
@@ -382,6 +404,9 @@ def print_dbscan_results(dbscan_dict):
     )
     plt.xlabel("DBSCAN clusters (-1 indicates unclustered)", fontsize=12)
     plt.ylabel("number of observations", fontsize=12)
+    plt.tight_layout()
+    save_plot(plt_object=plt, savepath=savepath)
+    plt.show()
 
     # print silhouette score
     if n_clusters > 1:
@@ -400,7 +425,12 @@ def print_dbscan_results(dbscan_dict):
 
 
 def plot_dendrogram(
-    linkage_data, method_name, yticks=16, ytick_interval=1, height=4.5
+    linkage_data,
+    method_name,
+    yticks=16,
+    ytick_interval=1,
+    height=4.5,
+    savepath=None,
 ):
     """Plots a dendrogram given a set of input hierarchy linkage data
 
@@ -414,8 +444,8 @@ def plot_dendrogram(
     :param ytick_interval: integer, the desired interval for the resulting
                            y ticks
     :param height: float, the desired height of the resulting plot
-
-    return: plots dendrogram, no objects are returned
+    :param savepath: string or None, filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
     """
 
     plt.figure(figsize=(12, height))
@@ -432,6 +462,9 @@ def plot_dendrogram(
     plt.yticks(np.arange(0, yticks + 1, ytick_interval), fontsize=10)
     plt.ylabel("distance", fontsize=14)
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 
@@ -675,7 +708,7 @@ def make_spider(mean_peaks_per_cluster, row, name, color):
     plt.title(name, size=14, color=color, y=1.1)
 
 
-def plot_spider_clusters(title, mean_peaks_per_cluster):
+def plot_spider_clusters(title, mean_peaks_per_cluster, savepath=None):
     """Generate spider plot subplots for all input clusters
     """
     my_dpi = 50
@@ -697,6 +730,10 @@ def plot_spider_clusters(title, mean_peaks_per_cluster):
     fig.suptitle(title, fontsize=18, y=1)
     plt.tight_layout()
 
+    save_plot(plt_object=plt, savepath=savepath)
+
+    plt.show()
+
 
 def plot_cluster_hist(
     data,
@@ -707,6 +744,7 @@ def plot_cluster_hist(
     metric_col="Metric",
     cmap="Paired",
     bins=6,
+    savepath=None,
 ):
     """Requires melted dataframe as input and plots histograms by cluster
     """
@@ -731,6 +769,9 @@ def plot_cluster_hist(
     plt.legend(edgecolor="k", title=cluster_col, fontsize=12)
     plt.grid(":", alpha=0.5)
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 
@@ -743,6 +784,7 @@ def plot_umap_scatter(
     colormap="Reds",
     xlabel="1st dimension",
     ylabel="2nd dimension",
+    savepath=None,
 ):
     """plots scatterplot with color scale
     """
@@ -759,6 +801,9 @@ def plot_umap_scatter(
     plt.colorbar(scatter, label=scale_var.replace("_", " "))
     ax.grid(":", alpha=0.5)
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 
@@ -771,6 +816,7 @@ def plot_category_scatter(
     colormap="Paired",
     xlabel="1st dimension",
     ylabel="2nd dimension",
+    savepath=None,
 ):
     """plots scatterplot with categories colors
     """
@@ -796,4 +842,7 @@ def plot_category_scatter(
     plt.ylabel(ylabel, fontsize=14)
     ax.grid(":", alpha=0.5)
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()

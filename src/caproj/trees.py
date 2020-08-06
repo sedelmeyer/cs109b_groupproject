@@ -16,13 +16,15 @@ tree ensemble models and visualizing the model results
 
 .. autosummary::
 
-   generate_adaboost_staged_scores
-   plot_adaboost_staged_scores
-   calc_meanstd_logistic
+   calc_meanstd_classifier
    calc_meanstd_regression
-   plot_me
-   calculate
-   calc_models
+   calculate_trees
+   generate_adaboost_staged_scores
+   iterate_adaboost_models
+   iterate_tree_models
+   plot_adaboost_scores_scatter
+   plot_adaboost_staged_scores
+   plot_tree_depth_finder
 
 """
 import itertools
@@ -30,12 +32,14 @@ import itertools
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from sklearn.ensemble import AdaBoostRegressor
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import cross_val_score
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from tqdm.notebook import tqdm
 
 from .model import generate_model_dict
+from .visualize import save_plot
 
 depths = list(range(1, 21))
 """sets default depths for comparison in cross validation"""
@@ -96,7 +100,7 @@ def generate_adaboost_staged_scores(
 
 
 def plot_adaboost_staged_scores(
-    model_dict, X_train, X_test, y_train, y_test, height=4
+    model_dict, X_train, X_test, y_train, y_test, height=4, savepath=None,
 ):
     """Plots the adaboost staged scores for each y variable's predictions and iteration
 
@@ -113,6 +117,9 @@ def plot_adaboost_staged_scores(
     :type y_test: array-like
     :param height: Height dimension of resulting plot, defaults to 4
     :type height: int, optional
+    :param savepath: filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
+    :type savepath: str or None, optional
     """
     # generate staged_scores
     training_scores, test_scores = generate_adaboost_staged_scores(
@@ -181,10 +188,13 @@ def plot_adaboost_staged_scores(
     ax.legend(fontsize=12, edgecolor="k")
 
     plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
     plt.show()
 
 
-def calc_meanstd_logistic(
+def calc_meanstd_classifier(
     X_tr, y_tr, X_te, y_te, depths: list = depths, cv: int = cv
 ):
     """Fits and generates tree classifier results, iterated for each input depth
@@ -306,11 +316,16 @@ def calc_meanstd_regression(
     return cvmeans, cvstds, train_scores, test_scores, models
 
 
-def plot_me(result):
+def plot_tree_depth_finder(result, height=5, savepath=None):
     """plot the best depth finder for decision tree model
 
-    :param result: Dictionary returned from the :func:`calculate` function
+    :param result: Dictionary returned from the :func:`iterate_tree_models` function
     :type result: dict
+    :param height: Height dimension of resulting plot, defaults to 4
+    :type height: int, optional
+    :param savepath: filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
+    :type savepath: str or None
     """
     depths = list(range(1, 21))
 
@@ -322,52 +337,65 @@ def plot_me(result):
     test_scores = result.get("test_scores")
     x = result.get("depths")
 
-    print(f"Model Optmized for: {result.get('responses')}")
+    # print(f"Model Optmized for: {result.get('responses')}")
 
-    fig, ax = plt.subplots(ncols=len(responses), figsize=(15, 6))
+    fig, ax = plt.subplots(ncols=len(responses), figsize=(12, height))
 
     for i, (a, response) in enumerate(zip(np.ravel(ax), responses)):
 
         best_depth = result.get("best_depth")
         best_score = test_scores[best_depth - 1]
 
-        a.set_xlabel("Maximum Tree Depth")
+        a.set_xlabel("Maximum tree depth", fontsize=14)
 
         attrs_title = "\n".join(attributes)
         title = f"Model: {model_type}\nResp: {response}\nAttrs: {attrs_title}"
 
         a.set_title(
-            f"{title}\nBest test {score_type.capitalize()} score: {best_score} "
+            f"{title}\nBest TEST {score_type.upper()} score: {best_score} "
             f"at depth {best_depth}",
-            fontsize=10,
+            fontsize=14,
         )
-        a.set_ylabel(f"{score_type.capitalize()} Score")
+        a.set_ylabel(f"{score_type.upper()} score", fontsize=14)
         a.set_xticks(depths)
 
         # Plot model train scores
         a.plot(
             x,
             train_scores,
-            "b-",
-            marker="o",
-            label=f"Model Train {score_type.capitalize()} Score",
+            "k--",
+            # marker="o",
+            label=f"Training {score_type.upper()} score",
         )
 
         # Plot model test scores
         a.plot(
             x,
             test_scores,
-            "o-",
-            marker=".",
-            label=f"Model Test {score_type.capitalize()} Score",
+            "k-",
+            marker="o",
+            label=f"TEST {score_type.upper()} score",
         )
 
         if i == len(responses) - 1:
-            a.legend(bbox_to_anchor=(1, 1), loc="upper left", ncol=1)
+            a.legend(
+                fontsize=12,
+                loc="center left",
+                bbox_to_anchor=(1, 0.5),
+                frameon=False,
+            )
+            # a.legend(bbox_to_anchor=(1, 1), loc="upper left", ncol=1)
+
+    plt.grid(":", alpha=0.5)
+    plt.tight_layout()
+
+    save_plot(plt_object=plt, savepath=savepath)
+
+    plt.show()
 
 
 def _define_train_and_test(
-    data_train, data_test, attributes, response, logistic
+    data_train, data_test, attributes, response, classifier
 ) -> (pd.DataFrame, pd.DataFrame):
     """Return x and y data for train and test sets
     """
@@ -377,7 +405,7 @@ def _define_train_and_test(
     X_te = data_test[attributes]
     y_te = data_test[response]
 
-    if logistic:
+    if classifier:
         y_tr = (y_tr > 0) * 1
         y_te = (y_te > 0) * 1
 
@@ -415,13 +443,13 @@ def _expand_attributes(attrs, categories):
     return attrs
 
 
-def calculate(
+def calculate_trees(
     data_train,
     data_test,
     categories,
     attributes: list,
     responses_list: list,
-    logistic=True,
+    classifier=True,
 ):
     """Calculate decision tree results using a particular set of X features
 
@@ -437,30 +465,30 @@ def calculate(
     :param responses_list: Column names of model responses (i.e. each different
             y variable)
     :type responses_list: list
-    :param logistic: Indicates whether to use decision tree classifier
-            (i.e. ``logistic=True``) or regressor (i.e. ``logistic=False``),
+    :param classifier: Indicates whether to use decision tree classifier
+            (i.e. ``classifier=True``) or regressor (i.e. ``classifier=False``),
             defaults to True
-    :type logistic: bool, optional
+    :type classifier: bool, optional
     :return: Two lists containing (1) dictionaries of model results and
             (2) fitted model dictionaries, one dictionary for each response
             variable
     :rtype: tuple
     """
-    if logistic:
-        model_type = "Logistic"
+    if classifier:
+        model_type = "Classifier"
         score_type = "auc"
-        calc = calc_meanstd_logistic
+        calc = calc_meanstd_classifier
     else:
         model_type = "Regression"
         score_type = "r2"
         calc = calc_meanstd_regression
 
-    # remove multi-output responses, if not using logistic regression
+    # remove multi-output responses, if not using classifier regression
     responses = []
     for r in responses_list:
         if type(r) == str:
             r = [r]
-        if len(r) > 1 and not logistic:
+        if len(r) > 1 and not classifier:
             continue
         responses.append(r)
 
@@ -476,7 +504,7 @@ def calculate(
             data_test,
             attrs,
             ["Budget_Change_Ratio", "Schedule_Change_Ratio"],
-            logistic=logistic,
+            classifier=classifier,
         )
 
         cvmeans, cvstds, train_scores, test_scores, models = calc(
@@ -516,14 +544,14 @@ def calculate(
         model_dict.append(
             generate_model_dict(
                 model=DecisionTreeClassifier
-                if logistic
+                if classifier
                 else DecisionTreeRegressor,
                 model_descr=desc,
                 X_train=X_tr,
                 X_test=X_te,
                 y_train=y_tr,
                 y_test=y_te,
-                multioutput=logistic,
+                multioutput=classifier,
                 verbose=False,
                 predictions=True,
                 scores=True,
@@ -538,14 +566,14 @@ def calculate(
     return results, model_dict
 
 
-def calc_models(
+def iterate_tree_models(
     data_train,
     data_test,
     categories,
     nondescr_attrbutes,
     descr_attributes,
     responses_list,
-    logistic=True,
+    classifier=True,
 ):
     """Iterate over all combinations of attributes to return lists of resulting models
 
@@ -564,10 +592,10 @@ def calc_models(
     :param responses_list: Column names of model responses (i.e. each different
             y variable)
     :type responses_list: list
-    :param logistic: Indicates whether to use decision tree classifier
-            (i.e. ``logistic=True``) or regressor (i.e. ``logistic=False``),
+    :param classifier: Indicates whether to use decision tree classifier
+            (i.e. ``classifier=True``) or regressor (i.e. ``classifier=False``),
             defaults to True
-    :type logistic: bool, optional
+    :type classifier: bool, optional
     :return: Two list objects containing (1) lists of dictionaries of model results and
             (2) lists of fitted model dictionaries for each iterated model
     :rtype: tuple
@@ -575,31 +603,329 @@ def calc_models(
     results_all = []
     model_dicts = []
 
-    print(f"Using {'LOGISTIC' if logistic else 'REGRESSION'} models")
+    print(f"Using {'CLASSIFIER' if classifier else 'REGRESSION'} models")
     for i in tqdm(range(1, len(nondescr_attrbutes))):
         alist = list(itertools.combinations(nondescr_attrbutes, i))
         for a in tqdm(alist, leave=False):
             a = list(a)
-            results, model_dict = calculate(
+            results, model_dict = calculate_trees(
                 data_train,
                 data_test,
                 categories,
                 attributes=a,
                 responses_list=responses_list,
-                logistic=logistic,
+                classifier=classifier,
             )
             results_all += results
             model_dicts += model_dict
             for d_emb in tqdm(descr_attributes, leave=False):
-                results, model_dict = calculate(
+                results, model_dict = calculate_trees(
                     data_train,
                     data_test,
                     categories,
                     attributes=a + [d_emb],
                     responses_list=responses_list,
-                    logistic=logistic,
+                    classifier=classifier,
                 )
                 results_all += results
                 model_dicts += model_dict
 
     return results_all, model_dicts
+
+
+def _flatten(T):
+    """Handles attributes list and flattens if required
+    """
+    if type(T) != tuple:
+        return (T,)
+    if len(T) == 0:
+        return ()
+    else:
+        return _flatten(T[0]) + _flatten(T[1:])
+
+
+def _make_adaboost_dataframe(model_dicts):
+    """Convert :func:`iterate_adaboost_models` model dictionary results to a dataframe
+
+    :param model_dicts: list of model dictionaries generated by
+                        :func:`iterate_adaboost_models`
+    :type model_dicts: list
+    :return: A results dataframe
+    :rtype: dataframe
+    """
+    descriptions = []
+    train_scores_bud = []
+    train_scores_sch = []
+    test_scores_bud = []
+    test_scores_sch = []
+    max_depths = []
+    staged_scores_train = []
+    staged_scores_test = []
+    lrs = []
+    n_estimators = []
+
+    for m in model_dicts:
+        descriptions.append(m["description"])
+        train_scores_bud.append(m["score"]["train"][0])
+        train_scores_sch.append(m["score"]["train"][1])
+        test_scores_bud.append(m["score"]["test"][0])
+        test_scores_sch.append(m["score"]["test"][1])
+        max_depths.append(m["max_depth"])
+        lrs.append(m["learning_rate"])
+        n_estimators.append(m["n_estimators"])
+        staged_scores_train.append(m["staged_scores_train"])
+        staged_scores_test.append(m["staged_scores_test"])
+
+    results = pd.DataFrame.from_dict(
+        {
+            "description": descriptions,
+            "train_score_bud": train_scores_bud,
+            "train_score_sch": train_scores_sch,
+            "test_score_bud": test_scores_bud,
+            "test_score_sch": test_scores_sch,
+            "max_depth": max_depths,
+            "lr": lrs,
+            "n_estimators": n_estimators,
+            "staged_scores_train": staged_scores_train,
+            "staged_scores_test": staged_scores_test,
+        }
+    )
+
+    return results
+
+
+def iterate_adaboost_models(
+    data_train,
+    data_test,
+    model_descr: str,
+    max_depths: list,
+    learning_rate: float,
+    estimators: list,
+    random_state: int,
+    nondescr_attrbutes: list,
+    descr_attributes: list,
+    responses: list,
+):
+    """Iterate AdaBoost models over all combinations of attributes and parameters
+
+    .. note::
+
+       For training features meant to be paired such as 2-dimensional encodings or
+       interaction terms, those features should be added as a sub-list
+       when added to the ``nondescr_attributes`` or ``descr_attributes`` input
+       parameters.
+
+    :param data_train: training dataset
+    :type data_train: array-like
+    :param data_test: test dataset
+    :type data_test: array like
+    :param model_descr: descriptive title for the model
+    :type model_descr: str
+    :param max_depths: max depths over which to iterate the models
+    :type max_depths: list of integers
+    :param learning_rate: learning rate parameter for the AdaBoost model
+    :type learning_rate: float
+    :param estimators: numbers of estimators over which to iterate the models
+    :type estimators: list of intergers
+    :param random_state: random state from which to generate the models
+    :type random_state: int
+    :param nondescr_attrbutes: names of training features not derived from BERT
+                               embedded project descriptions
+    :type nondescr_attrbutes: list of stings or list of lists of strings
+    :param descr_attributes: names of training features derived from BERT
+                             embedded project descriptions
+    :type descr_attributes: list of stings or list of lists of strings
+    :param responses: [description]
+    :type responses: list
+    :return: A tuple containing (1) a dataframe containing model results and (2)
+             a dictonary of model dictionaries containing all iterated models.
+    :rtype: tuple
+    """
+    model_dicts = []
+
+    print("Using ADABoost REGRESSION models")
+    for n_estimators in tqdm(estimators, desc="n_estimators"):
+        for max_depth in tqdm(max_depths, desc="max_depths", leave=False):
+            for i in tqdm(
+                range(1, len(nondescr_attrbutes)),
+                desc="nondesc attributes",
+                leave=False,
+            ):
+                alist = list(itertools.combinations(nondescr_attrbutes, i))
+                alist = [_flatten(a) for a in alist]
+
+                for a in tqdm(
+                    alist, desc="nondesc attributes combinations", leave=False
+                ):
+                    a = list(a)
+
+                    model_dict = generate_model_dict(
+                        AdaBoostRegressor,
+                        model_descr,
+                        data_train[a],
+                        data_test[a],
+                        data_train[responses],
+                        data_test[responses],
+                        multioutput=False,
+                        verbose=False,
+                        predictions=True,
+                        scores=True,
+                        model_api="sklearn",
+                        # these parameters below will be passed as *kwargs,
+                        # which means they will feed directly to the model object
+                        # when it is initialized
+                        base_estimator=DecisionTreeRegressor(
+                            max_depth=max_depth, random_state=random_state
+                        ),
+                        learning_rate=learning_rate,
+                        n_estimators=n_estimators,
+                        random_state=random_state,
+                    )
+
+                    (
+                        staged_scores_train,
+                        staged_scores_test,
+                    ) = generate_adaboost_staged_scores(
+                        model_dict,
+                        data_train[a],
+                        data_test[a],
+                        data_train[responses],
+                        data_test[responses],
+                    )
+
+                    model_dict.update(
+                        {
+                            "staged_scores_train": staged_scores_train,
+                            "staged_scores_test": staged_scores_test,
+                            "max_depth": max_depth,
+                            "learning_rate": learning_rate,
+                            "n_estimators": n_estimators,
+                            "attributes": a,
+                            "responses": responses,
+                            "random_state": random_state,
+                        }
+                    )
+                    model_dicts.append(model_dict)
+
+                    for d_emb in tqdm(
+                        descr_attributes, desc="descriptions", leave=False
+                    ):
+
+                        model_dict = generate_model_dict(
+                            AdaBoostRegressor,
+                            model_descr,
+                            data_train[a + d_emb],
+                            data_test[a + d_emb],
+                            data_train[responses],
+                            data_test[responses],
+                            multioutput=False,
+                            verbose=False,
+                            predictions=True,
+                            scores=True,
+                            model_api="sklearn",
+                            # these parameters below will be passed as *kwargs,
+                            # which means they will feed directly to the model object
+                            # when it is initialized
+                            base_estimator=DecisionTreeRegressor(
+                                max_depth=max_depth, random_state=random_state
+                            ),
+                            learning_rate=learning_rate,
+                            n_estimators=n_estimators,
+                            random_state=random_state,
+                        )
+
+                        (
+                            staged_scores_train,
+                            staged_scores_test,
+                        ) = generate_adaboost_staged_scores(
+                            model_dict,
+                            data_train[a + d_emb],
+                            data_test[a + d_emb],
+                            data_train[responses],
+                            data_test[responses],
+                        )
+
+                        model_dict.update(
+                            {
+                                "staged_scores_train": staged_scores_train,
+                                "staged_scores_test": staged_scores_test,
+                                "max_depth": max_depth,
+                                "learning_rate": learning_rate,
+                                "n_estimators": n_estimators,
+                                "attributes": a + d_emb,
+                                "responses": responses,
+                                "random_state": random_state,
+                            }
+                        )
+                        model_dicts.append(model_dict)
+
+    results = _make_adaboost_dataframe(model_dicts)
+
+    return results, model_dicts
+
+
+def plot_adaboost_scores_scatter(
+    results, model_parameter, min_axis=None, savepath=None
+):
+    """Generate plot of adaboost iterated model scores colored by parameter category
+
+    :param results: results dataframe outputted by :func:`iterate_adaboost_models`
+    :type results: dataframe
+    :param model_parameter: name of results dataframe column containing parameter
+                            by which to color code the scatterplot
+    :type model_parameter: str
+    :param min_axis: minimum x- and y-axis values at which to truncate plot, if
+                     None all values are shown, defaults to None
+    :type min_axis: float or None, optional
+    :param savepath: filepath at which to save generated plot,
+                     if None, no file will be saved, defaults to None
+    :type savepath: str or None, optional
+    """
+    if min_axis:
+        results = results.copy()[
+            (results.test_score_bud > -abs(min_axis))
+            & (results.test_score_sch > -abs(min_axis))
+        ]
+    else:
+        results = results.copy()
+
+    plt.figure(figsize=(7.75, 6))
+
+    shapes = ["o", "s", "D", "^", "v", "X"]
+
+    for label, shape in zip(
+        sorted(list(set(results[model_parameter]))), shapes
+    ):
+        sct_data = results[results[model_parameter] == label]
+        plt.scatter(
+            sct_data.test_score_sch,
+            sct_data.test_score_bud,
+            s=100,
+            alpha=0.3,
+            marker=shape,
+            edgecolor="k",
+            label=label,
+        )
+
+    plt.legend()
+    plt.legend(
+        title="{}".format(model_parameter),
+        fontsize=14,
+        title_fontsize=14,
+        loc="center left",
+        bbox_to_anchor=(1, 0.5),
+        frameon=False,
+    )
+    plt.title(
+        "AdaBoost model scores by {}".format(model_parameter), fontsize=18
+    )
+    plt.axhline(c="gray")
+    plt.axvline(c="gray")
+    plt.xlabel("Schedule Change Ratio model $R^2$ scores", fontsize=14)
+    plt.ylabel("Budget Change Ratio model $R^2$ scores", fontsize=14)
+    plt.grid(":", alpha=0.5)
+    plt.tight_layout()
+
+    save_plot(plt, savepath)
+
+    plt.show()

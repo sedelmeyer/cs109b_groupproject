@@ -20,7 +20,7 @@ for each unique capital project
 
    print_record_project_count
    generate_interval_data
-   print_interval_dict
+   print_data_dictionary
 
 """
 
@@ -487,23 +487,27 @@ def generate_interval_data(
         return df_features
 
 
-def print_interval_dict(
-    datadict_dir="../references/data_dicts/",
-    datadict_filename="data_dict_interval.csv",
-):
-    """Prints summary of data dictionary for the generate_interval_data output
+def print_data_dictionary(filepath):
+    """Print summary of a ``.csv`` data dictionary
 
-    :param datadict_dir: optional string indicating directory location of
-                         target data dictionary (default
-                         ``../references/data_dicts/``)
-    :param datadict_filename: optional string indicating filename of target
-                              data dict (default ``data_dict_interval.csv``)
+       In order for a saved data dictionary to be compatible with this function,
+       the data dictionary must be saved to a ``.csv`` file and must contain the
+       following 3 columns, named as such:
 
-    :return: No objects are returned, printed output only
+       1. **name**: This column should contain the names of features in the dataset
+       2. **description**: This column should contain the description of each feature
+       3. **dtype**: This column should contain the data type of each feature
+
+    :param filepath: string indicating filepath of target data dictionary ``.csv`` file
     """
-    filepath = os.path.join(datadict_dir, datadict_filename)
-
-    data_dict = pd.read_csv(filepath)
+    try:
+        data_dict = pd.read_csv(filepath)
+    except FileNotFoundError:
+        print(
+            "The filepath to the provided data dictionary does not exist:\n\n\t{}\n\n"
+            "No dictionary can be printed.".format(filepath)
+        )
+        return
 
     print("DATA DICTIONARY: GENERATED INTERVAL DATASETS\n")
 
