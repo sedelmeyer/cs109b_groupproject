@@ -227,8 +227,43 @@ The resulting autoencoder model was trained for a maximum of 200 epochs, but wit
    :align: center
    :width: 100%
 
-   Figure 35: Autencoder 2-dimensional encoded latent space
+   Figure 35: Autencoder 2-dimensional encoded BERT embedding latent space
 
 As can be seen above, after passing our training and test data into the Encoder portion of our autoencoder, the 2-dimensional encoded output indicates the dimensions of our encoded latent space are highly correlated. This is an interesting result. As I mentioned previously, we limited the dropout rate of the dropout layers in our autoencoder to a proportion lower than we might have otherwise chosen. This was primarily due to the increasingly correlated results we began to see as we continued to increase the dropout rate. Without dropout our latent space still exihibited some degree of correlation, albeit with the training and test observations far less tightly clusted along the diagonal axis. While we are not entirely certain of what to make of this counterintuitive result, we ultimately decided to walk a middle road where we kept our dropout rate lower than we might otherwise had, but still high enough that we felt we were sufficiently protecting against complete memorization of our training set.
 
 The ultimate measure for us of how successful this attempt at dimensionality reduction is, comes later when we eventual fit these resulting 2 features as predictors in our prediction models and determine whether or not they increase the predictive strength of our model.
+
+UMAP dimension-reduced encoding of BERT embedded text
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The unabridged notebook used to generate the findings in this section can be `found here on GitHub <https://github.com/sedelmeyer/nyc-capital-projects/blob/master/notebooks/05_umap_hdbscan_features.ipynb>`_.
+
+Now, as one final competing attempt at reducing the dimensions of our 512-dimension BERT embeddings to just 2 dimensions for our models, we will once again apply the UMAP algorithm previously used in conjunction with HDBSCAN for algorithmically identifying project reference classes. This time however, instead of categorizing our resulting UMAP encoded space, we will instead just directly use that 2-dimensional space as our dimensionality-reduced BERT emeddings similar to what we did with PCA and the dense autoencoder network above.
+
+.. figure:: ../../docs/_static/figures/36-bert-umap-schedule-scale-scatter.jpg
+   :align: center
+   :width: 100%
+
+   Figure 36: 2-dimensional UMAP-reduced BERT embeddings with ``Schedule_Change_Ratio`` color scale
+
+.. figure:: ../../docs/_static/figures/37-bert-umap-budget-scale-scatter.jpg
+   :align: center
+   :width: 100%
+
+   Figure 37: 2-dimensional UMAP-reduced BERT embeddings with ``Budget_Change_Ratio`` color scale
+
+.. figure:: ../../docs/_static/figures/38-bert-umap-category-color-scatter.jpg
+   :align: center
+   :width: 100%
+
+   Figure 38: 2-dimensional UMAP-reduced BERT embeddings, color coded by project category
+
+.. figure:: ../../docs/_static/figures/39-bert-umap-scatter.jpg
+   :align: center
+   :width: 100%
+
+   Figure 39: UMAP 2-dimensional encoded BERT embedding latent space
+
+As a common point of comparison with our prior UMAP plots, we once again see a heavy mixing of project ``Category``, as well as ``Budget_Change_Ratio`` and ``Schedule_Change_Ratio`` in our 2-dimensional UMAP encode space. And, ultimately, generating a train and test scatterplot similar to the ones we did for our 2D PCA and autoencoder encoded dimensions, we can see yet again another very different low-dimensionality representation of our 512 dimension BERT embeddings.
+
+As mentioned before, whether or not these 2 dimensions help in the predictive power of our resulting prediction models will be the true test of whether or not this engineered feature was a success.
