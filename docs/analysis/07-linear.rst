@@ -1,9 +1,9 @@
-7. Generate a baseline linear model
+7. Baseline linear regression model
 ===================================
 
 .. contents:: In this section
   :local:
-  :depth: 1
+  :depth: 2
   :backlinks: top
 
 In this section, prior to attempting to fit any complex models utilizing our newly engineered features, we first set a simple baseline against which we can compare all subsequent models. This will allow us to intelligently build complexity into our models, and it will allow us to hopefully develop a deeper sense of the predictive modelling problem we are trying to solve.
@@ -85,11 +85,6 @@ Baseline linear regression
 --------------------------
 
 The unabridged notebook used to generate the findings in this section can be `found here on GitHub <https://github.com/sedelmeyer/nyc-capital-projects/blob/master/notebooks/07_baseline_linear_models.ipynb>`_.
-
-.. contents:: In this section
-  :local:
-  :depth: 2
-  :backlinks: top
 
 Fit the model
 ^^^^^^^^^^^^^
