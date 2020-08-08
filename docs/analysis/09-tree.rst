@@ -1,4 +1,4 @@
-8. Decision tree models
+9. Decision tree models
 =======================
 
 The unabridged notebook used to generate the findings in this section can be `found here on GitHub <https://github.com/sedelmeyer/nyc-capital-projects/blob/master/notebooks/09_decision_tree_models.ipynb>`_.
@@ -210,6 +210,9 @@ Once again we are pleased with our results. The best decision tree regressor mod
    Figure 60: ``Schedule_Change_Ratio`` decision tree regressor diagram
 
 Additionally, this ``Schedule_Change_Ratio`` tree regressor used a larger feature set and the best ``Budget_Change_Ratio`` model reviewed above. Here we use ``Budget_Start``, ``Duration_Start``, and ``umap_attributes_2D_embed`` to generate our predictions.
+
+Examining the results
+---------------------
 
 Now, as one final step, we will visually inspect our true versus predicted values for each of our best models.
 
