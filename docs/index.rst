@@ -27,6 +27,7 @@ An investigation into feature engineering and modeling project-change data for l
    analysis/08-spline
    analysis/09-tree
    analysis/10-ensemble
+   analysis/11-conclusion
    modules
    changelog
 
