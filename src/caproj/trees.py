@@ -352,7 +352,7 @@ def plot_tree_depth_finder(result, height=5, savepath=None):
         title = f"Model: {model_type}\nResp: {response}\nAttrs: {attrs_title}"
 
         a.set_title(
-            f"{title}\nBest TEST {score_type.upper()} score: {best_score} "
+            f"{title}\nBest TEST {score_type.upper()} score: {best_score:.3f} "
             f"at depth {best_depth}",
             fontsize=14,
         )
