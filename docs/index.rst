@@ -25,6 +25,7 @@ An investigation into feature engineering and modeling project-change data for l
    analysis/06-embed
    analysis/07-linear
    analysis/08-spline
+   analysis/09-tree
    modules
    changelog
 
