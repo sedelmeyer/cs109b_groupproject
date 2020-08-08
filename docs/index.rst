@@ -23,6 +23,7 @@ An investigation into feature engineering and modeling project-change data for l
    analysis/04-feature
    analysis/05-cluster
    analysis/06-embed
+   analysis/07-linear
    modules
    changelog
 
