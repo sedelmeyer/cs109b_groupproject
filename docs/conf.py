@@ -25,6 +25,10 @@ year = "2020"
 author = "An Hoang, Mark McDonald, and Michael Sedelmeyer"
 copyright = "{0}, {1}".format(year, author)
 
+# set base URLs for use in "extlinks" extension below
+site_url = "https://sedelmeyer.github.io/nyc-capital-projects"
+repo_url = "https://github.com/sedelmeyer/nyc-capital-projects"
+
 # The full version, including alpha/beta/rc tags, updated
 # using setuptools_scm
 try:
@@ -111,3 +115,16 @@ napoleon_use_param = True
 napoleon_use_rtype = True
 
 todo_include_todos = True
+
+# set extlinks base urls for use throughout sphinx site
+extlinks = {
+    "repo": (os.path.join(repo_url, "%s"), "repo "),
+    "site": (os.path.join(site_url, "%s"), "docs "),
+    "issues": (os.path.join(repo_url, "issues/%s"), "issues ",),
+    "data": (os.path.join(repo_url, "tree/master/data/%s"), "data ",),
+    "models": (os.path.join(repo_url, "tree/master/models/%s"), "models ",),
+    "notebooks": (
+        os.path.join(repo_url, "tree/master/notebooks/%s"),
+        "notebooks ",
+    ),
+}
