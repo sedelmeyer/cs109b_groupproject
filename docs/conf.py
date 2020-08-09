@@ -121,10 +121,11 @@ extlinks = {
     "repo": (os.path.join(repo_url, "%s"), "repo "),
     "site": (os.path.join(site_url, "%s"), "docs "),
     "issues": (os.path.join(repo_url, "issues/%s"), "issues ",),
-    "data": (os.path.join(repo_url, "tree/master/data/%s"), "data ",),
+    "datadir": (os.path.join(repo_url, "tree/master/data/%s"), "datadir ",),
     "models": (os.path.join(repo_url, "tree/master/models/%s"), "models ",),
     "notebooks": (
         os.path.join(repo_url, "tree/master/notebooks/%s"),
         "notebooks ",
     ),
+    "src": (os.path.join(repo_url, "tree/master/src/caproj/%s"), "src "),
 }
