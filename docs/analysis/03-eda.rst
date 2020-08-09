@@ -1,18 +1,19 @@
 3. Exploratory data analysis (EDA)
 ==================================
 
-The notebooks used to generate the findings in this section can be `found here on GitHub <https://github.com/sedelmeyer/nyc-capital-projects/blob/master/notebooks/00_eda_and_clean_data.ipynb>`_.
+The notebook used to generate the findings in this section :notebooks:`can be found here on GitHub<00_eda_and_clean_data.ipynb>`.
 
 .. contents:: In this section
   :local:
   :depth: 2
   :backlinks: top
 
-Project counts by attribute
----------------------------
+Projects distributed by various attributes
+------------------------------------------
 
-To give a better sense of the nature of the data contained in this dataset, it is likely useful to provide some visual representations of the types of projects available.
+To give a better sense of the nature of the data contained in this dataset, it is useful to provide some visual representations of the types of projects available. Shown below are a set of barplots illustrating the distribution of the full set of 355 projects in the cleansed dataset, categorized on several different dimensions.
 
+First, here are the projects distributed among the set of project categories as they were assigned in this initial dataset. This plot demonstrates the far greater proportion of projects designated as "Streets and Roadways" versus all other categories. It is also worth noting the very low count numbers for the several smallest categories. For the purpose of this analysis, we will merge several of these smaller groupings with other like groups to more evenly distribute the projects and to reduce the overall number of categories.
 
 .. figure:: ../../docs/_static/figures/01-projects-by-cat-barplot.jpg
   :align: center
@@ -20,6 +21,7 @@ To give a better sense of the nature of the data contained in this dataset, it i
 
   Figure 1: Capital projects by category
 
+This next plot illustrates the managing agency defined for each project. Once again, we can see that the most frequently occuring value appears at a far greater rate than all other agencies. This agency, `the Department of Design and Construction (DDC) <https://www1.nyc.gov/site/ddc/about/about-ddc.page>`_, is considered to be NYC's primary capital construction project manager. Therefore, the relatively large proportion of projects under the DDC's management is not necessarily surprising. Likewise, the second most frequent managing agency, `the Department of Transportation (DOT) <https://www1.nyc.gov/html/dot/html/about/about.shtml>`_, is also not surprising considering the large proportion of "Streets and Roadways" projects contained within the dataset.
 
 .. figure:: ../../docs/_static/figures/02-projects-by-agency-barplot.jpg
   :align: center
@@ -38,6 +40,8 @@ To give a better sense of the nature of the data contained in this dataset, it i
   :width: 100%
 
   Figure 4: Capital projects by number of project change records
+
+.. _figure5:
 
 .. figure:: ../../docs/_static/figures/05-projects-by-age-barplot.jpg
   :align: center
