@@ -23,9 +23,9 @@ Response variables
 
 Throughout the remainder of this analysis, the specific response variables we will be seeking to predict are:
 
-1. ``Budget_Change_Ratio`` as defined by the total forecasted budget change (in dollars) for a project experienced during the 3-year interval divided by the initial starting budget of the project (i.e. `Budget_Start`) 
+1. ``Budget_Change_Ratio`` as defined by the total forecasted budget change (in dollars) for a project experienced during the 3-year interval divided by the initial starting budget of the project (i.e. ``Budget_Start``) 
 
-2. ``Schedule_Change_Ratio`` as defined by the total scheduled duration change (in days) for a project experienced during the 3-year interval divided by the initial start scheduled duration of the project (i.e. `Duration_Start`) 
+2. ``Schedule_Change_Ratio`` as defined by the total scheduled duration change (in days) for a project experienced during the 3-year interval divided by the initial start scheduled duration of the project (i.e. ``Duration_Start``) 
 
 Therefore, we are seeking to predict 2 response variables with all of the modelling methods investigated herein.
 
@@ -35,3 +35,12 @@ Feature engineering
 As mentioned in the introduction to this analysis, the amount of features availble at the start of each project is sparse and in it's current many of the individual features taken by themselves are either problematic or not that useful. Therefore, in order make the most of the limited data available to us, we realized very quickly that creative feature engineering would need to be an important part of any effective predictive model using this data.
 
 Approaches to feature engineering covered in this section include (1) competing methods for generating latent "reference class" categories for each project using K-means clustering as well as uniform manifold approximation and projection (UMAP) in combination with the HDBSCAN clustering algorithm, which took into account all categorical and quantitative characteristics of our training projects. Additionally, (2) we use bidirectional encoder representations from transformers (BERT) embeddings of the textual information available for each project, and further encoded those embeddings into a smaller, more usable feature-space through competing methods of dimensionality reduction such as principal compenent analysis (PCA), latent space encoding with a dense autoencoder neural network, and UMAP.
+
+.. _data-dict:
+
+Data dictionary
+---------------
+
+.. todo::
+
+   Add data dictionary .csv rendered as a list here.
