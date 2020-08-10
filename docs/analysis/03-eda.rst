@@ -8,12 +8,12 @@ The notebook used to generate the findings in this section :notebooks:`can be fo
   :depth: 2
   :backlinks: top
 
-Projects distributed by various attributes
-------------------------------------------
+Categorical attributes of each project
+--------------------------------------
 
-To give a better sense of the nature of the data contained in this dataset, it is useful to provide some visual representations of the types of projects available. Shown below are a set of barplots illustrating the distribution of the full set of 355 projects in the cleansed dataset, categorized on several different dimensions.
+To gain a better sense of the nature of the data contained in this dataset, it is useful to provide some visual representations of the types of projects available. Shown below are a set of barplots illustrating the distribution of the full set of 355 projects in the cleansed dataset, categorized on several different dimensions.
 
-First, here are the projects distributed among the set of project categories as they were assigned in this initial dataset. This plot demonstrates the far greater proportion of projects designated as "Streets and Roadways" versus all other categories. It is also worth noting the very low count numbers for the several smallest categories. For the purpose of this analysis, we will merge several of these smaller groupings with other like groups to more evenly distribute the projects and to reduce the overall number of categories.
+First, shown below are the projects distributed among the set of project categories as they were assigned in this initial dataset. This plot demonstrates the far greater proportion of projects designated as "Streets and Roadways" versus all other categories. It is also worth noting the very low count numbers for the several smallest categories. For the purpose of this analysis, we will merge several of these smaller groupings with other like groups to more evenly distribute the projects and to reduce the overall number of categories.
 
 .. figure:: ../../docs/_static/figures/01-projects-by-cat-barplot.jpg
   :align: center
@@ -29,17 +29,28 @@ This next plot illustrates the managing agency defined for each project. Once ag
 
   Figure 2: Capital projects by managing agency
 
+The next plot below shows the "borough" designation assigned to each project. The most obvious characteristic of this project attribute is the high proportion of projects without a specified borough. Of the projects assigned a borough designation, it appears that the list of "boroughs" is likely used to loosely to define the general location of each project. Shown here are not only the names of NYC's 5 actual boroughs — Manhattan, Brooklyn, Queens, The Bronx, and Staten Island — but also the names of other locales not even located within NYC. For example, Valhalla, New York, which is a hamlet of Westchester County, is listed here. However, the projects assigned to Valhalla in this dataset are associated with Kensico Resivoir, which is the site of Kensico Dam and a source of fresh water provided to NYC. Additionally, it appears that some projects are assigned multiple boroughs. Because of the large number of unspecified boroughs, the inclusion of non-borough localations, and the assignment of multiple boroughs to some projects, we can see that this particular project attribute will likely be of little use as a feature in our predictive analysis.
+
 .. figure:: ../../docs/_static/figures/03-projects-by-borough-barplot.jpg
   :align: center
   :width: 100%
 
   Figure 3: Capital projects by NYC borough
 
+Another categorical project attribute, ``Client_Agency`` exists in the original dataset for this analysis. However, unlike ``Managing_Agency``, ``Client_Agency`` not only includes many more sparsely assigned categories, but it also features a very large proportion of projects with no assigned client, and a number of projects assigned to multiple client agencies. For those reasons, ``Client_Agency`` has been ommitted from the plots shown above. Much like ``Borough``, the ``Client_Agency`` categorical feature will be of little use to us on its own. 
+
+Project change records and the age of each project
+--------------------------------------------------
+
+Next, because we are primarily interested in the changes issued to each project over time, it will be useful to better understand the distribution of project changes issued to each project. In the first plot below, we can see that the 355 unique projects in our original *cleansed* dataset were issued varying numbers of changes over time. Each of these changes consists of either a change to the project's forecasted budget, a change to its scheduled duration, or a change to *both* of those attributes. As we can see, largest proportion of projects were issued no changes, meaning that the only record we have for any of those projects is the original record when the project was first added to the dataset. This could mean a couple things: either the project has been underway for some time and truly has had no changes, or it is one of the newer projects in the dataset (i.e. it is only one- or two-years-old and has not yet required any re-forecasting changes). To better see how these number of changes relate to other basic quantitative features of each project, please see the first row of :ref:`the scatter-matrix shown in Figure 6<figure6>` further below on this page.   
+
 .. figure:: ../../docs/_static/figures/04-projects-by-changes-barplot.jpg
   :align: center
   :width: 100%
 
   Figure 4: Capital projects by number of project change records
+
+
 
 .. _figure5:
 
@@ -53,18 +64,20 @@ As can be seen in the horizontal barplots above, there were several categorical 
 
 Additionally, in the final plot above, we can easily see illustrated supporting evidence for why 3 years was an ideal interval to select for our predictive analysis.
 
-Distribution of project change data
------------------------------------
+The budgeted cost and scheduled duration of each project
+--------------------------------------------------------
 
 Now for a scatter matrix illustrating the correlative relationships of all quantitative variables in our dataset.
+
+.. _figure6:
 
 .. figure:: ../../docs/_static/figures/06-features-scatter-matrix.jpg
   :align: center
   :width: 100%
 
-  Figure 6: Distribution of budget and duration change features by project
-
   (Click on image for more detail.)
+
+  Figure 6: Distribution of budget and duration change features by project
 
 As can be seen scatterplots above, many of the quantitative variables are heavily skewed with extreme outliers, particularly for budget-related metrics. There are also a number of variables with week correlation including relationships between starting budgets and schedules, as well as ending budgets and schedules. The variables exhibiting the greatest levels of correlation various change metrics that we created during our initial investigation of how to measure project change over our 3-year interval. Therefore, it would be expected that those features would ehibit high levels of correlation, and not particularly troubling, because those competing metrics will not likely coexist in any model that we build.
 
