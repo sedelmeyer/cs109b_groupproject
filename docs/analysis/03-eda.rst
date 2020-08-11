@@ -111,7 +111,10 @@ These findings tell us that we will need to take great care in both scaling as w
 Project change trends
 ---------------------
 
-Now let's looks at the change trends for some specific projects in our dataset.
+As one final step of this EDA, we will illustrate the budget and schedule change trends for several projects in our dataset. To accomplish this, we will plot the current forecasted budget and scheduled duration for a project at the time each change was issued for that project.
+
+As can be seen below in the first of these plots, the project assigned with project identifier (PID) 603 shows a somewhat similar trend for changes to both budget and schedule forecasts over the course of its 6 documented change records. Although the scheduled project duration did appear to increase in the change record prior to the corresponding increase in forecasted budget.
+
 
 .. figure:: ../../docs/_static/figures/10-project-603-trend.jpg
   :align: center
@@ -119,11 +122,15 @@ Now let's looks at the change trends for some specific projects in our dataset.
 
   Figure 10: Project change trend for project 603
 
+However, as we begin to explore the change trends of additional projects, we begin to see that that changes to both scheduled duration and forecasted budget are not as tightly coupled for all projects as the first plot above might have suggested.  As can be seen below in the plots for PID 480, a fairly steady increase in scheduled duration appears to correspond to a sharp, almost singular, increase in forecasted budget.
+
 .. figure:: ../../docs/_static/figures/11-project-480-trend.jpg
   :align: center
   :width: 100%
 
   Figure 11: Project change trend for project 480
+
+And, as we explore further, we begin to see fairly wide variation in change trends, not only among different projects, but also among the two measures we are tracking within each project as is illustrated in the next two sets of plots for both PID 96 and PID 482.
 
 .. figure:: ../../docs/_static/figures/12-project-96-trend.jpg
   :align: center
@@ -136,8 +143,6 @@ Now let's looks at the change trends for some specific projects in our dataset.
   :width: 100%
 
   Figure 13: Project change trend for project 482
-
-As is illustrated by these time series of individual project changes above, we can see the varying degrees to which project budgets and durations change relative to one another within any singular project.
 
 While the form of the data we will be using will represent a starting snapshot of each project as well as a 3-year snapshot of each project at the end of the prediction interval (effectively removing change-to-change variability over that period), these time trends tell us that budget changes and schedule changes, as they occur over time, appear to exhibit very little correlation to one another. Often times, counterintuitive and opposite changes in schedule duration appear to accompany comparable changes in budget.
 
