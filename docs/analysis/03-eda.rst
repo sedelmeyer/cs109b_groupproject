@@ -8,10 +8,10 @@ The notebook used to generate the findings in this section :notebooks:`can be fo
   :depth: 2
   :backlinks: top
 
+To gain a better sense of the nature of the data contained in this dataset, it is useful to provide some visual representations of the types of projects available. Shown below are a set of barplots illustrating the distribution of the full set of 355 projects in the cleansed dataset, plotted against several different dimensions.
+
 Categorical attributes of each project
 --------------------------------------
-
-To gain a better sense of the nature of the data contained in this dataset, it is useful to provide some visual representations of the types of projects available. Shown below are a set of barplots illustrating the distribution of the full set of 355 projects in the cleansed dataset, categorized on several different dimensions.
 
 First, shown below are the projects distributed among the set of project categories as they were assigned in this initial dataset. This plot demonstrates the far greater proportion of projects designated as "Streets and Roadways" versus all other categories. It is also worth noting the very low count numbers for the several smallest categories. For the purpose of this analysis, we will merge several of these smaller groupings with other like groups to more evenly distribute the projects and to reduce the overall number of categories.
 
@@ -42,7 +42,7 @@ Another categorical project attribute, ``Client_Agency`` exists in the original 
 Project change records and the age of each project
 --------------------------------------------------
 
-Next, because we are primarily interested in the changes issued to each project over time, it will be useful to better understand the distribution of project changes issued to each project. In the first plot below, we can see that the 355 unique projects in our original *cleansed* dataset were issued varying numbers of changes over time. Each of these changes consists of either a change to the project's forecasted budget, a change to its scheduled duration, or a change to *both* of those attributes. As we can see, largest proportion of projects were issued no changes, meaning that the only record we have for any of those projects is the original record when the project was first added to the dataset. This could mean a couple things: either the project has been underway for some time and truly has had no changes, or it is one of the newer projects in the dataset (i.e. it is only one- or two-years-old and has not yet required any re-forecasting changes). To better see how these number of changes relate to other basic quantitative features of each project, please see the first row of :ref:`the scatter-matrix shown in Figure 6<figure6>` further below on this page.   
+Because we are primarily interested in the changes issued to each project over time, it will be useful to better understand the distribution of project changes issued to each project. In the first plot below, we can see that the 355 unique projects in our original *cleansed* dataset were issued varying numbers of changes over time. Each of these changes consists of either a change to the project's forecasted budget, a change to its scheduled duration, or a change to *both* of those attributes. As we can see, largest proportion of projects were issued no changes, meaning that the only record we have for any of those projects is the original record when the project was first added to the dataset. This could mean a couple things: either the project has been underway for some time and truly has had no changes, or it is one of the newer projects in the dataset (i.e. it is only one- or two-years-old and has not yet required any re-forecasting changes). To better see how these number of changes relate to other basic quantitative features of each project, please see the first row of :ref:`the scatter-matrix shown in Figure 6<figure6>` further below on this page.   
 
 .. figure:: ../../docs/_static/figures/04-projects-by-changes-barplot.jpg
   :align: center
@@ -50,7 +50,7 @@ Next, because we are primarily interested in the changes issued to each project 
 
   Figure 4: Capital projects by number of project change records
 
-
+In terms of the age for each project in our *cleansed* dataset, the majority of projects ranged from 1 to 5 years in age at the time this dataset was compiled on September 1st, 2019. As can be seen below, the mode is at 2 years of age with 67 projects, but the long tail for this distribution stretches out to a maximum of 27 years of age with more than 30 projects spanning 10 to 20 years in age.
 
 .. _figure5:
 
@@ -60,14 +60,11 @@ Next, because we are primarily interested in the changes issued to each project 
 
   Figure 5: Capital projects by age of project at time of analysis
 
-As can be seen in the horizontal barplots above, there were several categorical features available for each project. However, the categories provided were highly imbalanced, and as was the case with NYC borough designations for projects, not all categories were exclusive. Some categories overlapped and there were in some instances duplicative categories based on different naming conventions.
-
-Additionally, in the final plot above, we can easily see illustrated supporting evidence for why 3 years was an ideal interval to select for our predictive analysis.
 
 The budgeted cost and scheduled duration of each project
 --------------------------------------------------------
 
-Now for a scatter matrix illustrating the correlative relationships of all quantitative variables in our dataset.
+Now, by generating a scatter matrix of the quantitative features available in our *cleansed* dataset, we can gain a better understanding of the relationships and potential sources of collinearity among our project values for ``Number_Changes``, ``Budget_Start``, ``Budget_End``, ``Budget_Change``, ``Budget_Change_Ratio``, ``Schedule_Start``, ``Schedule_End``, ``Schedule_Change``, and ``Schedule_Change_Ratio``.
 
 .. _figure6:
 
@@ -79,7 +76,11 @@ Now for a scatter matrix illustrating the correlative relationships of all quant
 
   Figure 6: Distribution of budget and duration change features by project
 
-As can be seen scatterplots above, many of the quantitative variables are heavily skewed with extreme outliers, particularly for budget-related metrics. There are also a number of variables with week correlation including relationships between starting budgets and schedules, as well as ending budgets and schedules. The variables exhibiting the greatest levels of correlation various change metrics that we created during our initial investigation of how to measure project change over our 3-year interval. Therefore, it would be expected that those features would ehibit high levels of correlation, and not particularly troubling, because those competing metrics will not likely coexist in any model that we build.
+As can be seen in the plots above, many of the quantitative variables are heavily skewed with extreme outliers, particularly for budget-related metrics. There are also a number of variables with fairly weak correlation including relationships between starting budgets and starting schedules, as well as ending budgets and ending schedules. The variables exhibiting the greatest levels of correlation are the various change-measures — ``Budget_Change``, ``Budget_Change_Ratio``, ``Schedule_Change``, and ``Schedule_Change_Ratio`` — that we created during our initial investigation of the data as was executed in :notebooks:`the first of our associated project notebooks on GitHub<00_eda_and_clean_data.ipynb>`. Therefore, it would be expected and not particularly troubling that those features would exhibit high levels of correlation, because those competing forms of measurement are not likely to coexist in any model that we build.
+
+Particularly interesting in the scatter matix above, is that the number of change records per project (i.e. ``Number_Changes``) illustrated by the top row of subplots, demostrates no visually discernable correlation with the starting and ending budget and schedule values (the 4 lefthand subplots in the top row) and only weak correlation with the change measures (the 4 righthand subplots in that row). This tells us that project scale does not necessarily equate to more or fewer changes, and the the number of changes only weakly relates to the scale of the changes made to a project.
+
+Something that we do find concerning though, is the skew and extreme outliers apparent in our ``Budget_Start``, ``Schedule_Start``, and change measures for both budget and schedule. This will be of particular concern while developing our models in subsequent sections of this analysis. The following sets of histograms demonstrate the severity of this skew.
 
 .. figure:: ../../docs/_static/figures/07-project-start-hist.jpg
   :align: center
@@ -87,11 +88,15 @@ As can be seen scatterplots above, many of the quantitative variables are heavil
 
   Figure 7: Distribution of projects by originally budgeted project cost and originally scheduled project duration
 
+As is shown above, the values for the initial starting budgets and scheduled durations for each project skews right. And, as can be seen, there are several notably extreme budget values present in this data. It is also worth noting here, the extreme difference in scale between one variable and the other. Whereas each project's schedule is displayed in thousands of days, budgets here are plotted by the hundreds of millions of dollars.
+
 .. figure:: ../../docs/_static/figures/08-project-change-hist.jpg
   :align: center
   :width: 100%
 
   Figure 8: Distribution of projects by forecasted changes to project budget and project duration
+
+Next, while looking at total budget and schedule change, which is the total value of changes made to each project, we can see values that are less skewed, but that still contain outlying values. Something to note here is that these change plots also show us that changes to projects do not always lead to increases in budget and duration, and that in some cases projects actually decrease in forecasted budget and duration over time. 
 
 .. figure:: ../../docs/_static/figures/09-project-change-ratio-hist.jpg
   :align: center
@@ -99,9 +104,9 @@ As can be seen scatterplots above, many of the quantitative variables are heavil
 
   Figure 9: Distribution of projects by ratio of original vs. reforecasted change to project budget and project duration
 
-As was highlighted in our analysis of the scatter matrix above, our core quantitative features related to budget and schedule are heavily shewed with extreme outliers. In addition, there are extreme difference in the scale of the values measured by each metric (i.e. budget is measured in hundreds of millions of dollars, while schedule is measured in thousands of days). These side-by-side histograms illustrate the severity of this problem.
+Finally, when we turn these changes into ratios to maintain the relative relationships of changes to each project's overall scale, we see that some projects stand out again as very extreme outliers.
 
-These findings tell us that we will need to take great care in both scaling as well as transforming our quantitative predictors to mitigate these issues, particularly for classes of models where this will pose a major issue. 
+These findings tell us that we will need to take great care in both scaling as well as transforming our quantitative predictors to mitigate issues of skew and varying scale while generating our predictive models in later sections of this analysis.
 
 Project change trends
 ---------------------
