@@ -1,3 +1,5 @@
+.. _cluster:
+
 5. Reference class clustering
 =============================
 

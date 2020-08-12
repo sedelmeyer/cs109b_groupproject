@@ -1,3 +1,5 @@
+.. _embed:
+
 6. BERT embedded project descriptions
 =====================================
 
