@@ -10,6 +10,8 @@ The notebook used to generate the findings in this section :notebooks:`can be fo
 
 To gain a better sense of the nature of the data contained in this dataset, it is useful to provide some visual representations of the types of projects available. Shown below are a set of barplots illustrating the distribution of the full set of 355 projects in the cleansed dataset, plotted against several different dimensions.
 
+.. _categories:
+
 Categorical attributes of each project
 --------------------------------------
 
@@ -60,6 +62,7 @@ In terms of the age for each project in our *cleansed* dataset, the majority of 
 
   Figure 5: Capital projects by age of project at time of analysis
 
+.. _histograms:
 
 The budgeted cost and scheduled duration of each project
 --------------------------------------------------------
