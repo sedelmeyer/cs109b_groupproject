@@ -11,7 +11,7 @@
 Methods used in this section
 ----------------------------
 
-In the project management literature, particularly for academic research concerned with predicting project outcomes related to cost and duration overages, the concept of a project "reference class" is important to grouping like projects for the purpose of improved predictive accuracy. Due to the limitations of the categorical variables present in our current dataset, we have determined that, instead of using intuition or some predefined categorization of projects by type, we'd instead seek to algorithmically classify our projects. The objective we are seeking to accomplish, is to use all available types of quantitative and categorical data at the start of the project to identify some sort of "latent" reference class clusters derived from the totality of those features.
+In the project management literature, particularly for academic research concerned with predicting project outcomes related to cost and duration overages, the concept of a project "reference class" is important to grouping like projects for the purpose of improved predictive accuracy. Due to :ref:`the limitations of the categorical variables present in our current dataset<categories>`, we have determined that, instead of using intuition or some predefined categorization of projects by type, we'd instead seek to algorithmically classify our projects. The objective we are seeking to accomplish, is to use all available types of quantitative and categorical data at the start of the project to identify some sort of "latent" reference class clusters derived from the totality of those features.
 
 To accomplish this, we perform two competing approaches to clustering on our original feature data (being careful to use only features we would have access to when given a new project to predict). First we use a set of baseline clustering algorithms (K-means, DBSCAN, and Agglomerative Cluster with Wards Method) to generate an initial reference class feature for our training set.
 
@@ -22,21 +22,43 @@ Now, let's get started prepping our data for use with K-means...
 K-means clustering for reference class labels
 ---------------------------------------------
 
-The unabridged notebook used to generate the findings in this section can be `found here on GitHub <https://github.com/sedelmeyer/nyc-capital-projects/blob/master/notebooks/03_kmeans_attribute_features.ipynb>`_.
+The unabridged notebook used to generate the findings in this section can be :notebooks:`found in Notebook 03 on GitHub<03_kmeans_attribute_features.ipynb>`.
 
 .. contents:: In this section
   :local:
   :depth: 2
   :backlinks: top
 
-Once we take care of the first steps of subsetting our data features to include only the predictive features we'd have available when encountering a new project, we need to one-hot-encode our categorical features ``Category``, ``Borough``, ``Managing_Agenct``, ``Client_Agency``, ``Phase_Start``, ``Budget_Start``, and ``Duration_Start``.
+Once we take care of the first steps of subsetting our data features to include only the predictive features we'd have available when encountering a new project, we need to first one-hot-encode our categorical features ``Category``, ``Borough``, ``Managing_Agency``, ``Client_Agency``, and ``Phase_Start``.
 
-Now, with our categorical variable one-hot-encoded, we can take the next step of scaling our quantitative variables ``Budget_Start`` and ``Duration_Start``.
+.. _scaling:
 
 Scaling data to reduce skewness
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Due to the heavily skewed nature of these features, their extremely different numerical scales, and the existence of exteme outliers, we will scale the data accordingly. To accomplish this, we first (1) standardize the data, we then (2) apply a sigmoid transformation to the standardized data to minimize the skew and impact of outliers, and we (3) then re-standardize the sigmoid transformed data to return it to a standard scale.
+Once those categorical variables are one-hot-encoded, we can take the next step of scaling our quantitative variables ``Budget_Start`` and ``Duration_Start``. Due to the heavily skewed nature of these features, their extremely different numerical scales, and the existence of exteme outliers :ref:`as were shown in our EDA<histograms>`, we will scale the data accordingly. To accomplish this, we first (1) standardize the data, we then (2) apply a sigmoid transformation to the standardized data to minimize the skew and impact of outliers, and we (3) then re-standardize the sigmoid transformed data to return it to a standard scale.
+
+Therefore, if :math:`x_{ij}` represents an observed value :math:`i` for one of our quantitative variables :math:`j`, then our scaling of that variable can be represented as follows.
+
+First, (1) each value :math:`x_{ij}` is standardized as such:
+
+.. math::
+
+   z_{ij} = \frac{x_{ij} - \mu_{x_j}}{s_{x_j}}
+
+Then, (2) those standard values :math:`z_{ij}` are run through the sigmoid function:
+  
+.. math::
+
+   z_{ij}^s =  \frac{1}{1 + e^{-z_{ij}}}
+
+And finally, (3) the values :math:`z_{ij}^s` are re-standardized based on the mean (:math:`\mu`) and standard deviation (:math:`s`) of :math:`z_{j}^s`, giving us our final scaled values :math:`x_{j}'` for the quantitative variable :math:`x_j`:
+
+.. math::
+
+   x_{ij}' = \frac{z_{ij}^s - \mu_{z_{j}^s}}{s_{z_{j}^s}}
+
+As can be seen in the two plots below, the 3-step scaling method we applied (standardize, sigmoid transform, and then re-standardize), as was defined above, does an adequate job of reducing (but not eliminating) the skew of our data and the magnitude of our outliers.
 
 .. figure:: ../../docs/_static/figures/14-scaled-std-sig-train-scatter.jpg
   :align: center
@@ -44,14 +66,12 @@ Due to the heavily skewed nature of these features, their extremely different nu
 
   Figure 14: Original training data versus data that has been standardized, sigmoid transformed, and then re-standardized
 
-As can be seen in the two plots above, the 3-step scaling method we applied (standardize, sigmoid transform, and then re-standardize), as was described immediately above, does an adequate job of reducing (but not eliminating) the skew of our data and the magnitude out our outliers.
-
 This we believe is an important first step before clustering, primarily to get all variables on a more common scale, so that the distance-based clustering algorithms used here are not overwhelmed by just the Budget_Start values, which range in the hundreds of millions of dollars.
 
 K-means at various :math:`k` numbers of clusters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-With this scaling completed, we can now compare K-means at various values for :math:`k`.
+With our one-hot-encoding and scaling complete, we can now compare K-means at various values :math:`k`. To accomplish this, we will run the K-means algorithm on our one-hot-encoded categorical variables ``Category``, ``Borough``, ``Managing_Agency``, ``Client_Agency``, and ``Phase_Start``, as well as our two scaled quantitative variables ``Budget_Start`` and ``Duration_Start``. We will do this for all consecutive values :math:`k`, 1 through 24. A set of diagnostic plots for these iterated K-means models are shown below.
 
 
 .. figure:: ../../docs/_static/figures/15-kmeans-inertia-lineplot.jpg
