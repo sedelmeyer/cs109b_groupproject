@@ -71,7 +71,7 @@ This we believe is an important first step before clustering, primarily to get a
 K-means at various :math:`k` numbers of clusters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-With our one-hot-encoding and scaling complete, we can now compare K-means at various values :math:`k`. To accomplish this, we will run the K-means algorithm on our one-hot-encoded categorical variables ``Category``, ``Borough``, ``Managing_Agency``, ``Client_Agency``, and ``Phase_Start``, as well as our two scaled quantitative variables ``Budget_Start`` and ``Duration_Start``. We will do this for all consecutive values :math:`k`, 1 through 24. A set of diagnostic plots for these iterated K-means models are shown below.
+With our one-hot-encoding and scaling complete, we can now begin our attempt at clustering our observations. To begin this process, we will start with `the K-means clustering algorithm <https://en.wikipedia.org/wiki/K-means_clustering>`_. We will compare several sets of K-means clustering results in which we have partitioned our training projects into varying numbers of :math:`k` clusters. To accomplish this, we will run the K-means algorithm on our one-hot-encoded categorical variables ``Category``, ``Borough``, ``Managing_Agency``, ``Client_Agency``, and ``Phase_Start``, as well as our two scaled quantitative variables ``Budget_Start`` and ``Duration_Start``. We will do this for all consecutive values :math:`k`, 1 through 24. A set of diagnostic plots for these iterated K-means models are shown below.
 
 
 .. figure:: ../../docs/_static/figures/15-kmeans-inertia-lineplot.jpg
@@ -92,11 +92,15 @@ With our one-hot-encoding and scaling complete, we can now compare K-means at va
 
   Figure 17: Gap statistic versus number of K-means clusters
 
-As is the problem with diagnostic metrics for evaluating K-means clustering, optimal values :math:`k` can be interpreted differently dependent on the metric and evaluative methods used.
+As is often the problem with diagnostic metrics for evaluating K-means clustering, optimal values :math:`k` can be interpreted differently dependent on the evaluative methods used. For instance, in the inertia plot (Figure 15 above), the clustering results for each value :math:`k` is evaluated by plotting the "inertia" of each clustering result. This inertia is defined as the sum of squared distances of each data point to its assigned cluster's center. The typical approach is to inspect an inertia plot to identify the value :math:`k` at which we begin to achieve diminishing gains while reducing the relative standard deviation of the inertia for our clusterings. Ideally, we would hope for a clear "elbow" in our plot to demarcate this ideal value :math:`k`. Unfortunately, it is rather unclear whether any elbow exists in our inertia plot; although, careful visual inspection might indicate a slight visual kink in the line at either 2 or 3 clusters.
 
-For instance, in the inertia plot at the top above, it is rather unclear if any elbow exists in the line plot, althought careful inspection might indicate a slight visual kink at either 2 or 3 clusters.
+Next, in Figure 15, we visualize the average silhouette score for each of our clusterings. To clarify, the silhouette score is the mean silhouette coefficient for all samples in our cluster. This silhouette coefficient :math:`s` (as it is `succinctly defined in the scikit-learn documentation <silscore-sklearn>`_) is calculated using the mean intra-cluster distance :math:`a` and the mean nearest-cluster distance :math:`b` for each sample :math:`i`:
 
-Next, the average silhouette plot would indicate that 2 clusters are ideal if we are evaluating on average silhouette score alone.
+.. math::
+
+   \frac{b_i - a_i}{max\{ a_i, b_i \}}
+
+This silhouette coefficient shows which samples lie well within their cluster, and which are merely somewhere in between clusters (`Rousseeuw 1987 <silscore-paper_>`_). As can be seen in our plot of silhouette scores for each value :math:`k`, we achieve our highest average silhouette score at :math:`k=2`, suggesting that two clusters are optimal given this data.
 
 Last, the Gap statistic plot indicates no conclusive result, as error bars overlap right from the start, but it does offer the intriguing feature that it jumps significantly at :math:`k=7`.
 
@@ -313,3 +317,33 @@ Clustering conclusions
 ^^^^^^^^^^^^^^^^^^^^^^
 
 Now that we feel we have created a two sufficient sets of competing reference classes to test within our models, we move on the embedding the textual project-description data available in our data set.
+
+
+Additional resources
+--------------------
+
+K-means clustering
+
+DBSCAN
+
+Ward's method
+
+UMAP
+
+HDBSCAN
+
+Clustering evaluation methods:
+
+* scikit-learn silhouette score
+* wikipedia silhouette score
+* original paper silhouette score
+
+.. _gapstat-paper: http://www.web.stanford.edu/~hastie/Papers/gap.pdf
+
+.. _gapstat-lib: https://github.com/milesgranger/gap_statistic
+
+.. _silscore-sklearn: https://scikit-learn.org/stable/modules/clustering.html#silhouette-coefficient
+
+.. _silscore-paper: https://www.sciencedirect.com/science/article/pii/0377042787901257?via%3Dihub
+
+.. _silscore-wikipedia: https://en.wikipedia.org/wiki/Silhouette_(clustering)
