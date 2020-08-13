@@ -115,7 +115,9 @@ Please see the `additional resources`_ section at the bottom of this page for fu
 DBSCAN clustering comparison
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-These inconclusive K-means results led us to next examine what kind of unsupervised clustering might be achieved using DBSCAN, where rather than selecting an optimal number of clusters explicitly, the algorithm would do that for us. 
+The inconclusive K-means results in the previous section above next led us to examine how effectively `the density-based spatial clustering of applications with noise (DBSCAN) algorithm <dbscan-wikipedia_>`_ might perform, where rather than selecting an optimal number of clusters explicitly, the algorithm would do that for us. DBSCAN differs from K-means in that it is a non-parametric "density-based" clustering algorithm designed to discover clusters of arbitrary shape (`Ester et al. 1996 <dbscan-paper_>`_). Given a set of points, the algorithm groups points that are closely packed together based on the nearness of neighboring points, and marks points as outliers (i.e. does not assign them to any cluster) if they exist in low-density regions lacking sufficiently-near neighboring points.
+
+Shown below are the results from `the scikit-learn implementation of the DBSCAN algorithm <dbscan-sklearn_>`_. 
 
 .. _fig18:
 
@@ -361,3 +363,8 @@ Clustering evaluation methods:
 .. _silscore-paper: https://www.sciencedirect.com/science/article/pii/0377042787901257?via%3Dihub
 
 .. _silscore-wikipedia: https://en.wikipedia.org/wiki/Silhouette_(clustering)
+
+.. _dbscan-paper: https://www.aaai.org/Papers/KDD/1996/KDD96-037.pdf
+.. _dbscan-wikipedia: https://en.wikipedia.org/wiki/DBSCAN
+
+.. _dbscan-sklearn: https://scikit-learn.org/stable/modules/clustering.html#dbscan
