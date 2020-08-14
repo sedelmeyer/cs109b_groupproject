@@ -68,6 +68,8 @@ As can be seen in the two plots below, the 3-step scaling method we applied (sta
 
 This we believe is an important first step before clustering, primarily to get all variables on a more common scale, so that the distance-based clustering algorithms used here are not overwhelmed by just the Budget_Start values, which range in the hundreds of millions of dollars.
 
+.. _kmeans-iterated:
+
 K-means at various :math:`k` numbers of clusters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -159,10 +161,19 @@ Ward's method agglomerative clustering comparison
 
 As a final attempt to learn about the natural clustering of this data, we will now perform a form of hierarchical unsupervised clustering on our training data. For this, we will perform agglomerative clustering using Ward's method. In `hierarchical clustering <hierarchical-wikipedia_>`_, if we think of the process of "dividing" our data into an increasing number of smaller and smaller clusters based as a branching tree diagram (i.e. dendrogram), then the agglomerative approach would be the reverse process, whereby we start with each individual observation as its own cluster, and then we systematically combine those observations with spatially-near points to form larger clusters along distance-based "linkages". In other words, with agglomerative heirarchical clustering, we start at the tips of branches and work our way back down the tree, all the way to its base (although this is often described as a "bottom-up" approach). The number of clusters are then chosen by defining some distance threshold :math:`t`, which defines some point along the height of our hierarchical tree.
 
-To determine which clusters should be combined at each step in the agglomerative clustering process, a measure of dissimilarity is required to identify distances between points and a linkage criterion is required to define "dissimilarity" for the algorithm. For our purposes here, we will use Euclidean distance, :math:`\lVert a-b \rVert = \sqrt{\sum_i (a_i - b_i)^2}` where :math:`a` and :math:`b` are two points, as our distance metric, and we will use Ward's method as our linkage criterion. 
+To determine which clusters should be combined at each step in the agglomerative clustering process, a measure of dissimilarity is required to identify distances between points and a linkage criterion is required to define "dissimilarity" for the algorithm. For our purposes here, we will use Euclidean distance, :math:`\lVert a-b \rVert = \sqrt{\sum_i (a_i - b_i)^2}` where :math:`a` and :math:`b` are two points, as our distance metric, and we will use Ward's method as our linkage criterion. Ward's method, also known as Ward's minimum variance method, seeks to minimize the total within-cluster variance and, at each step in the agglomerative process, finds the pair of clusters that lead to the minimum increase in total within-cluster variance after merging. The `implementation of Ward's method used here <wards-scipy_>`_ is part of the SciPy Python library, and the algorithm used `is documented here in the SciPy documentation <wards-scipy-algo_>`_, and is summarized as such (`SciPy 2020 <wards-scipy-algo_>`_):
 
-linkage criteria is increase in variance for the cluster being merged
- below, with the results plotted as a dendrogram.
+    Each new distance entry :math:`d(u, v)` between clusters :math:`s` and :math:`t`, is computed as follows:
+
+    :math:`d(u,v) = \sqrt{\frac{|v|+|s|} {T}d(v,s)^2 + \frac{|v|+|t|} {T}d(v,t)^2 - \frac{|v|} {T}d(s,t)^2}`
+
+    where :math:`u` is the newly joined cluster consisting of clusters :math:`s` and :math:`t`, :math:`v` is an unused cluster in the forest, :math:`T=|v|+|s|+|t|`, and :math:`|*|` is the cardinality of its argument.
+
+    This is also known as the "incremental" algorithm.
+
+Below, plotted as a dendrogram, are the results of this agglomerative clutering algorithm applied to our training data.
+
+.. _fig20:
 
 .. figure:: ../../docs/_static/figures/20-wards-dendrogram.jpg
   :align: center
@@ -170,21 +181,27 @@ linkage criteria is increase in variance for the cluster being merged
 
   Figure 20: Agglomerative clustering dendrogram
 
+As can be seen in this plot (:ref:`Figure 20<fig20>`), each cluster's branch converges at varying distance threshold's :math:`t`.
+
+Next, we plot the average silhouette score of the clusters defined at each threshold :math:`t` as a comparative measure to consider relative to the K-means and DBSCAN clustering we performed in previous sections above. Also plotted below is a second plot to make clear how quickly the number of clusters are reduced as we increase the distance threshold :math:`t`.
+
+.. _fig21:
+
 .. figure:: ../../docs/_static/figures/21-wards-silscore-lineplot.jpg
   :align: center
   :width: 100%
 
-  Figure 21: Agglomerative cluster silhouette score by distance threshold :math:`t`
+  Figure 21: Agglomerative cluster silhouette score by threshold :math:`t`
+
+.. _fig22:
 
 .. figure:: ../../docs/_static/figures/22-wards-cluster-count-lineplot.jpg
   :align: center
   :width: 100%
 
-  Figure 22: Agglomerative cluster count by distance threshold :math:`t`
+  Figure 22: Agglomerative cluster count by threshold :math:`t`
 
-Here we can see how Ward's method identifies distances between observations with linkage points illustrated in the dendrogram above. Using this method, we can see the average silhouette score decrease as the distance threshold increases (the middle line plot), until it spikes at the last few threshold values :math:`t`. However, it is intersting to note just how quickly the number of clusters diminish as the threshold increases.
-
-Overall, this method yields the highest average silhouette score at :math:`k=2` clusters.
+Not surprisingly, as was illustrated in our :ref:`iterated K-means examples shown above <kmeans-iterated>`, the agglomerative clustering method also yields the highest average silhouette score at :math:`k=2` clusters. Much like for K-means, the highest average silhouette score for the agglomerative clustering method is approximately :math:`0.35` based on :ref:`Figure 21<fig21>` above.
 
 K-means visual inspection and selection
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -379,3 +396,7 @@ Clustering evaluation methods:
 .. _hierarchical-wikipedia: https://en.wikipedia.org/wiki/Hierarchical_clustering
 
 .. _wards-wikipedia: https://en.wikipedia.org/wiki/Ward%27s_method
+
+.. _wards-scipy: https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.ward.html
+
+.. _wards-scipy-algo: https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html#scipy.cluster.hierarchy.linkage
