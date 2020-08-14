@@ -232,42 +232,65 @@ As can be seen in the silhouette analysis plots and 2-dimensional PCA representa
 Additional resources
 --------------------
 
-K-means clustering
+Below are some additional resources on the methods used in this section of the analysis.
 
-DBSCAN
+**DBSCAN**
 
-Ward's method
+* `The original AAAI paper by Ester et al. presenting DBSCAN in 1996 <dbscan-paper_>`_ 
+* `DBSCAN on Wikipedia <dbscan-wikipedia_>`_
+* `The scikit-learn implementation of DBSCAN <dbscan-sklearn_>`_
 
-UMAP
+**Gap statistic**
 
-HDBSCAN
+* `The original Royal Statistical Society paper by Tibshirani, Walther and Hastie presenting the gap statistic in 2001 <gapstat-paper_>`_
+* `The gap-statistic Python library used in this analysis <gapstat-lib_>`_
 
-Clustering evaluation methods:
+**Hierarchical clustering**
 
-* scikit-learn silhouette score
-* wikipedia silhouette score
-* original paper silhouette score
+* `Hierarchical clustering on Wikipedia <hierarchical-wikipedia_>`_
 
-.. _kmeans-wikipedia: https://en.wikipedia.org/wiki/K-means_clustering
+**K-means clustering**
 
-.. _kmeans-sklearn: https://scikit-learn.org/stable/modules/clustering.html#k-means
+* `K-means on Wikipedia <kmeans-wikipedia_>`_
+* `The scikit-learn implementation of K-means <kmeans-sklearn_>`_
+
+**Silhouette score**
+
+* `The original Journal of Computational and Applied Mathematics article by Rousseeuw presenting the silhouette coefficient in 1987 <silscore-paper_>`_
+* `Silhouette score on Wikipedia <silscore-wikipedia_>`_
+* `The scikit-learn silhouette coefficient documentation <silscore-sklearn_>`_ 
+
+**Ward's method**
+
+* `Ward's method on Wikipedia <wards-wikipedia_>`_
+* `The SciPy implemented algorithm for Ward's method <wards-scipy-algo_>`_
+* `The SciPy implementation of Ward's method <wards-scipy_>`_
+
+
+.. 
+    Below are hyperlink targets used on this page
+
+.. _dbscan-paper: https://www.aaai.org/Papers/KDD/1996/KDD96-037.pdf
+
+.. _dbscan-wikipedia: https://en.wikipedia.org/wiki/DBSCAN
+
+.. _dbscan-sklearn: https://scikit-learn.org/stable/modules/clustering.html#dbscan
 
 .. _gapstat-paper: http://www.web.stanford.edu/~hastie/Papers/gap.pdf
 
 .. _gapstat-lib: https://github.com/milesgranger/gap_statistic
+
+.. _hierarchical-wikipedia: https://en.wikipedia.org/wiki/Hierarchical_clustering
+
+.. _kmeans-wikipedia: https://en.wikipedia.org/wiki/K-means_clustering
+
+.. _kmeans-sklearn: https://scikit-learn.org/stable/modules/clustering.html#k-means
 
 .. _silscore-sklearn: https://scikit-learn.org/stable/modules/clustering.html#silhouette-coefficient
 
 .. _silscore-paper: https://www.sciencedirect.com/science/article/pii/0377042787901257?via%3Dihub
 
 .. _silscore-wikipedia: https://en.wikipedia.org/wiki/Silhouette_(clustering)
-
-.. _dbscan-paper: https://www.aaai.org/Papers/KDD/1996/KDD96-037.pdf
-.. _dbscan-wikipedia: https://en.wikipedia.org/wiki/DBSCAN
-
-.. _dbscan-sklearn: https://scikit-learn.org/stable/modules/clustering.html#dbscan
-
-.. _hierarchical-wikipedia: https://en.wikipedia.org/wiki/Hierarchical_clustering
 
 .. _wards-wikipedia: https://en.wikipedia.org/wiki/Ward%27s_method
 
