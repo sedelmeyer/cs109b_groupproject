@@ -133,29 +133,26 @@ Shown above are our observed k-nearest neighbors distances for 12 minimum points
 
 Once we selected our minimum number of points, we were able to generate :ref:`Figure 18<fig18>` shown above. Visually inspecting this plot, we can see that :math:`\epsilon` increases gradually until an initial steep jump near sorted-index 95 and :math:`\epsilon=2.25`. It then jumps again near sorted-index 115 and :math:`\epsilon=2.5` before growing far more rapidly for the remaining sorted indices. By selecting a value :math:`\epsilon` near this point of rapid increase will help to ensure we choose a radius that will link a sufficient number of points for DBSCAN's density-based clustering. Ultimately, :math:`\epsilon=2.25` provided the best clustering results for our dataset. Therefore, the example DBSCAN clustering shown below is generated using :math:`\epsilon=2.25` for 12 minimum samples.
 
+.. _fig19:
+
 .. figure:: ../../docs/_static/figures/19-dbscan-cluster-barplot.jpg
   :align: center
   :width: 100%
 
   Figure 19: DBSCAN clustering results
 
+.. code-block::
 
-For the DBSCAN model::
+  Results for DBSCAN(eps=2.25, min_samples=12):
 
-   DBSCAN(eps=2.25, min_samples=12):
-
-       2 clusters were identified
-       25 of the n=134 observations were not assigned a cluster
+      2 clusters were identified
+      25 of the n=134 observations were not assigned a cluster
     
-   The resulting silhouette score, excluding unclustered points:
+  The resulting silhouette score, excluding unclustered points:
 
-       0.1843
+      0.1843
 
-The distribution of resulting labels are illustrated by this chart with un-clustered observations represented by the cluster labeled -1.
-
-It was extremely difficult to find a set of parameters :math:`\epsilon` and ``min_samples`` that yeilded any sort of separation of our data into discrete clusers using DBSCAN.
-
-Shown here was the most "reasonably separated" set of clusters we could achieve. Accoding to this we have 2 major clusters, one more heavily distributed with 94 observations, and a set of 25 observation not assigned to either category.
+In :ref:`Figure 19<fig19>` above, the distribution of resulting labels are illustrated by this chart with un-clustered observations represented by the :math:`-1` label. As we already noted, it was difficult to find a set of parameters :math:`\epsilon` and ``min_samples`` that yeilded any sort of separation of our data into discrete clusers using DBSCAN. Shown here was the most "reasonably separated" set of clusters we could achieve. According to these results, we have 2 major clusters, one more heavily distributed with 94 observations and a set of 25 observations (19% of all observations) identified as noise points and not assigned to either cluster. Overall, this DBSCAN-defined clustering has an average silhouette score of :math:`0.184`. This is not a marked improvement over the silhouette scores acheived by our K-means clusterings shown in :ref:`Figure 16<fig16>`. What's more, the DBSCAN clustering, when compared to K-means, will add some complexity to the process by which we label our TEST observations. This is because the scikit-learn implementation of DBSCAN does not provide an interface for "predicting" the clusters of new points based on a previously trained DBSCAN model. The expectation, when using DBSCAN, is that you add new data-points to your existing data and re-train the algorithm to determine if spatial densities have changed enough to cause the creation of "new" clusters or to reassign points among existing clusters (i.e. clusters change as new data is encountered). For these reasons, it is not clear that DBSCAN provides a sufficient improvement in clustering over what might be achieved by K-means to warrant its use for defining our project reference classes. 
 
 Agglomerative clustering comparison using Ward's method
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
