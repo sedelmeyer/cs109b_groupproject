@@ -154,10 +154,15 @@ Once we selected our minimum number of points, we were able to generate :ref:`Fi
 
 In :ref:`Figure 19<fig19>` above, the distribution of resulting labels are illustrated by this chart with un-clustered observations represented by the :math:`-1` label. As we already noted, it was difficult to find a set of parameters :math:`\epsilon` and ``min_samples`` that yeilded any sort of separation of our data into discrete clusers using DBSCAN. Shown here was the most "reasonably separated" set of clusters we could achieve. According to these results, we have 2 major clusters, one more heavily distributed with 94 observations and a set of 25 observations (19% of all observations) identified as noise points and not assigned to either cluster. Overall, this DBSCAN-defined clustering has an average silhouette score of :math:`0.184`. This is not a marked improvement over the silhouette scores acheived by our K-means clusterings shown in :ref:`Figure 16<fig16>`. What's more, the DBSCAN clustering, when compared to K-means, will add some complexity to the process by which we label our TEST observations. This is because the scikit-learn implementation of DBSCAN does not provide an interface for "predicting" the clusters of new points based on a previously trained DBSCAN model. The expectation, when using DBSCAN, is that you add new data-points to your existing data and re-train the algorithm to determine if spatial densities have changed enough to cause the creation of "new" clusters or to reassign points among existing clusters (i.e. clusters change as new data is encountered). For these reasons, it is not clear that DBSCAN provides a sufficient improvement in clustering over what might be achieved by K-means to warrant its use for defining our project reference classes. 
 
-Agglomerative clustering comparison using Ward's method
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Ward's method agglomerative clustering comparison 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-As a final attempt to learn about the natural clustering of this data, we perform agglomerative clustering using Ward's method below, with the results plotted as a dendrogram.
+As a final attempt to learn about the natural clustering of this data, we will now perform a form of hierarchical unsupervised clustering on our training data. For this, we will perform agglomerative clustering using Ward's method. In `hierarchical clustering <hierarchical-wikipedia_>`_, if we think of the process of "dividing" our data into an increasing number of smaller and smaller clusters based as a branching tree diagram (i.e. dendrogram), then the agglomerative approach would be the reverse process, whereby we start with each individual observation as its own cluster, and then we systematically combine those observations with spatially-near points to form larger clusters along distance-based "linkages". In other words, with agglomerative heirarchical clustering, we start at the tips of branches and work our way back down the tree, all the way to its base (although this is often described as a "bottom-up" approach). The number of clusters are then chosen by defining some distance threshold :math:`t`, which defines some point along the height of our hierarchical tree.
+
+To determine which clusters should be combined at each step in the agglomerative clustering process, a measure of dissimilarity is required to identify distances between points and a linkage criterion is required to define "dissimilarity" for the algorithm. For our purposes here, we will use Euclidean distance, :math:`\lVert a-b \rVert = \sqrt{\sum_i (a_i - b_i)^2}` where :math:`a` and :math:`b` are two points, as our distance metric, and we will use Ward's method as our linkage criterion. 
+
+linkage criteria is increase in variance for the cluster being merged
+ below, with the results plotted as a dendrogram.
 
 .. figure:: ../../docs/_static/figures/20-wards-dendrogram.jpg
   :align: center
@@ -370,3 +375,7 @@ Clustering evaluation methods:
 .. _dbscan-wikipedia: https://en.wikipedia.org/wiki/DBSCAN
 
 .. _dbscan-sklearn: https://scikit-learn.org/stable/modules/clustering.html#dbscan
+
+.. _hierarchical-wikipedia: https://en.wikipedia.org/wiki/Hierarchical_clustering
+
+.. _wards-wikipedia: https://en.wikipedia.org/wiki/Ward%27s_method
