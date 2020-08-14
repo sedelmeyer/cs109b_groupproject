@@ -21,7 +21,8 @@ An investigation into feature engineering and modeling project-change data for l
    analysis/02-data
    analysis/03-eda
    analysis/04-feature
-   analysis/05-cluster
+   analysis/05-cluster1
+   analysis/06-cluster2
    analysis/06-embed
    analysis/07-linear
    analysis/08-spline
