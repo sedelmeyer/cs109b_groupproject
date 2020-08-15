@@ -5,13 +5,16 @@
 
 .. contents:: In this section
   :local:
-  :depth: 1
+  :depth: 2
   :backlinks: top
+
+Reference class forecasting
+---------------------------
+
+In the project management literature, particularly for academic research concerned with predicting project outcomes related to cost and duration overages, the concept of a project "reference class" is important to grouping like projects for the purpose of improved predictive accuracy. Due to :ref:`the limitations of the categorical variables present in our current dataset<categories>`, we have determined that, instead of using intuition or some predefined categorization of projects by type, we'd instead seek to algorithmically classify our projects. The objective we are seeking to accomplish, is to use all available types of quantitative and categorical data at the start of the project to identify some sort of "latent" reference class clusters derived from the totality of those features.
 
 Methods used in this section
 ----------------------------
-
-In the project management literature, particularly for academic research concerned with predicting project outcomes related to cost and duration overages, the concept of a project "reference class" is important to grouping like projects for the purpose of improved predictive accuracy. Due to :ref:`the limitations of the categorical variables present in our current dataset<categories>`, we have determined that, instead of using intuition or some predefined categorization of projects by type, we'd instead seek to algorithmically classify our projects. The objective we are seeking to accomplish, is to use all available types of quantitative and categorical data at the start of the project to identify some sort of "latent" reference class clusters derived from the totality of those features.
 
 To accomplish this, we perform two competing approaches to clustering on our original feature data (being careful to use only features we would have access to when given a new project to predict). First we use a set of baseline clustering algorithms (K-means, DBSCAN, and Agglomerative Cluster with Wards Method) to generate an initial reference class feature for our training set.
 
@@ -201,12 +204,16 @@ Next, we plot the average silhouette score of the clusters defined at each thres
 
   Figure 22: Agglomerative cluster count by threshold :math:`t`
 
-Not surprisingly, as was illustrated in our :ref:`iterated K-means examples shown above <kmeans-iterated>`, the agglomerative clustering method also yields the highest average silhouette score at :math:`k=2` clusters. Much like for K-means, the highest average silhouette score for the agglomerative clustering method is approximately :math:`0.35` based on :ref:`Figure 21<fig21>` above.
+Not surprisingly, as was illustrated in our :ref:`iterated K-means examples shown earlier on this page <kmeans-iterated>`, the agglomerative clustering method also yields the highest average silhouette score at :math:`k=2` clusters. Much like for K-means, the highest average silhouette score for the agglomerative clustering method is approximately :math:`0.35` based on :ref:`Figure 21<fig21>` above.
 
-K-means visual inspection and selection
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+K-means visual inspection and final selection
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Now that we are armed with this additional clustering information, we are going to inspect just a few sets of K-means clusters at a few values :math:`k` we think might be best suited to this data given our results above. Those will be :math:`k`'s of 2, 3, and 5.
+Now that we have explored the unsupervised clustering results for our data using some alternative methods, we are going to inspect K-means clusters for a few values :math:`k` we think might be best-suited to this data given our results above. Those will be :math:`k`'s of 2, 3, and 5. To accomplish this, we will take the K-means clustered results at each number :math:`k` and plot the silhouette coefficients-by-cluster alongside a dimensionality-reduced representation of our training data, wherein each point will be colored-coded by cluster. This will provide us some sense for how the clusters have spatially partitioned our data given the dimensionality-reduced shape of our data. The method used here to reduce our 58 dimension training data to just 2 dimensions for plotting will be `principal component analysis (PCA) <pca-wikipedia_>`_, a form of linear dimensionality reduction that uses `singular value decomposition (SVD) <svd-wikipedia_>`_ of the data (as is the method used in `the scikit-learn implementation of PCA <pca-sklearn_>`_) to project it to a lower dimensional space.
+
+*Please note that additional detail on PCA, SVD, and the related mathematics for this method can be found in* :ref:`the later section of our analysis where we use PCA directly in our feature engineering<embed>` *to encode our 512-dimension textual embeddings to just 2 dimensions for use in our predictive models.*
+
+.. _fig23:
 
 .. figure:: ../../docs/_static/figures/23-kmeans-2-silplot.jpg
   :align: center
@@ -214,19 +221,25 @@ Now that we are armed with this additional clustering information, we are going 
 
   Figure 23: K-means :math:`k=2` clustering results
 
+.. _fig24:
+
 .. figure:: ../../docs/_static/figures/24-kmeans-3-silplot.jpg
   :align: center
   :width: 100%
 
-  Figure 23: K-means :math:`k=3` clustering results
+  Figure 24: K-means :math:`k=3` clustering results
+
+.. _fig25:
 
 .. figure:: ../../docs/_static/figures/25-kmeans-5-silplot.jpg
   :align: center
   :width: 100%
 
-  Figure 23: K-means :math:`k=5` clustering results
+  Figure 25: K-means :math:`k=5` clustering results
 
-As can be seen in the silhouette analysis plots and 2-dimensional PCA representations above, all three values :math:`k` provide intriguing types of separation among our data. While we would have liked to incorporate K-means reference class classification features of several varying values :math:`k` in our engineered feature set for predictive comparisons in our regression models, we utlimately decided to choose just one K-means-derived reference class feature in favor of exploring other, more powerful clustering techniques as we illutrate below in section 3.1.2. In the end, we decided to balance clarity of separation as exhibited in the PCA plots above with a value :math:`k` which provided some degree of balance between the size and individual silhouette scores of several clusters. For that reason we choose :math:`k=3` for our eventual predictive reference class feature titled ``attributes_km3_label`` in our final model data.
+As can be seen in the silhouette and 2-dimensional PCA representations above, all three values :math:`k` provide some intriguing partitions among our data. Ideally, we would keep all three sets of cluster labels shown above as competing features to see which performs best in the predictive models we generate in later sections of our analysis. However, we will err on the side of simplicity here and choose just one of these K-means results for use in our later models. Instead of comparing the predictive effectiveness of multiple values :math:`k`, we will instead choose just one *K-means*-derived reference class feature and focus our energy and time on exploring another more involved approach to clustering :ref:`to generate a competing reference class feature in the next section of this analysis<cluster2>`.
+
+In the end, we decided to balance clarity of separation as exhibited in the PCA plots above with a value :math:`k` which provided some degree of balance between the size and individual silhouette scores of several clusters (i.e. several "reference classes"). For that reason we choose :math:`k=3` for :ref:`the predictive reference class feature titled "attributes_km3_label" in our final model data<data-dict>`.
 
 
 Additional resources
@@ -234,7 +247,7 @@ Additional resources
 
 Below are some additional resources on the methods used in this section of the analysis.
 
-**DBSCAN**
+**Density-based spatial clustering of applications with noise (DBSCAN)**
 
 * `The original AAAI paper by Ester et al. presenting DBSCAN in 1996 <dbscan-paper_>`_ 
 * `DBSCAN on Wikipedia <dbscan-wikipedia_>`_
@@ -253,6 +266,12 @@ Below are some additional resources on the methods used in this section of the a
 
 * `K-means on Wikipedia <kmeans-wikipedia_>`_
 * `The scikit-learn implementation of K-means <kmeans-sklearn_>`_
+
+**Principal Component Analysis (PCA)**
+
+* `PCA on Wikipedia <pca-wikipedia_>`_
+* `Singular value decomposition (SVD) on Wikipedia <svd-wikipedia_>`_
+* `The scikit-learn implementation of PCA <pca-sklearn_>`_
 
 **Silhouette score**
 
@@ -285,6 +304,12 @@ Below are some additional resources on the methods used in this section of the a
 .. _kmeans-wikipedia: https://en.wikipedia.org/wiki/K-means_clustering
 
 .. _kmeans-sklearn: https://scikit-learn.org/stable/modules/clustering.html#k-means
+
+.. _pca-wikipedia: https://en.wikipedia.org/wiki/Principal_component_analysis
+
+.. _pca-sklearn: https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html
+
+.. _svd-wikipedia: https://en.wikipedia.org/wiki/Singular_value_decomposition
 
 .. _silscore-sklearn: https://scikit-learn.org/stable/modules/clustering.html#silhouette-coefficient
 
