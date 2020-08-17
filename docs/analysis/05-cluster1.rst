@@ -146,16 +146,11 @@ Once we selected our minimum number of points, we were able to generate :ref:`Fi
 
   Figure 19: DBSCAN clustering results
 
-.. code-block::
+**The results for DBSCAN with** :math:`\epsilon=2.25` **and**  :math:`n=12` **minimum samples:**
 
-  Results for DBSCAN(eps=2.25, min_samples=12):
-
-      2 clusters were identified
-      25 of the n=134 observations were not assigned a cluster
-    
-  The resulting silhouette score, excluding unclustered points:
-
-      0.1843
+* 2 clusters were identified;
+* 25 of the 134 training observations were not assigned a cluster, and;
+* The resulting silhouette score, excluding unclustered points, was 0.1843.
 
 In :ref:`Figure 19<fig19>` above, the distribution of resulting labels are illustrated by this chart with un-clustered observations represented by the :math:`-1` label. As we already noted, it was difficult to find a set of parameters :math:`\epsilon` and ``min_samples`` that yeilded any sort of separation of our data into discrete clusers using DBSCAN. Shown here was the most "reasonably separated" set of clusters we could achieve. According to these results, we have 2 major clusters, one more heavily distributed with 94 observations and a set of 25 observations (19% of all observations) identified as noise points and not assigned to either cluster. Overall, this DBSCAN-defined clustering has an average silhouette score of :math:`0.184`. This is not a marked improvement over the silhouette scores acheived by our K-means clusterings shown in :ref:`Figure 16<fig16>`. What's more, the DBSCAN clustering, when compared to K-means, will add some complexity to the process by which we label our TEST observations. This is because the scikit-learn implementation of DBSCAN does not provide an interface for "predicting" the clusters of new points based on a previously trained DBSCAN model. The expectation, when using DBSCAN, is that you add new data-points to your existing data and re-train the algorithm to determine if spatial densities have changed enough to cause the creation of "new" clusters or to reassign points among existing clusters (i.e. clusters change as new data is encountered). For these reasons, it is not clear that DBSCAN provides a sufficient improvement in clustering over what might be achieved by K-means to warrant its use for defining our project reference classes. 
 
@@ -249,42 +244,108 @@ Below are some additional resources on the methods used in this section of the a
 
 **Density-based spatial clustering of applications with noise (DBSCAN)**
 
-* `The original AAAI paper by Ester et al. presenting DBSCAN in 1996 <dbscan-paper_>`_ 
-* `DBSCAN on Wikipedia <dbscan-wikipedia_>`_
-* `The scikit-learn implementation of DBSCAN <dbscan-sklearn_>`_
+* `The original paper introducing DBSCAN by Ester, Kriegel, Sander, and Xu <dbscan-paper_>`_:
+  
+  * Ester, Martin; Kriegel, Hans-Peter; Sander, Jorg; Xu, Xiaowei (1996). "A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise".  Association for the Advancement of Artificial Intelligence: Proceedings of the Second International Conference on Knowledge Discovery and Data Mining: 226-231. `KDD96-037 <dbscan-paper_>`_.
+
+* `The scikit-learn implementation notes for DBSCAN <dbscan-sklearn_>`_:
+
+  * scikit-learn contributors. "2.3.7. DBSCAN". scikit-learn, Machine Learning in Python. `https://scikit-learn.org/stable/modules/clustering.html#dbscan <dbscan-sklearn_>`_. (Accessed August 17, 2020)
+
+* `DBSCAN on Wikipedia <dbscan-wikipedia_>`_:
+
+  * Wikipedia contributors. "DBSCAN". Wikipedia, The Free Encyclopedia. `https://en.wikipedia.org/wiki/DBSCAN <dbscan-wikipedia_>`_. (Accessed August 17, 2020)
 
 **Gap statistic**
 
-* `The original Royal Statistical Society paper by Tibshirani, Walther and Hastie presenting the gap statistic in 2001 <gapstat-paper_>`_
-* `The gap-statistic Python library used in this analysis <gapstat-lib_>`_
+* `The "gap-stat" Python library used in this analysis <gapstat-lib_>`_:
+
+  * Granger, Miles (2020). "gap-stat". GitHub repository, Python implementation of the Gap Statistic, v2.0.1. `https://github.com/milesgranger/gap_statistic <gapstat-lib_>`_.
+
+* `The original paper presenting the gap statistic by Tibshirani, Walther, and Hastie <gapstat-paper_>`_:
+
+  * Tibshirani, Robert; Walther, Guenther; Hastie, Trevor (2001). "Estimating the number of clusters in a dataset via the Gap statistic". Journal of the Royal Statistical Society, B, 63 (Part 2):411-423. `http://www.web.stanford.edu/~hastie/Papers/gap.pdf <gapstat-paper_>`_.
 
 **Hierarchical clustering**
 
-* `Hierarchical clustering on Wikipedia <hierarchical-wikipedia_>`_
+* `Hierarchical clustering on Wikipedia <hierarchical-wikipedia_>`_:
+
+  * Wikipedia contributors. "Hierarchical clustering". Wikipedia, The Free Encyclopedia. `https://en.wikipedia.org/wiki/Hierarchical_clustering <hierarchical-wikipedia_>`_. (Accessed August 17, 2020)
 
 **K-means clustering**
 
-* `K-means on Wikipedia <kmeans-wikipedia_>`_
-* `The scikit-learn implementation of K-means <kmeans-sklearn_>`_
+* `The scikit-learn implementation of K-means <kmeans-sklearn_>`_:
 
-**Principal Component Analysis (PCA)**
+  * scikit-learn contributors. "2.3.2. K-means". scikit-learn, Machine Learning in Python. `https://scikit-learn.org/stable/modules/clustering.html#k-means <kmeans-sklearn_>`_. (Accessed August 17, 2020)
 
-* `PCA on Wikipedia <pca-wikipedia_>`_
-* `Singular value decomposition (SVD) on Wikipedia <svd-wikipedia_>`_
-* `The scikit-learn implementation of PCA <pca-sklearn_>`_
+* `K-means on Wikipedia <kmeans-wikipedia_>`_:
+
+  * Wikipedia contributors. "K-means clustering". Wikipedia, The Free Encyclopedia. `https://en.wikipedia.org/wiki/K-means_clustering <kmeans-wikipedia_>`_. (Accessed August 17, 2020)
+
+**Principal component analysis (PCA)**
+
+* `The scikit-learn implementation of PCA <pca-sklearn_>`_:
+
+  * scikit-learn contributors. "sklearn.decomposition.PCA". scikit-learn, Machine Learning in Python. `https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html <pca-sklearn_>`_. (Accessed August 17, 2020)
+
+* `PCA on Wikipedia <pca-wikipedia_>`_:
+
+  * Wikipedia contributors. "Principal component analysis". Wikipedia, The Free Encyclopedia. `https://en.wikipedia.org/wiki/Principal_component_analysis <pca-wikipedia_>`_. (Accessed August 17, 2020)
+
+* `Singular value decomposition (SVD) on Wikipedia <svd-wikipedia_>`_:
+
+  * Wikipedia contributors. "Singular value decomposition". Wikipedia, The Free Encyclopedia. `https://en.wikipedia.org/wiki/Singular_value_decomposition <svd-wikipedia_>`_. (Accessed August 17, 2020)
+
+**Reference class forecasting**
+
+* `An example of reference class forecasting's use in practice <refclass-paper2_>`_:
+
+  * Flyvbjerg, Bent (2006). "From Nobel Prize to Project Management: Getting Risks Right". Project Management Journal. 37 (3): 5–15. `arXiv: 1302.3642 <refclass-paper2_>`_.
+
+* `Practical methods for the use of reference class forecasting <refclass-paper1_>`_:
+
+  * Flyvbjerg, Bent; COWI (2004). "Procedures for Dealing with Optimism Bias in Transport Planning: Guidance Document". London: UK Department for Transport. `gov.uk: 191523 <refclass-paper1_>`_.
+
+* `Early theoretical foundations for reference class forecasting by Kahneman and Tversky <refclass-paper3_>`_:
+
+  * Kahneman, Daniel; Tversky, Amos (1979). "Prospect Theory: An Analysis of Decision under Risk". Econometrica. 47 (2): 263–291. `JSTOR: 1914185 <refclass-paper3_>`_.
+
+* `Optimism bias article from Harvard Business Review by Lovallo and Kahneman <refclass-paper4_>`_:
+
+  * Lovallo, Dan; Kahneman, Daniel (2003). "Delusions of success. How optimism undermines executives' decisions". Harvard Business Review. 81 (7): 56–63. `https://hbr.org/2003/07/delusions-of-success-how-optimism-undermines-executives-decisions <refclass-paper4_>`_.
+
+* `Reference class forecasting on Wikipedia <refclass-wikipedia_>`_:
+
+  * Wikipedia contributors. "Reference class forecasting". Wikipedia, The Free Encyclopedia. `https://en.wikipedia.org/wiki/Reference_class_forecasting <refclass-wikipedia_>`_. (Accessed August 17, 2020)
 
 **Silhouette score**
 
-* `The original Journal of Computational and Applied Mathematics article by Rousseeuw presenting the silhouette coefficient in 1987 <silscore-paper_>`_
-* `Silhouette score on Wikipedia <silscore-wikipedia_>`_
-* `The scikit-learn silhouette coefficient documentation <silscore-sklearn_>`_ 
+* `The original Journal of Computational and Applied Mathematics article presenting the silhouette coefficient <silscore-paper_>`_:
+
+  * Rousseeuw, Peter (1987). "Silhouettes: A graphical aid to the interpretation and validation of cluster analysis". Journal of Computational and Applied Mathematics. 20: 5–15. `DOI: 10.1016/0377-0427(87)90125-7 <silscore-paper_>`_.
+
+* `The scikit-learn silhouette coefficient documentation <silscore-sklearn_>`_:
+
+  * scikit-learn contributors. "2.3.10.5. Silhouette Coefficient". scikit-learn, Machine Learning in Python. `https://scikit-learn.org/stable/modules/clustering.html#silhouette-coefficient <silscore-sklearn_>`_. (Accessed August 17, 2020)
+
+* `Silhouette score on Wikipedia <silscore-wikipedia_>`_:
+
+  * Wikipedia contributors. "Silhouette (clustering)". Wikipedia, The Free Encyclopedia. `https://en.wikipedia.org/wiki/Silhouette_(clustering) <silscore-wikipedia_>`_. (Accessed August 17, 2020)
+
 
 **Ward's method**
 
-* `Ward's method on Wikipedia <wards-wikipedia_>`_
-* `The SciPy implemented algorithm for Ward's method <wards-scipy-algo_>`_
-* `The SciPy implementation of Ward's method <wards-scipy_>`_
+* `The SciPy implemented algorithm notes for Ward's method <wards-scipy-algo_>`_:
 
+  * SciPy contributors. "scipy.cluster.hierarchy.linkage". SciPy, Open-source software for mathematics, science, and engineering. `https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html#scipy.cluster.hierarchy.linkage <wards-scipy-algo_>`_. (Accessed August 17, 2020)
+
+* `The SciPy implementation of Ward's method <wards-scipy_>`_:
+
+  * SciPy contributors. "scipy.cluster.hierarchy.ward". SciPy, Open-source software for mathematics, science, and engineering. `https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.ward.html <wards-scipy_>`_. (Accessed August 17, 2020)
+
+* `Ward's method on Wikipedia <wards-wikipedia_>`_:
+
+  * Wikipedia contributors. "Ward's method". Wikipedia, The Free Encyclopedia. `https://en.wikipedia.org/wiki/Ward%27s_method <wards-wikipedia_>`_. (Accessed August 17, 2020)
 
 .. 
     Below are hyperlink targets used on this page
@@ -323,7 +384,7 @@ Below are some additional resources on the methods used in this section of the a
 
 .. _silscore-sklearn: https://scikit-learn.org/stable/modules/clustering.html#silhouette-coefficient
 
-.. _silscore-paper: https://www.sciencedirect.com/science/article/pii/0377042787901257?via%3Dihub
+.. _silscore-paper: https://doi.org/10.1016/0377-0427(87)90125-7
 
 .. _silscore-wikipedia: https://en.wikipedia.org/wiki/Silhouette_(clustering)
 
