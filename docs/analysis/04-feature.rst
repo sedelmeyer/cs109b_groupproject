@@ -38,8 +38,8 @@ Approaches to feature engineering undertaken in the next several sections of thi
 
 .. _data-dict:
 
-Data dictionary
----------------
+Data dictionary (final feature set)
+-----------------------------------
 
 Shown below is a table containing details for all columns available for modeling in our final dataset. The "Column Use" column in this table indicates the use for each variable.
 
