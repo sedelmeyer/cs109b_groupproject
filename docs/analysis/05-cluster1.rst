@@ -11,16 +11,16 @@
 Reference class forecasting
 ---------------------------
 
-In the project management literature, particularly for academic research concerned with predicting project outcomes related to cost and duration overages, the concept of a project "reference class" is important to grouping like projects for the purpose of improved predictive accuracy. Due to :ref:`the limitations of the categorical variables present in our current dataset<categories>`, we have determined that, instead of using intuition or some predefined categorization of projects by type, we'd instead seek to algorithmically classify our projects. The objective we are seeking to accomplish, is to use all available types of quantitative and categorical data at the start of the project to identify some sort of "latent" reference class clusters derived from the totality of those features.
+In the project management literature, `the concept of a project "reference class" <refclass-wikipedia_>`_ is important for the purposes of improving forecasting accuracy and overcoming `the optimism biases of planners and executives <refclass-paper4_>`_. While Kahneman (the nobel prize winning economist) and Tversky (the psychologist with whom he collaborated) began developing the underlying theories of decision-making under uncertainty `as early as the late-1970's <refclass-paper3_>`_, it wasn't until 2004 that practical methods for the use of reference class forecasting in planning were published (`Flyvbjerg and COWI 2004 <refclass-paper1_>`_) and 2006 that the first instances of its use in practice were described (`Flyvbjerg 2006 <refclass-paper2_>`_). As Flyvbjerg writes:
+
+    *Reference  class  forecasting promises  more  accuracy  in  forecasts  by  taking  a  so-called  "outside  view"  on  prospects being forecasted, while conventional forecasting takes an inside view. The outside view on a given project is based on knowledge about actual performance in a reference class of comparable projects* (`Flyvbjerg 2006, pg. 2 <refclass-paper2_>`_).
+
+We use a loose interpretation of this "reference class" concept here in our analysis. Our objective here is to partition our projects into a limited set of classes through the use of unsupervized clustering algorithms. Whereas we identified some distinct :ref:`limitations to the categorical variables present in our original dataset<categories>`, instead of simply categorizing each project based on intuition or some predefined categorization of projects by type, we are instead seeking to algorithmically partition and categorize our projects. The objective we are seeking to accomplish, is to use all available types of quantitative and categorical data at the start of the project to identify a set of "latent" reference class clusters derived from the totality of those features rather than any individual feature.
 
 Methods used in this section
 ----------------------------
 
-To accomplish this, we perform two competing approaches to clustering on our original feature data (being careful to use only features we would have access to when given a new project to predict). First we use a set of baseline clustering algorithms (K-means, DBSCAN, and Agglomerative Cluster with Wards Method) to generate an initial reference class feature for our training set.
-
-Next, we seek to overcome some of the shortcomings of these methods by using Uniform Manifold Approximation and Projection (UMAP), combined with HDBSCAN, to generate a second competing set of reference classes. Ultimately, we will determine which, if either, of these engineered features improve the predictive accuracy of our regression models.
-
-Now, let's get started prepping our data for use with K-means...
+To accomplish this "latent" reference class clustering, we perform two competing approaches to unsupervised clustering on our original feature data (being careful to use only features we would have access to when given a new project to predict). First, as is shown below on this page, we use a set of baseline clustering algorithms (K-means, DBSCAN, and Ward's method agglomerative hierarchical clustering) to generate an initial reference class feature for our training set. Next, as :ref:`is shown in Section 6 of our analysis<cluster2>`, we seek to overcome some of the shortcomings of those methods by using uniform manifold approximation and projection (UMAP), combined with hierarchical DBSCAN (HDBSCAN), to generate a second competing set of reference classes. Ultimately, we will determine which, if either, of these engineered features improve the predictive accuracy of our regression models later in this analysis.
 
 K-means clustering for reference class labels
 ---------------------------------------------
@@ -69,7 +69,7 @@ As can be seen in the two plots below, the 3-step scaling method we applied (sta
 
   Figure 14: Original training data versus data that has been standardized, sigmoid transformed, and then re-standardized
 
-This we believe is an important first step before clustering, primarily to get all variables on a more common scale, so that the distance-based clustering algorithms used here are not overwhelmed by just the Budget_Start values, which range in the hundreds of millions of dollars.
+This we believe is an important first step before clustering, primarily to get all variables on a more common scale, so that the distance-based clustering algorithms used here are not overwhelmed by just the ``Budget_Start`` values, which range in the hundreds of millions of dollars.
 
 .. _kmeans-iterated:
 
@@ -164,15 +164,15 @@ Ward's method agglomerative clustering comparison
 
 As a final attempt to learn about the natural clustering of this data, we will now perform a form of hierarchical unsupervised clustering on our training data. For this, we will perform agglomerative clustering using Ward's method. In `hierarchical clustering <hierarchical-wikipedia_>`_, if we think of the process of "dividing" our data into an increasing number of smaller and smaller clusters based as a branching tree diagram (i.e. dendrogram), then the agglomerative approach would be the reverse process, whereby we start with each individual observation as its own cluster, and then we systematically combine those observations with spatially-near points to form larger clusters along distance-based "linkages". In other words, with agglomerative heirarchical clustering, we start at the tips of branches and work our way back down the tree, all the way to its base (although this is often described as a "bottom-up" approach). The number of clusters are then chosen by defining some distance threshold :math:`t`, which defines some point along the height of our hierarchical tree.
 
-To determine which clusters should be combined at each step in the agglomerative clustering process, a measure of dissimilarity is required to identify distances between points and a linkage criterion is required to define "dissimilarity" for the algorithm. For our purposes here, we will use Euclidean distance, :math:`\lVert a-b \rVert = \sqrt{\sum_i (a_i - b_i)^2}` where :math:`a` and :math:`b` are two points, as our distance metric, and we will use Ward's method as our linkage criterion. Ward's method, also known as Ward's minimum variance method, seeks to minimize the total within-cluster variance and, at each step in the agglomerative process, finds the pair of clusters that lead to the minimum increase in total within-cluster variance after merging. The `implementation of Ward's method used here <wards-scipy_>`_ is part of the SciPy Python library, and the algorithm used `is documented here in the SciPy documentation <wards-scipy-algo_>`_, and is summarized as such (`SciPy 2020 <wards-scipy-algo_>`_):
+To determine which clusters should be combined at each step in the agglomerative clustering process, a measure of dissimilarity is required to identify distances between points and a linkage criterion is required to define "dissimilarity" for the algorithm. For our purposes here, we will use Euclidean distance, :math:`\lVert a-b \rVert = \sqrt{\sum_i (a_i - b_i)^2}` where :math:`a` and :math:`b` are two points, as our distance metric, and we will use Ward's method as our linkage criterion. Ward's method, also known as Ward's minimum variance method, seeks to minimize the total within-cluster variance and, at each step in the agglomerative process, finds the pair of clusters that lead to the minimum increase in total within-cluster variance after merging. The `implementation of Ward's method used here <wards-scipy_>`_ is part of the SciPy Python library, and the algorithm used `is documented here in the SciPy documentation <wards-scipy-algo_>`_, and is summarized:
 
-    Each new distance entry :math:`d(u, v)` between clusters :math:`s` and :math:`t`, is computed as follows:
+    *Each new distance entry* :math:`d(u, v)` *between clusters* :math:`s` *and* :math:`t`, *is computed as follows:*
 
     :math:`d(u,v) = \sqrt{\frac{|v|+|s|} {T}d(v,s)^2 + \frac{|v|+|t|} {T}d(v,t)^2 - \frac{|v|} {T}d(s,t)^2}`
 
-    where :math:`u` is the newly joined cluster consisting of clusters :math:`s` and :math:`t`, :math:`v` is an unused cluster in the forest, :math:`T=|v|+|s|+|t|`, and :math:`|*|` is the cardinality of its argument.
+    *where* :math:`u` *is the newly joined cluster consisting of clusters* :math:`s` *and* :math:`t`, :math:`v` *is an unused cluster in the forest,* :math:`T=|v|+|s|+|t|`, *and* :math:`|*|` *is the cardinality of its argument.*
 
-    This is also known as the "incremental" algorithm.
+    *This is also known as the "incremental" algorithm* (`SciPy 2020 <wards-scipy-algo_>`_).
 
 Below, plotted as a dendrogram, are the results of this agglomerative clutering algorithm applied to our training data.
 
@@ -308,6 +308,16 @@ Below are some additional resources on the methods used in this section of the a
 .. _pca-wikipedia: https://en.wikipedia.org/wiki/Principal_component_analysis
 
 .. _pca-sklearn: https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html
+
+.. _refclass-wikipedia: https://en.wikipedia.org/wiki/Reference_class_forecasting
+
+.. _refclass-paper1: https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/191523/Procedures_for_dealing_with_optimism_bias_in_transport_planning.pdf
+
+.. _refclass-paper2: https://arxiv.org/abs/1302.3642
+
+.. _refclass-paper3: https://www.jstor.org/stable/1914185?seq=1
+
+.. _refclass-paper4: https://hbr.org/2003/07/delusions-of-success-how-optimism-undermines-executives-decisions
 
 .. _svd-wikipedia: https://en.wikipedia.org/wiki/Singular_value_decomposition
 
