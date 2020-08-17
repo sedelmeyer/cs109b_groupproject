@@ -202,7 +202,7 @@ Next, we plot the average silhouette score of the clusters defined at each thres
 Not surprisingly, as was illustrated in our :ref:`iterated K-means examples shown earlier on this page <kmeans-iterated>`, the agglomerative clustering method also yields the highest average silhouette score at :math:`k=2` clusters. Much like for K-means, the highest average silhouette score for the agglomerative clustering method is approximately :math:`0.35` based on :ref:`Figure 21<fig21>` above.
 
 K-means visual inspection and final selection
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------------------
 
 Now that we have explored the unsupervised clustering results for our data using some alternative methods, we are going to inspect K-means clusters for a few values :math:`k` we think might be best-suited to this data given our results above. Those will be :math:`k`'s of 2, 3, and 5. To accomplish this, we will take the K-means clustered results at each number :math:`k` and plot the silhouette coefficients-by-cluster alongside a dimensionality-reduced representation of our training data, wherein each point will be colored-coded by cluster. This will provide us some sense for how the clusters have spatially partitioned our data given the dimensionality-reduced shape of our data. The method used here to reduce our 58 dimension training data to just 2 dimensions for plotting will be `principal component analysis (PCA) <pca-wikipedia_>`_, a form of linear dimensionality reduction that uses `singular value decomposition (SVD) <svd-wikipedia_>`_ of the data (as is the method used in `the scikit-learn implementation of PCA <pca-sklearn_>`_) to project it to a lower dimensional space.
 
