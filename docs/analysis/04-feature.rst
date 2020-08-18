@@ -34,7 +34,11 @@ Feature engineering
 
 As mentioned in :ref:`the introduction to this analysis<intro>`, there are very few features available at the start of each project and in their original form many of the individual features taken by themselves are either problematic or not that useful. Therefore, in order make the most of the limited number of features available to us, we realized very quickly that creative feature engineering be an important part of any effective predictive model using this data.
 
-Approaches to feature engineering undertaken in the next several sections of this analysis include (1) competing methods for generating latent "reference class" categories for each project using K-means clustering as well as uniform manifold approximation and projection (UMAP) in combination with the HDBSCAN clustering algorithm, which took into account all categorical and quantitative characteristics of our training projects (:ref:`see Section 5<cluster1>`). Additionally, (2) we use bidirectional encoder representations from transformers (BERT) embeddings of the textual information available for each project, and further encoded those embeddings into a smaller, more usable feature-space through competing methods of dimensionality reduction such as principal compenent analysis (PCA), latent space encoding with a dense autoencoder neural network, and UMAP (:ref:`see Section 6<embed>`).
+Approaches to feature engineering undertaken in the next several sections of this analysis include (1) competing methods for generating latent "reference class" categories for each project using K-means clustering (:ref:`see Section 5<cluster1>`) as well as uniform manifold approximation and projection (UMAP) in combination with the HDBSCAN clustering algorithm (:ref:`see Section 6<cluster2>`), which take into account all categorical and quantitative characteristics of our training projects. Additionally, (2) we use bidirectional encoder representations from transformers (BERT) embeddings of the textual information available for each project, and further encoded those embeddings into a smaller, more usable feature-space through competing methods of dimensionality reduction such as principal compenent analysis (PCA), latent space encoding with a dense autoencoder neural network, and UMAP (:ref:`see Section 7<embed>`).
+
+.. Note::
+
+  Additional resources providing background on each of the methods listed above can be found in each method's respective section of this analysis.
 
 .. _data-dict:
 
