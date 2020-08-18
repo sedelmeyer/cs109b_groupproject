@@ -155,13 +155,21 @@ Below are some additional resources on the methods used in this section of the a
 
   * Campello, R.J.G.B.; Moulavi, Davoud; Sander, Joerg (2013). "Density-Based Clustering Based on Hierarchical Density Estimates". In: Pei J., Tseng V.S., Cao L., Motoda H., Xu G. (eds) Advances in Knowledge Discovery and Data Mining. PAKDD 2013. Lecture Notes in Computer Science, vol 7819. Springer, Berlin, Heidelberg. `DOI:10.1007/978-3-642-37456-2_14 <hdbscan-paper1_>`_.
 
-* `The original paper introducing the accelerated algorithm for performing HDBSCAN by McInnies and Healy <hdbscan-paper2_>`_:
+* `The original paper introducing the accelerated algorithm for performing HDBSCAN by McInnes and Healy <hdbscan-paper2_>`_:
 
-  * McInnies, Leland; Healy, John (2017). "Accelerated Hierarchical Density Clustering". IEEE International Conference on Data Mining Workshops (ICDMW), 2017: 33-42. `arXiv:1705.07321v2 <hdbscan-paper2_>`_.
+  * McInnes, Leland; Healy, John (2017). "Accelerated Hierarchical Density Clustering". IEEE International Conference on Data Mining Workshops (ICDMW), 2017: 33-42. `arXiv:1705.07321v2 <hdbscan-paper2_>`_.
 
-* `The Python implementation of HDBSCAN used in this analysis and described in the McInnies and Healy paper listed above <hdbscan-lib_>`_:
+* `The Python implementation of HDBSCAN used in this analysis and described in the McInnes and Healy paper listed above <hdbscan-lib_>`_:
 
-  * McInnies, Leland; contributors (2020). "hdbscan". GitHub repository, A high performance implementation of HDBSCAN clustering, v0.8.26. `https://github.com/scikit-learn-contrib/hdbscan <hdbscan-lib_>`_. 
+  * McInnes, Leland; contributors (2020). "hdbscan". GitHub repository, A high performance implementation of HDBSCAN clustering, v0.8.26. `https://github.com/scikit-learn-contrib/hdbscan <hdbscan-lib_>`_. 
+
+* `An illustrated overview of how the HDBSCAN clustering algorithms works <hdbscan-how_>`_:
+
+  * McInnes, Leland; contributors (2016). "How HDBSCAN Works". Read the Docs, The hdbscan Clustering Library. `https://hdbscan.readthedocs.io/en/latest/how_hdbscan_works.html <hdbscan-how_>`_. (Accessed August 18, 2020)
+
+* `A comparison of HDBSCAN versus other clustering algorithm <hdbscan-comp_>`_:
+
+  * McInnes, Leland; contributors (2016). "Comparing Python Clustering Algorithms". Read the Docs, The hdbscan Clustering Library. `https://hdbscan.readthedocs.io/en/latest/comparing_clustering_algorithms.html <hdbscan-comp_>`_. (Accessed August 18, 2020)
 
 **K-means clustering**
 
@@ -171,10 +179,36 @@ Below are some additional resources on the methods used in this section of the a
 
 **Uniform manifold approximation and projection (UMAP)**
 
-* 
+* `A very well designed demo illustrating the results of UMAP and comparing them to comparable t-SNE results <umap-demo_>`_:
+
+  * Coenen, Andy; Pearce, Adam (2018). "Understanding UMAP". Google PAIR. `https://pair-code.github.io/understanding-umap/ <umap-demo_>`_. (Accessed August 18, 2020)
+
+* `The original paper introducing UMAP by McInnes, Healy, and Melville <umap-paper_>`_:
+
+  * McInnes, Leland; Healy, John; Melville, James (2018). "UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction". ArXiv e-prints. `arXiv:1802.03426v2 <umap-paper_>`_.
+
+* `The Python implementation of UMAP (i.e. umap-learn) used in this analysis and described in the paper listed above <umap-lib_>`_:
+
+  * McInnes, Leland; contributors (2020). "umap". GitHub repository, Uniform Manifold Approximation and Projection, v0.4.5. `https://github.com/lmcinnes/umap <umap-lib_>`_. 
+
+* `A section of the umap-learn library documentation discussing the use of UMAP to improve clustering results <umap-cluster_>`_:
+
+  * McInnes, Leland; contributors (2018). "Using UMAP for Clustering". Read the Docs, UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction. `https://umap-learn.readthedocs.io/en/latest/clustering.html <umap-cluster_>`_. (Accessed August 18, 2020)
 
 .. _hdbscan-paper1: https://doi.org/10.1007/978-3-642-37456-2_14
 
 .. _hdbscan-paper2: https://arxiv.org/abs/1705.07321v2
 
 .. _hdbscan-lib: https://github.com/scikit-learn-contrib/hdbscan
+
+.. _hdbscan-comp: https://hdbscan.readthedocs.io/en/latest/comparing_clustering_algorithms.html
+
+.. _hdbscan-how: https://hdbscan.readthedocs.io/en/latest/how_hdbscan_works.html
+
+.. _umap-paper: https://arxiv.org/abs/1802.03426v2
+
+.. _umap-lib: https://github.com/lmcinnes/umap
+
+.. _umap-cluster: https://umap-learn.readthedocs.io/en/latest/clustering.html
+
+.. _umap-demo: https://pair-code.github.io/understanding-umap/
