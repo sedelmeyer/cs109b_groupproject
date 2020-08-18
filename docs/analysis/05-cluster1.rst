@@ -236,11 +236,14 @@ As can be seen in the silhouette and 2-dimensional PCA representations above, al
 
 In the end, we decided to balance clarity of separation as exhibited in the PCA plots above with a value :math:`k` which provided some degree of balance between the size and individual silhouette scores of several clusters (i.e. several "reference classes"). For that reason we choose :math:`k=3` for :ref:`the predictive reference class feature titled "attributes_km3_label" in our final model data<data-dict>`.
 
+.. _resources05:
 
 Additional resources
 --------------------
 
 Below are some additional resources on the methods used in this section of the analysis.
+
+.. _ref-dbscan:
 
 **Density-based spatial clustering of applications with noise (DBSCAN)**
 
@@ -256,6 +259,8 @@ Below are some additional resources on the methods used in this section of the a
 
   * Wikipedia contributors. "DBSCAN". Wikipedia, The Free Encyclopedia. `https://en.wikipedia.org/wiki/DBSCAN <dbscan-wikipedia_>`_. (Accessed August 17, 2020)
 
+.. _ref-gapstat:
+
 **Gap statistic**
 
 * `The "gap-stat" Python library used in this analysis <gapstat-lib_>`_:
@@ -266,11 +271,15 @@ Below are some additional resources on the methods used in this section of the a
 
   * Tibshirani, Robert; Walther, Guenther; Hastie, Trevor (2001). "Estimating the number of clusters in a dataset via the Gap statistic". Journal of the Royal Statistical Society, B, 63 (Part 2):411-423. `http://www.web.stanford.edu/~hastie/Papers/gap.pdf <gapstat-paper_>`_.
 
+.. _ref-hierarchical:
+
 **Hierarchical clustering**
 
 * `Hierarchical clustering on Wikipedia <hierarchical-wikipedia_>`_:
 
   * Wikipedia contributors. "Hierarchical clustering". Wikipedia, The Free Encyclopedia. `https://en.wikipedia.org/wiki/Hierarchical_clustering <hierarchical-wikipedia_>`_. (Accessed August 17, 2020)
+
+.. _ref-kmeans:
 
 **K-means clustering**
 
@@ -281,6 +290,8 @@ Below are some additional resources on the methods used in this section of the a
 * `K-means on Wikipedia <kmeans-wikipedia_>`_:
 
   * Wikipedia contributors. "K-means clustering". Wikipedia, The Free Encyclopedia. `https://en.wikipedia.org/wiki/K-means_clustering <kmeans-wikipedia_>`_. (Accessed August 17, 2020)
+
+.. _ref-pca:
 
 **Principal component analysis (PCA)**
 
@@ -296,19 +307,21 @@ Below are some additional resources on the methods used in this section of the a
 
   * Wikipedia contributors. "Singular value decomposition". Wikipedia, The Free Encyclopedia. `https://en.wikipedia.org/wiki/Singular_value_decomposition <svd-wikipedia_>`_. (Accessed August 17, 2020)
 
+.. _ref-refclass:
+
 **Reference class forecasting**
 
 * `An example of reference class forecasting's use in practice <refclass-paper2_>`_:
 
-  * Flyvbjerg, Bent (2006). "From Nobel Prize to Project Management: Getting Risks Right". Project Management Journal. 37 (3): 5–15. `arXiv: 1302.3642 <refclass-paper2_>`_.
+  * Flyvbjerg, Bent (2006). "From Nobel Prize to Project Management: Getting Risks Right". Project Management Journal. 37 (3): 5–15. `arXiv:1302.3642 <refclass-paper2_>`_.
 
 * `Practical methods for the use of reference class forecasting <refclass-paper1_>`_:
 
-  * Flyvbjerg, Bent; COWI (2004). "Procedures for Dealing with Optimism Bias in Transport Planning: Guidance Document". London: UK Department for Transport. `gov.uk: 191523 <refclass-paper1_>`_.
+  * Flyvbjerg, Bent; COWI (2004). "Procedures for Dealing with Optimism Bias in Transport Planning: Guidance Document". London: UK Department for Transport. `gov.uk:191523 <refclass-paper1_>`_.
 
 * `Early theoretical foundations for reference class forecasting by Kahneman and Tversky <refclass-paper3_>`_:
 
-  * Kahneman, Daniel; Tversky, Amos (1979). "Prospect Theory: An Analysis of Decision under Risk". Econometrica. 47 (2): 263–291. `JSTOR: 1914185 <refclass-paper3_>`_.
+  * Kahneman, Daniel; Tversky, Amos (1979). "Prospect Theory: An Analysis of Decision under Risk". Econometrica. 47 (2): 263–291. `JSTOR:1914185 <refclass-paper3_>`_.
 
 * `Optimism bias article from Harvard Business Review by Lovallo and Kahneman <refclass-paper4_>`_:
 
@@ -318,11 +331,13 @@ Below are some additional resources on the methods used in this section of the a
 
   * Wikipedia contributors. "Reference class forecasting". Wikipedia, The Free Encyclopedia. `https://en.wikipedia.org/wiki/Reference_class_forecasting <refclass-wikipedia_>`_. (Accessed August 17, 2020)
 
+.. _ref-silscore:
+
 **Silhouette score**
 
-* `The original Journal of Computational and Applied Mathematics article presenting the silhouette coefficient <silscore-paper_>`_:
+* `The original article presenting the silhouette coefficient by Rousseeuw <silscore-paper_>`_:
 
-  * Rousseeuw, Peter (1987). "Silhouettes: A graphical aid to the interpretation and validation of cluster analysis". Journal of Computational and Applied Mathematics. 20: 5–15. `DOI: 10.1016/0377-0427(87)90125-7 <silscore-paper_>`_.
+  * Rousseeuw, Peter (1987). "Silhouettes: A graphical aid to the interpretation and validation of cluster analysis". Journal of Computational and Applied Mathematics. 20: 5–15. `DOI:10.1016/0377-0427(87)90125-7 <silscore-paper_>`_.
 
 * `The scikit-learn silhouette coefficient documentation <silscore-sklearn_>`_:
 
@@ -332,6 +347,7 @@ Below are some additional resources on the methods used in this section of the a
 
   * Wikipedia contributors. "Silhouette (clustering)". Wikipedia, The Free Encyclopedia. `https://en.wikipedia.org/wiki/Silhouette_(clustering) <silscore-wikipedia_>`_. (Accessed August 17, 2020)
 
+.. _ref-wards:
 
 **Ward's method**
 
