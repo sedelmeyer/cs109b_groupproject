@@ -1,43 +1,51 @@
 .. _cluster2:
 
-6. Reference class clustering advanced methods
-==============================================
+6. Reference class clustering an alternative approach
+=====================================================
 
 .. contents:: In this section
   :local:
   :depth: 2
   :backlinks: top
 
-Disadvantages of K-means and DBSCAN
------------------------------------
+Please see the `additional resources`_ section at the bottom of this page for further reading on the methods used herein.
 
-After examining our initial reference class clustering results :ref:`in the prior section of this analysis<cluster1>`, we have decided to investigate a competing method for generating our reference class labels. Whereas we relied on K-means clustering to generate our prior set of labels, we realize there are some caveats to using that approach, which have led us to consider other methods. The first of those caveats is that the K-means algorithm doesn't so much find clusters as it finds :math:`k`-number of centroids and it partitions the data among those centroids while trying to minimize intra-partition distances. This works fine when you have largely spherical clusters, but when your actual data points are grouped in irregularly or complexly shaped clusters, the K-means algorithm will generally perform poorly in partitioning data among those actual clusters [ADD CITATION]. What's more, before you define the number of clusters :math:`k` employed by the K-means algorithm, you need to be able to identify and choose the value :math:`k` representative of the actual data's clustering. This can be a simple task in a low-dimensionality feature-space where you can easily visualize your data and inspect it for naturally occuring clusters. However, in high-dimensional space, this sort of visual inspection is not easily accomplished without first transforming and decomposing your original data to a lower dimensional space just for the purpose of visualizing it, as we did with principal component analysis (PCA) to inspect our final results [ADD LINK]. But then, this is only a transformed representation of our data. It is not "fully" representative of the entire high-dimensionality feature-space. For that reason, we also need to rely on evaluative metrics to assess the success of our K-means results for varying values :math:`k` in the full high-dimensional space. But, as we also saw at the start of the prior section [ADD LINK], these metrics can present conflicting values :math:`k` depending on the criteria used to make your decision. 
+Clustering methods used in the previous section
+-----------------------------------------------
 
-These K-means caveats led us to also investigate density-based spatial clustering of applications with noise (DBSCAN) as a competing method for clustering in the prior section [ADD LINK]. Using a density-based clustering algorithm such as DBSCAN allows for partitioning along irregularly shaped data clusters in a manner not possible with K-means. Additionally, DBSCAN algorithmically selects the number of clusters within the data based on the observed areas of dense data groupings and distance-based linkages among points straddling those groupings. Therefore, there is no parameter :math:`k` to select. In effect, DBSCAN selects it for us. However, as we saw while generating our DBSCAN scan results [ADD LINK], the clustering algorithm itself relies heavily on our selection of two other parameters: a distance measure :math:`\epsilon` and the minimum number of linkage points required within that distance for a point to be considered a "core" point to any given cluster [ADD LINK]. While there are some general heuristics typically used when selecting values for these parameters, we found it extremely difficult to generate any meaningful clustering results with DBSCAN without trial and error when selecting these parameters. And, because DBSCAN is density-based and points are assigned to clusters based on distance-based linkages, it is possible for a large number of points to be considered "noise" and NOT be assigned to any clusters. This is exactly what happened to us. Our DBSCAN results left 19% of our training points unclustered in our final results [ADD LINK].
+Disadvantages of K-means
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-A competing approach using UMAP in combination with HDBSCAN
------------------------------------------------------------
+After examining our initial reference class clustering results :ref:`in the prior section of this analysis<cluster1>`, we have decided to investigate a competing method for generating our reference class labels. Whereas we relied on K-means clustering to generate our prior set of labels, we realize there are some caveats to using that approach, which have led us to consider other methods. The first of those caveats is that the K-means algorithm doesn't so much find clusters as it finds :math:`k`-number of centroids and it partitions the data among those centroids while trying to minimize intra-partition distances. This works fine when you have largely spherical clusters, but when your actual data points are grouped in irregularly or complexly shaped clusters, the K-means algorithm will generally perform poorly in partitioning data among those actual clusters [ADD CITATION]. What's more, before you define the number of clusters :math:`k` employed by the K-means algorithm, you need to be able to identify and choose the value :math:`k` representative of the actual data's clustering. This can be a simple task in a low-dimensionality feature-space where you can easily visualize your data and inspect it for naturally occuring clusters. However, in high-dimensional space, this sort of visual inspection is not easily accomplished without first transforming and decomposing your original data to a lower dimensional space just for the purpose of visualizing it, as we did with principal component analysis (PCA) to inspect our final results [ADD LINK]. But then, this is only a transformed representation of our data, which included 58 separate dimensions once our categorical variables ``Category``, ``Borough``, ``Managing_Agency``, ``Client_Agency``, and ``Phase_Start`` had been one-hot-encoded and added to our quantitative variables ``Budget_Start`` and ``Duration_Start``. It is not "fully" representative of this entire high-dimensionality feature-space. For that reason, we also need to rely on evaluative metrics to assess the success of our K-means results for varying values :math:`k` in the full high-dimensional space. But, as we also saw at the start of the prior section [ADD LINK], these metrics can present conflicting values :math:`k` depending on the criteria used to make our decision. 
+
+Disadvantages of DBSCAN
+^^^^^^^^^^^^^^^^^^^^^^^
+
+These K-means caveats led us to also investigate density-based spatial clustering of applications with noise (DBSCAN) as a competing method for clustering in the prior section [ADD LINK]. Using a density-based clustering algorithm such as DBSCAN allows for partitioning along irregularly shaped data clusters in a manner not possible with K-means. Additionally, DBSCAN algorithmically selects the number of clusters within the data based on the observed areas of dense data groupings and distance-based linkages among points straddling those groupings. Therefore, there is no parameter :math:`k` to select. In effect, DBSCAN selects it for us. However, as we saw while generating our DBSCAN scan results [ADD LINK], the clustering algorithm itself relies heavily on our selection of two other parameters: a distance measure :math:`\epsilon` and the minimum number of linkage points required within that distance for a point to be considered a "core" point to any given cluster [ADD LINK]. While there are some general heuristics typically used when selecting values for these parameters, we found it extremely difficult to generate any meaningful clustering results with DBSCAN without trial and error when selecting these parameters. And, because DBSCAN is density-based and points are assigned to clusters based on distance-based linkages, it is possible for a large number of points to be considered "noise" and NOT be assigned to any clusters. This is exactly what happened to us. Our DBSCAN results left 19% of our training points unclustered in our final results [ADD LINK]. This is likely due, in part, to the dimensionality of our data. As is a challenge with density-based clustering methods performed in a high-dimensionality feature-space, more observations are typically needed to produce sufficient density to define clusters.
+
+An alternative approach using HDBSCAN in combination with UMAP
+--------------------------------------------------------------
+
+An hierarchical extension to DBSCAN (HDBSCAN) for improved clustering
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 By using  HDBSCAN instead of the more standard DBSCAN, we can improve on our results by using a smarter density based algorithm. We chose HDBSCAN, which is an improved version of DBSCAN. Unlike DBSCAN, it allows variable density clusters. It also replaces the unintuitive epsilon parameter with a new parameter ``min_cluster_size``, which is used to determine whether points are "falling out of a cluster" or splitting to form two new clusters. HDBSCAN usually does very well with the points that it is confident enough to put into clusters, while leave out less confident points.
 
-The need to use dimensionality reduction techniques in conjunction with HDBSCAN
--------------------------------------------------------------------------------
+Using dimensionality reduction in conjunction with HDBSCAN
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 We used HDBSCAN on the raw, one-hot-encoded data and got between 70% - 80% of the data clustered. While HDBSCAN did a great job on the data it could cluster it did a poor job of actually managing to cluster the data. The problem here is that, as a density based clustering algorithm, HDBSCAN tends to suffer from the curse of dimensionality: high dimensional data requires more observed samples to produce much density. If we could reduce the dimensionality of the data more we would make the density more evident and make it far easier for HDBSCAN to cluster the data. The problem is that trying to use PCA to do this can be problematic due to its linear nature. What we need is strong manifold learning, which graph-based methods like t-sne and UMAP can offer. We chose UMAP since it is faster and preserves global structures better.
+
+Uniform manifold approximation and projection (UMAP) compared to other dimensionality reduction techniques
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Our goal is to make use of **uniform manifold approximation and projection (UMAP)** to perform non-linear manifold aware dimension reduction so we can get the dataset down to a number of dimensions small enough for a density based clustering algorithm to make progress. UMAP constructs a high dimensional graph representation of the data, with edge weights representing the likelihood that two points are connected. It chooses whether one point is connected to another or not using a local radius metric, based on the distance to each point's nth nearest neighbor, then optimizes a low-dimensional graph to be as structurally similar as possible.
 
 Tuning UMAP The most important parameter is ``n_neighbors`` - the number of approximate nearest neighbors used to construct the initial high-dimensional graph. It effectively controls how UMAP balances local versus global structure - low values will push UMAP to focus more on local structure by constraining the number of neighboring points considered when analyzing the data in high dimensions, while high values will push UMAP towards representing the big-picture structure while losing fine detail. As ``n_neighbors`` increases, UMAP connects more and more neighboring points when constructing the graph representation of the high-dimensional data, which leads to a projection that more accurately reflects the global structure of the data. At very low values, any notion of global structure is almost completely lost.
 
-**Sources and additional resources:**
 
-* https://pair-code.github.io/understanding-umap/
-* https://umap-learn.readthedocs.io/en/latest/clustering.html
-* https://hdbscan.readthedocs.io/en/latest/comparing_clustering_algorithms.html
-
-
-Getting started
----------------
+Generating our UMAP transformed HDBSCAN clusters
+------------------------------------------------
 
 The unabridged notebook used to generate the findings in this section can be :notebooks:`found in Notebook 05 on GitHub <05_umap_hdbscan_features.ipynb>`.
 
@@ -70,7 +78,7 @@ We can see from the visualizations below that the 2D embedding gives us some ins
    Figure 28: 2-dimensional UMAP reduction, color coded by project category
 
 Clustering our UMAP projections
--------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 After our initial dimensionality reduction with UMAP, we then applied HDBSCAN on the resulted UMAP embedding and got much better results than clustering on our raw data. HDBSCAN was able to cluster > 99% of points, and the clusters all contained multiple types of project categories (as can be seen by examining the clusters below and comparing them to the category-colored scatterplot of the UMAP embedding above). We interperet this to mean that we were able to capture more information in our would-be reference classes than we might otherwise have been able to capture by using the existing defined categories present in the original dataset.
 
@@ -90,8 +98,8 @@ For comparison, the resulting average silhouette score for our two methods of re
 
 As a point of comparison, now that we have a second set of reference classes to compete in our models against the [K-means cluster completed in section 3.1.1](#3.1.1.-K-means-clustering-for-reference-class-labels), we can most directly compare both sets of clustered reference classes by examining the average silhouette scores of those clusters on our original set of training data. As is shown in the output above, the UMAP with HDBSCAN method achieves a slightly higher avg. silhoutte score at 0.1798 than the K-means :math:`k=3` clusters, which scored 0.1461. While this might indicate better clustering using UMAP with HDBSCAN, the real test comes when we attempt to use each of theses engineered features in competing prediction models.
 
-Understand characteristics of projects in each of our clustering labels:
-------------------------------------------------------------------------
+Understand characteristics of projects in each of our clustering labels
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In our attempt to understand the 5 clusters/latent reference classes shown above, we used two approaches in our more complete notebook (which can be `found here <https://github.com/sedelmeyer/nyc-capital-projects/blob/master/notebooks/05_umap_hdbscan_features.ipynb>`_):
 
