@@ -8,6 +8,8 @@
   :depth: 2
   :backlinks: top
 
+Please see the `additional resources`_ section at the bottom of this page for further reading on the methods used herein.
+
 Reference class forecasting
 ---------------------------
 
@@ -114,8 +116,6 @@ This silhouette coefficient shows which samples lie well within their cluster, a
 
 As a final evaluative visualization in :ref:`Figure 17<fig17>`, we have plotted the gap statistic with error bars for each number of :math:`k` clusters generated. The gap statistic compares  the  change  in  within-cluster  dispersion  with  that  expected  under  an appropriate reference null distribution (`Tibshirani, Walther and Trevor Hastie 2000 <gapstat-paper_>`_). For the purpose of this analysis, we have generated our gap statistic results shown above using the "`gap-statistic <gapstat-lib_>`_" Python library's implementation of the algorithm. However, after inspecting this plot, we are left with no conclusive result. Following the general guidance of `Tibshirani, Walther and Trevor Hastie's <gapstat-paper_>`_, 1-standard-error method, we would
 choose the smallest :math:`k` such that :math:`\text{Gap}(k) \geq \text{Gap}(k + 1) - s_{k + 1}`. However, this plot shows an immediate decrease in gap statistic for :math:`k > 1`, indicating that perhaps this data should not be clustered. Regardless, we will still continue onward investigating optimal clusters for this data, and will instead allow the predictive accuracy of our later models determine whether or not these clustering methods are valid and/or useful.
-
-Please see the `additional resources`_ section at the bottom of this page for further reading on the methods used above. 
 
 DBSCAN clustering comparison
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
