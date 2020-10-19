@@ -117,10 +117,14 @@ This silhouette coefficient shows which samples lie well within their cluster, a
 As a final evaluative visualization in :ref:`Figure 17<fig17>`, we have plotted the gap statistic with error bars for each number of :math:`k` clusters generated. The gap statistic compares  the  change  in  within-cluster  dispersion  with  that  expected  under  an appropriate reference null distribution (`Tibshirani, Walther and Trevor Hastie 2000 <gapstat-paper_>`_). For the purpose of this analysis, we have generated our gap statistic results shown above using the "`gap-statistic <gapstat-lib_>`_" Python library's implementation of the algorithm. However, after inspecting this plot, we are left with no conclusive result. Following the general guidance of `Tibshirani, Walther and Trevor Hastie's <gapstat-paper_>`_, 1-standard-error method, we would
 choose the smallest :math:`k` such that :math:`\text{Gap}(k) \geq \text{Gap}(k + 1) - s_{k + 1}`. However, this plot shows an immediate decrease in gap statistic for :math:`k > 1`, indicating that perhaps this data should not be clustered. Regardless, we will still continue onward investigating optimal clusters for this data, and will instead allow the predictive accuracy of our later models determine whether or not these clustering methods are valid and/or useful.
 
+.. _dbscan:
+
 DBSCAN clustering comparison
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The inconclusive K-means results above next led us to examine how effectively `the density-based spatial clustering of applications with noise (DBSCAN) algorithm <dbscan-wikipedia_>`_ might perform, where rather than selecting an optimal number of clusters explicitly, the algorithm would do that for us. DBSCAN differs from K-means in that it is a non-parametric "density-based" clustering algorithm designed to discover clusters of arbitrary shape (`Ester et al. 1996 <dbscan-paper_>`_). Given a set of points, the algorithm groups points that are closely packed together based on the nearness of neighboring points, and marks points as outliers if they exist in low-density regions lacking sufficiently-near neighboring points. In addition, some points, not reachaable by any other points based on a predefined distance parameter :math:`\epsilon` are considered "noise" points and do not get assign to any clusters, meaning that the DBSCAN algorithm can leave some points unclustered.  
+
+.. _epsilon:
 
 As a preliminary step to running our `scikit-learn implementation of the DBSCAN algorithm <dbscan-sklearn_>`_, we need to first define the radius of a "neighborhood" with respect to each point. This radius represents the distance :math:`\epsilon` mentioned above. In addition to this :math:`\epsilon` parameter, we will also need to define a parameter that specifies the number of minimum points that need to be reachable by any given point within the distance :math:`\epsilon` in order to consider it a "core" point within a cluster.
 
@@ -200,6 +204,8 @@ Next, we plot the average silhouette score of the clusters defined at each thres
   Figure 22: Agglomerative cluster count by threshold :math:`t`
 
 Not surprisingly, as was illustrated in our :ref:`iterated K-means examples shown earlier on this page <kmeans-iterated>`, the agglomerative clustering method also yields the highest average silhouette score at :math:`k=2` clusters. Much like for K-means, the highest average silhouette score for the agglomerative clustering method is approximately :math:`0.35` based on :ref:`Figure 21<fig21>` above.
+
+.. _kmeans-inspect:
 
 K-means visual inspection and final selection
 ---------------------------------------------
