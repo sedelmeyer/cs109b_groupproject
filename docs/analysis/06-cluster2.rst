@@ -36,8 +36,9 @@ Remaining downsides do still exist for this newly chosen algorithm HDBSCAN. Firs
 Using dimensionality reduction in conjunction with HDBSCAN
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In our initial attempts to use HDBSCAN on our original training data we saw only 70% to 80% of our data points being assigned to clusters. The remaining points were identified as noise by the algorithm, thus ommitted from cluster assignments.   
+In our initial attempts to use HDBSCAN on our original training data, we saw only 70% to 80% of our data points being assigned to clusters. The remaining points were identified as noise by the algorithm, thus ommitted from cluster assignments. This offered no improvement over the number of unassigned points observed when we had used the DBSCAN algorithm. This led us to further investigate methods that might improve our reference class clustering results.
 
+As stated above, because HDBSCAN is a density-based algorithm, it is expected to face challenges while clustering points in high-dimensionality feature-space. This is particularly true for datasets with few observations, which poses a problem producing the sufficient densities required for the algorithm to define clusters.
 
 .. todo::
    
