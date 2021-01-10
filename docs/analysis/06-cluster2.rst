@@ -38,14 +38,16 @@ Using dimensionality reduction in conjunction with HDBSCAN
 
 In our initial attempts to use HDBSCAN on our original training data, we saw only 70% to 80% of our data points being assigned to clusters. The remaining points were identified as noise by the algorithm, thus ommitted from cluster assignments. This offered no improvement over the number of unassigned points observed when we had used the DBSCAN algorithm. This led us to further investigate methods that might improve our reference class clustering results.
 
-As stated above, because HDBSCAN is a density-based algorithm, it is expected to face challenges while clustering points in high-dimensionality feature-space. This is particularly true for datasets with few observations, which poses a problem producing the sufficient densities required for the algorithm to define clusters.
+As stated above, because HDBSCAN is a density-based algorithm, it is expected to face challenges while clustering points in high-dimensionality feature-space. This is particularly true for datasets with few observations such as ours, which poses a problem producing the sufficient densities required for the algorithm to define clusters.
 
 .. todo::
    
    Revise all sections below.
 
 
-We used HDBSCAN on the raw, one-hot-encoded data and got between 70% - 80% of the data clustered. While HDBSCAN did a great job on the data it could cluster it did a poor job of actually managing to cluster the data. The problem here is that, as a density based clustering algorithm, HDBSCAN tends to suffer from the curse of dimensionality: high dimensional data requires more observed samples to produce much density. If we could reduce the dimensionality of the data more we would make the density more evident and make it far easier for HDBSCAN to cluster the data. The problem is that trying to use PCA to do this can be problematic due to its linear nature. What we need is strong manifold learning, which graph-based methods like t-sne and UMAP can offer. We chose UMAP since it is faster and preserves global structures better.
+To improve this result we reasoned that, if we could first reduce the dimensionality of our data, we could help to produce sufficient density among our data points for the HDBSCAN algorithm to cluster a higher proportion of our observations. i
+
+The problem is that trying to use PCA to do this can be problematic due to its linear nature. What we need is strong manifold learning, which graph-based methods like t-sne and UMAP can offer. We chose UMAP since it is faster and preserves global structures better.
 
 Uniform manifold approximation and projection (UMAP) compared to other dimensionality reduction techniques
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
